@@ -9,109 +9,188 @@
         }
 
         body {
-            font-family: DejaVu Sans, sans-serif;
-            font-size: 11px;
+            font-family: Gotham, Arial, sans-serif;
+            font-size: 10px;
             color: #333;
             margin: 0;
             padding: 0;
         }
 
         .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            text-align: center;
             border-bottom: 2px solid #b91f32;
             padding-bottom: 10px;
-            margin-bottom: 10px;
+            margin-bottom: 20px;
+            margin-left: 80px;
         }
 
-        .logo {
-            width: 130px;
-        }
-
-        .title-block {
-            text-align: right;
-        }
-
-        .title-block h1 {
+        .header h1 {
             margin: 0;
-            font-size: 20px;
+            font-size: 25px;
             color: #b91f32;
+            font-weight: bold;
         }
 
-        .title-block p {
+        .header p {
             font-size: 10px;
-            margin: 2px 0 0 0;
+            margin: 5px 0 0 0;
             color: #666;
         }
 
-        .info-section {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
+        .content-container {
+            width: 80%;
+            margin: 0 auto;
         }
 
-        .info-box {
-            width: 32%;
-        }
-
-        .info-box strong {
-            color: #b91f32;
-            display: block;
-            margin-bottom: 4px;
-        }
-
-        .details {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-        }
-
-        .details div {
-            width: 32%;
-        }
-
-        table {
+        .three-columns {
             width: 100%;
-            border-collapse: collapse;
-            font-size: 11px;
-            margin-top: 5px;
+            display: table;
+            table-layout: fixed;
+            margin-bottom: 20px;
         }
 
-        th, td {
-            border: 1px solid #ccc;
-            padding: 6px;
+        .column {
+            display: table-cell;
+            width: 33.33%;
+            vertical-align: top;
+            padding-right: 20px;
         }
 
-        th {
-            background-color: #f5f5f5;
-            color: #b91f32;
-            text-align: left;
+        .column:last-child {
+            padding-right: 0;
         }
 
-        .section-title {
-            font-weight: bold;
+        .label {
             color: #b91f32;
             font-size: 12px;
-            margin: 15px 0 5px;
-            border-bottom: 1px solid #ccc;
-            padding-bottom: 3px;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
         }
 
-        ul {
-            padding-left: 15px;
-            margin: 4px 0;
+        .value {
+            color: #333;
+            font-size: 10px;
+            display: block;
+            line-height: 1.3;
         }
 
-        ul li {
-            margin-bottom: 3px;
+        .work-order-text {
+            font-size: 10px;
+            color: #333;
+            margin-bottom: 5px;
+            line-height: 1.3;
         }
 
-        .footer {
-            font-size: 9px;
-            text-align: center;
-            color: #777;
+        .work-order-label {
+            color: #b91f32;
+            font-weight: bold;
+            font-size: 12px;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .work-order-value {
+            color: #b91f32;
+            font-weight: bold;
+            font-size: 12px;
+            display: block;
+        }
+
+        .details-grid {
+            width: 100%;
             margin-top: 20px;
+        }
+
+        .details-row {
+            width: 100%;
+            display: table;
+            table-layout: fixed;
+            margin-bottom: 15px;
+        }
+
+        .detail-cell {
+            display: table-cell;
+            width: 33.33%;
+            vertical-align: top;
+            padding-right: 20px;
+        }
+
+        .detail-cell:last-child {
+            padding-right: 0;
+        }
+
+        .detail-label {
+            color: #b91f32;
+            font-size: 12px;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .detail-value {
+            color: #333;
+            font-size: 10px;
+            display: block;
+        }
+
+        .bottom-row {
+            width: 100%;
+            display: table;
+            table-layout: fixed;
+            margin-top: 10px;
+        }
+
+        .bottom-cell {
+            display: table-cell;
+            width: 50%;
+            vertical-align: top;
+            padding-right: 20px;
+        }
+
+        .bottom-cell:last-child {
+            padding-right: 0;
+        }
+
+        .bottom-label {
+            color: #b91f32;
+            font-size: 12px;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .bottom-value {
+            color: #333;
+            font-size: 10px;
+            display: block;
+        }
+
+        .contract-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+            font-size: 10px;
+        }
+
+        .contract-table th {
+            background-color: #b91f32;
+            color: white;
+            padding: 8px;
+            text-align: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .contract-table td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: center;
+            background-color: white;
+        }
+
+        .contract-table tr:nth-child(even) td {
+            background-color: #f9f9f9;
         }
     </style>
 </head>
@@ -119,102 +198,86 @@
 
     <!-- Header -->
     <div class="header">
-        <img src="{{ public_path('storage/prime.png') }}" class="logo" alt="Logo">
-        <div class="title-block">
-            <h1>WORK ORDER</h1>
-            <p>“The Best Services in the Industry or Nothing at All”</p>
-        </div>
+        <h1>JOB WORK ORDER</h1>
+        <p>"The Best Services in the Industry or Nothing at All"</p>
     </div>
 
-    <!-- Top Info -->
-    <div class="info-section">
-        <div class="info-box">
-            <strong>WORK SITE:</strong>
-            1 Potomac Drive,<br>
-            Houston, TX 77057
+    <!-- Content Container for Centering -->
+    <div class="content-container">
+        <!-- Three Columns Section -->
+        <div class="three-columns">
+            <div class="column">
+                <span class="label">WORK SITE:</span>
+                <span class="value">{{ $contract->location }}</span>
+            </div>
+            
+            <div class="column">
+                <span class="label">BILL TO:</span>
+                <span class="value">{{ $contract->name }}</span>
+            </div>
+            
+            <div class="column">
+                <div class="work-order-text">
+                    The following number must appear on all related correspondence, shipping papers, and invoices:
+                </div>
+                <span class="work-order-label">WORK ORDER NUMBER:</span>
+                <span class="work-order-value">{{ $contract->contract_number }}</span>
+            </div>
         </div>
-        <div class="info-box">
-            <strong>BILL TO:</strong>
-            David Cardoso<br>
-            Executive Steward<br>
-            1 Potomac Drive, Houston, TX 77057<br>
-            O) 713.465.8381 ext. 247<br>
-            www.houstoncc.com
+
+        <!-- Details Section -->
+        <div class="details-grid">
+            <div class="details-row">
+                <div class="detail-cell">
+                    <span class="detail-label">WORK O. DATE:</span>
+                    <span class="detail-value">{{ \Carbon\Carbon::parse($contract->date)->format('m/d/Y') }}</span>
+                </div>
+                <div class="detail-cell">
+                    <span class="detail-label">REQUESTED BY:</span>
+                    <span class="detail-value">{{ $contract->name }}</span>
+                </div>
+                <div class="detail-cell">
+                    <span class="detail-label">DEPARTMENT:</span>
+                    <span class="detail-value">{{ $contract->department }}</span>
+                </div>
+            </div>
+            
+            <div class="bottom-row">
+                <div class="bottom-cell">
+                    <span class="bottom-label">INVOICE # FOR BILL:</span>
+                    <span class="bottom-value">{{ $contract->contract_number }}</span>
+                </div>
+                <div class="bottom-cell">
+                    <span class="bottom-label">TERMS:</span>
+                    <span class="bottom-value">15</span>
+                </div>
+            </div>
         </div>
-        <div class="info-box">
-            <strong>WORK ORDER NUMBER:</strong>
-            {{ $contract->contract_number }}
-        </div>
+
+        <!-- Contract Table -->
+        <table class="contract-table">
+            <thead>
+                <tr>
+                    <th>Location</th>
+                    <th>Type of Service</th>
+                    <th>Frequency</th>
+                    <th>Qty</th>
+                    <th>Rate</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ $contract->location }}</td>
+                    <td>{{ $contract->product_description }}</td>
+                    <td>Monthly</td>
+                    <td>{{ $contract->product_quantity }}</td>
+                    <td>${{ number_format($contract->product_cost, 2) }}</td>
+                    <td>${{ number_format($contract->product_cost * $contract->product_quantity, 2) }}</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 
-    <!-- Details -->
-    <div class="details">
-        <div><strong>REQUESTED BY:</strong> David Cardoso</div>
-        <div><strong>DEPARTMENT:</strong> Facilities</div>
-        <div><strong>INVOICE #:</strong> {{ $contract->invoice_number ?? '0000000000' }} | <strong>TERMS:</strong> 15</div>
-    </div>
-
-    <!-- Table -->
-    <table>
-        <thead>
-            <tr>
-                <th>Location</th>
-                <th>Type of Service</th>
-                <th>Frequency</th>
-                <th>Qty</th>
-                <th>Rate</th>
-                <th>Total</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>{{ $contract->location }}</td>
-                <td>{{ $contract->product_description }}</td>
-                <td>Monthly</td>
-                <td>{{ $contract->product_quantity }}</td>
-                <td>${{ number_format($contract->product_cost, 2) }}</td>
-                <td>${{ number_format($contract->product_cost * $contract->product_quantity, 2) }}</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <!-- Service Specifications -->
-    <div class="section-title">SERVICE SPECIFICATIONS:</div>
-    <ul>
-        <li>Complete hood system cleaning to bare metal in accordance with NFPA-96 standards</li>
-        <li>Filter removal, cleaning, and reinstallation</li>
-        <li>Ductwork and vertical riser cleaning</li>
-        <li>Exhaust fan cleaning and inspection</li>
-        <li>Special attention to UV systems where applicable</li>
-        <li>Specialized cleaning for wood burning equipment areas</li>
-        <li>Ventless hood systems receive comprehensive cleaning of all components</li>
-        <li>Photo documentation before and after service</li>
-        <li>Detailed service report provided</li>
-    </ul>
-
-    <!-- Terms and Conditions -->
-    <div class="section-title">TERMS & CONDITIONS:</div>
-    <strong>Area Preparation:</strong>
-    <ul>
-        <li>All cooking equipment shut down 2 hours before service</li>
-        <li>Clear access to all hood systems and related components</li>
-        <li>Airport security clearance arranged for service team</li>
-    </ul>
-    <strong>Service Limitations:</strong>
-    <ul>
-        <li>Work to be performed during approved service windows</li>
-        <li>Additional charges may apply for emergency service requests</li>
-        <li>Separate scheduling required for wood burning equipment areas</li>
-    </ul>
-    <strong>Cancellation Policy:</strong>
-    <ul>
-        <li>48-hour notice required for cancellation</li>
-        <li>Cancellations within 48 hours incur a 25% fee</li>
-    </ul>
-
-    <!-- Footer -->
-    <div class="footer">
-        8303 Westglen Drive ~ Houston, TX 77063 ~ Phone 713-338-2553 ~ Fax 713-574-3065 ~ www.primefacilityservicesgroup.com
-    </div>
 </body>
 </html>

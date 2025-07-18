@@ -31,7 +31,6 @@ import {
     mdiCalendarMonth,
     mdiBriefcase,
 } from "@mdi/js";
-// import Icon from '@mdi/react';
 
 export default [
     {
@@ -48,82 +47,44 @@ export default [
         label: "Perfil",
         icon: mdiAccountCircle,
     },
-    {
-        label: "Seguridad",
-        icon: mdiShieldLock,
-        role: "Admin",
-        permission: "modulo.seguridad",
-        menu: [
-            {
-                label: "Modulos",
-                route: "module.index",
-                icon: mdiViewModule,
-                permission: "module.index",
-            },
-            {
-                label: "Permisos",
-                route: "permissions.index",
-                icon: mdiLockCheckOutline,
-                permission: "permissions.index",
-            },
-            {
-                label: "Roles",
-                route: "perfiles.index",
-                icon: mdiAccountSupervisor,
-                permission: "perfiles.index",
-            },
-            {
-                label: "Usuarios",
-                route: "user.index",
-                icon: mdiAccount,
-                permission: "user.index",
-            },
-        ],
-    },
     // {
-    //     label: "Catalogos",
-    //     icon: mdiPlaylistEdit ,
+    //     label: "Seguridad",
+    //     icon: mdiShieldLock,
     //     role: "Admin",
+    //     permission: "modulo.seguridad",
     //     menu: [
     //         {
-    //             label: "Especialidades",
-    //             route: "especialidades.index",
-    //             icon: mdiListBox ,
+    //             label: "Modulos",
+    //             route: "module.index",
+    //             icon: mdiViewModule,
+    //             permission: "module.index",
     //         },
     //         {
-    //             label: "Tratamientos",
-    //             route: "tratamientos.index",
-    //             icon: mdiClipboardList ,
-               
+    //             label: "Permisos",
+    //             route: "permissions.index",
+    //             icon: mdiLockCheckOutline,
+    //             permission: "permissions.index",
     //         },
-           
+    //         {
+    //             label: "Roles",
+    //             route: "perfiles.index",
+    //             icon: mdiAccountSupervisor,
+    //             permission: "perfiles.index",
+    //         },
+    //         {
+    //             label: "Usuarios",
+    //             route: "user.index",
+    //             icon: mdiAccount,
+    //             permission: "user.index",
+    //         },
     //     ],
     // },
-    // {
-    //     route: "doctores.index",
-    //     label: "Doctores",
-    //     icon: mdiCogOutline ,
-    // },
-    // {
-    //     route: "profile.edit",
-    //     label: "Mantenimiento",
-    //     icon: mdiCogOutline ,
-    // },
-    // {
-    //     route: "profile.edit",
-    //     label: "Citas",
-    //     icon: mdiCalendarEdit,
-    // },
-    // {
-    //     route: "profile.edit",
-    //     label: "Historial citas",
-    //     icon: mdiCalendarCheckOutline  ,
-    // },
-    // {
-    //     route: "profile.edit",
-    //     label: "Calendario",
-    //     icon: mdiCalendarMonth ,
-    // },
+
+    {
+        route: "contracts.index",
+        label: "Contratos",
+        icon: mdiCogOutline ,
+    },
      {
         isDivider: true,
     },
