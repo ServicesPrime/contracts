@@ -56,6 +56,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/contracts', [ContractController::class, 'index'])->name('contracts.index');
     Route::get('/contracts/{contract}/pdf', [ContractController::class, 'downloadPdf'])->name('contracts.pdf');
 
+Route::resource('client', ClientController::class);
+
   });
 
 

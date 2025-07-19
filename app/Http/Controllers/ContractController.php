@@ -15,9 +15,10 @@ class ContractController extends Controller
 
         $contracts = Contract::when($search, function ($query, $search) {
             $query->where('name', 'like', "%$search%")
-                ->orWhere('contract_number', 'like', "%$search%");
-        })
-            ->get();
+                ->orWhere('contract_number', 'like', "%$search%")
+                ->orWhere('location', 'like', "%$search%")
+                ->orWhere('date', 'like', "%$search%");
+        })->get();
 
         return Inertia::render('Contracts/Index', [
             'contracts' => $contracts,
