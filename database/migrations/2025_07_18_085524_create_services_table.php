@@ -13,9 +13,8 @@ return new class extends Migration
     {
         Schema::create('services', function (Blueprint $table) {
             $table->id();
-            $table->text('type');
-            $table->string('frecuency');
-            $table->string('quantity');
+            $table->string('service');
+            $table->enum('type', ['service', 'terms']);
             $table->timestamps();
         });
     }

@@ -192,6 +192,33 @@
         .contract-table tr:nth-child(even) td {
             background-color: #f9f9f9;
         }
+
+        .specifications-section {
+            margin-top: 20px;
+        }
+
+        .specifications-title {
+            color: #b91f32;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .specification-item {
+            color: #333;
+            font-size: 10px;
+            margin-bottom: 5px;
+            padding-left: 15px;
+            position: relative;
+        }
+
+        .specification-item:before {
+            content: "•";
+            color: #b91f32;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
     </style>
 </head>
 <body>
@@ -208,12 +235,21 @@
         <div class="three-columns">
             <div class="column">
                 <span class="label">WORK SITE:</span>
-                <span class="value">{{ $contract->location }}</span>
+                <span class="value">
+                    {{ $contract->client->address->street ?? 'No street address' }}<br>
+                    {{ $contract->client->address->city ?? '' }}{{ $contract->client->address->city && $contract->client->address->state ? ', ' : '' }}{{ $contract->client->address->state ?? '' }} {{ $contract->client->address->zip_code ?? '' }}<br>
+                    {{ $contract->client->address->country ?? '' }}
+                </span>
             </div>
             
             <div class="column">
                 <span class="label">BILL TO:</span>
-                <span class="value">{{ $contract->name }}</span>
+                <span class="value">
+                    {{ $contract->client->name ?? 'No client name' }}<br>
+                    <strong>Email:</strong> {{ $contract->client->email ?? 'No email' }}<br>
+                    <strong>Phone:</strong> {{ $contract->client->phone ?? 'No phone' }}<br>
+                    <strong>Area:</strong> {{ $contract->client->area ?? 'No area' }}
+                </span>
             </div>
             
             <div class="column">
@@ -234,7 +270,7 @@
                 </div>
                 <div class="detail-cell">
                     <span class="detail-label">REQUESTED BY:</span>
-                    <span class="detail-value">{{ $contract->name }}</span>
+                    <span class="detail-value">{{ $contract->client->name ?? 'No client name' }}</span>
                 </div>
                 <div class="detail-cell">
                     <span class="detail-label">DEPARTMENT:</span>
@@ -254,6 +290,24 @@
             </div>
         </div>
 
+        <!-- Service Information -->
+        <div class="specifications-section">
+            <div class="specifications-title">
+                SERVICE: {{ $contract->service->service ?? 'No service specified' }}
+                @if($contract->service->type)
+                    ({{ $contract->service->type === 'service' ? 'Service' : 'Terms & Conditions' }})
+                @endif
+            </div>
+            
+            @if($contract->service && $contract->service->specifications && count($contract->service->specifications) > 0)
+                @foreach($contract->service->specifications as $specification)
+                    <div class="specification-item">{{ $specification->description }}</div>
+                @endforeach
+            @else
+                <div class="specification-item">No specifications available</div>
+            @endif
+        </div>
+
         <!-- Contract Table -->
         <table class="contract-table">
             <thead>
@@ -268,8 +322,8 @@
             </thead>
             <tbody>
                 <tr>
-                    <td>{{ $contract->location }}</td>
-                    <td>{{ $contract->product_description }}</td>
+                    <td>{{ $contract->client->address->city ?? 'No location' }}{{ $contract->client->address->city && $contract->client->address->state ? ', ' : '' }}{{ $contract->client->address->state ?? '' }}</td>
+                    <td>{{ $contract->service->service ?? 'No service' }}</td>
                     <td>Monthly</td>
                     <td>{{ $contract->product_quantity }}</td>
                     <td>${{ number_format($contract->product_cost, 2) }}</td>

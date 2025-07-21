@@ -1,35 +1,9 @@
 import {
     mdiAccountCircle,
     mdiMonitor,
-    mdiFormatListNumberedRtl,
     mdiCogOutline, 
-    mdiListBox,
-    mdiPlaylistEdit ,
-    mdiCalendarAccount ,
-    mdiCalendarCheckOutline ,
-    mdiCalendarEdit,
-    mdiDomain,
-    mdiShieldCrown,
-    mdiViewList,
-    mdiViewModule,
-    mdiLockCheckOutline,
-    mdiAccountSupervisor,
-    mdiAccount,
-    mdiClipboardList,
-    mdiLightbulbOutline,
-    mdiBook,
-    mdiMap,
-    mdiShieldCar,
-    mdiPackageVariantClosed,
-    mdiCardAccountDetailsStarOutline,
-    mdiShieldLock,
-    mdiAccountMultipleCheck,
-    mdiTicket,
-    mdiTicketOutline,
-    mdiAccountCreditCard,
-    mdiSourceBranch,
-    mdiCalendarMonth,
-    mdiBriefcase,
+    mdiAccountBox,
+    mdiToolboxOutline,
 } from "@mdi/js";
 
 export default [
@@ -40,14 +14,34 @@ export default [
         to: "/dashboard",
     },
     
-    
 
     {
         route: "profile.edit",
         label: "Perfil",
         icon: mdiAccountCircle,
     },
-    // {
+
+
+    {
+        route: "contracts.index",
+        label: "Contratos",
+        icon: mdiCogOutline ,
+    },
+    {
+        route: "client.index",
+        label: "Client",
+        icon: mdiAccountBox ,
+    },
+        {
+        route: "services.index",
+        label: "Services",
+        icon: mdiToolboxOutline ,
+    },
+     {
+        isDivider: true,
+    },
+];
+  // {
     //     label: "Seguridad",
     //     icon: mdiShieldLock,
     //     role: "Admin",
@@ -79,13 +73,3 @@ export default [
     //         },
     //     ],
     // },
-
-    {
-        route: "contracts.index",
-        label: "Contratos",
-        icon: mdiCogOutline ,
-    },
-     {
-        isDivider: true,
-    },
-];

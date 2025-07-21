@@ -14,6 +14,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReceiptController;
+use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 
@@ -53,12 +54,19 @@ Route::middleware('auth')->group(function () {
     Route::resource('perfiles', RoleController::class)->parameters(['perfiles' => 'perfiles']);
     Route::resource('user', UserController::class)->parameters(['user' => 'user']);
 
-    Route::get('/contracts', [ContractController::class, 'index'])->name('contracts.index');
+    //Route::get('/contracts', [ContractController::class, 'index'])->name('contracts.index');
+     Route::resource('contracts', ContractController::class);
     Route::get('/contracts/{contract}/pdf', [ContractController::class, 'downloadPdf'])->name('contracts.pdf');
+   
 
-Route::resource('client', ClientController::class);
+    Route::resource('client', ClientController::class);
+    Route::resource('services', ServiceController::class);
 
-  });
+
+// Ruta para generar contrato real
+Route::get('/generate-contract/{id}', [ContractController::class, 'generateContract']);
+
+});
 
 
 

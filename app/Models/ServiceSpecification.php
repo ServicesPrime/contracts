@@ -10,6 +10,11 @@ class ServiceSpecification extends Model
    use HasFactory;
 
     protected $fillable = [
-        'description',
+        'service_id',
+        'description'
     ];
+     public function service()
+    {
+        return $this->belongsTo(Service::class);
+    }
 }
