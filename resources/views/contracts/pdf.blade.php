@@ -2,14 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Work Order</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Work Order - {{ $contract->contract_number }}</title>
     <style>
         @page {
             margin: 40px 40px;
+            size: A4;
         }
 
         body {
-            font-family: Gotham, Arial, sans-serif;
+            font-family: Arial, sans-serif;
             font-size: 10px;
             color: #333;
             margin: 0;
@@ -21,7 +23,6 @@
             border-bottom: 2px solid #b91f32;
             padding-bottom: 10px;
             margin-bottom: 20px;
-            margin-left: 80px;
         }
 
         .header h1 {
@@ -38,7 +39,7 @@
         }
 
         .content-container {
-            width: 80%;
+            width: 90%;
             margin: 0 auto;
         }
 
@@ -202,6 +203,8 @@
             font-size: 12px;
             font-weight: bold;
             margin-bottom: 10px;
+            border-bottom: 1px solid #b91f32;
+            padding-bottom: 5px;
         }
 
         .specification-item {
@@ -219,6 +222,21 @@
             position: absolute;
             left: 0;
         }
+
+        .terms-section {
+            margin-top: 20px;
+        }
+
+        .terms-service {
+            margin-bottom: 15px;
+        }
+
+        .terms-service-title {
+            color: #333;
+            font-size: 11px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
     </style>
 </head>
 <body>
@@ -229,26 +247,44 @@
         <p>"The Best Services in the Industry or Nothing at All"</p>
     </div>
 
-    <!-- Content Container for Centering -->
+    <!-- Content Container -->
     <div class="content-container">
         <!-- Three Columns Section -->
         <div class="three-columns">
             <div class="column">
                 <span class="label">WORK SITE:</span>
                 <span class="value">
-                    {{ $contract->client->address->street ?? 'No street address' }}<br>
-                    {{ $contract->client->address->city ?? '' }}{{ $contract->client->address->city && $contract->client->address->state ? ', ' : '' }}{{ $contract->client->address->state ?? '' }} {{ $contract->client->address->zip_code ?? '' }}<br>
-                    {{ $contract->client->address->country ?? '' }}
+                    @if($contract->client && $contract->client->address)
+                        @if($contract->client->address->name_account)
+                            <strong>{{ $contract->client->address->name_account }}</strong><br>
+                        @endif
+                        @if($contract->client->address->street)
+                            {{ $contract->client->address->street }}<br>
+                        @endif
+                        @if($contract->client->address->city || $contract->client->address->state)
+                            {{ collect([$contract->client->address->city, $contract->client->address->state, $contract->client->address->zip_code])->filter()->implode(', ') }}<br>
+                        @endif
+                        @if($contract->client->address->country)
+                            {{ $contract->client->address->country }}<br>
+                        @endif
+                        @if($contract->client->address->full_address && !$contract->client->address->street)
+                            {{ $contract->client->address->full_address }}
+                        @endif
+                    @else
+                        No address available
+                    @endif
                 </span>
             </div>
             
             <div class="column">
                 <span class="label">BILL TO:</span>
                 <span class="value">
-                    {{ $contract->client->name ?? 'No client name' }}<br>
+                    <strong>{{ $contract->client->name ?? 'No client name' }}</strong><br>
                     <strong>Email:</strong> {{ $contract->client->email ?? 'No email' }}<br>
                     <strong>Phone:</strong> {{ $contract->client->phone ?? 'No phone' }}<br>
-                    <strong>Area:</strong> {{ $contract->client->area ?? 'No area' }}
+                    @if($contract->client->area)
+                        <strong>Area:</strong> {{ $contract->client->area }}
+                    @endif
                 </span>
             </div>
             
@@ -265,7 +301,7 @@
         <div class="details-grid">
             <div class="details-row">
                 <div class="detail-cell">
-                    <span class="detail-label">WORK O. DATE:</span>
+                    <span class="detail-label">WORK DATE:</span>
                     <span class="detail-value">{{ \Carbon\Carbon::parse($contract->date)->format('m/d/Y') }}</span>
                 </div>
                 <div class="detail-cell">
@@ -290,47 +326,93 @@
             </div>
         </div>
 
-        <!-- Service Information -->
-        <div class="specifications-section">
-            <div class="specifications-title">
-                SERVICE: {{ $contract->service->service ?? 'No service specified' }}
-                @if($contract->service->type)
-                    ({{ $contract->service->type === 'service' ? 'Service' : 'Terms & Conditions' }})
-                @endif
-            </div>
+        <!-- Contract Services Table - Only show paid services -->
+        @php
+            $paidServices = $contract->contractServices->filter(function($contractService) {
+                return $contractService->service && $contractService->service->type === 'service';
+            });
             
-            @if($contract->service && $contract->service->specifications && count($contract->service->specifications) > 0)
-                @foreach($contract->service->specifications as $specification)
+            $totalAmount = $paidServices->sum(function($contractService) {
+                return $contractService->quantity * $contractService->unit_price;
+            });
+        @endphp
+
+        @if($paidServices->count() > 0)
+            <table class="contract-table">
+                <thead>
+                    <tr>
+                        <th>Location</th>
+                        <th>Type of Service</th>
+                        <th>Frequency</th>
+                        <th>Qty</th>
+                        <th>Rate</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($paidServices as $contractService)
+                        <tr>
+                            <td>
+                                {{ collect([$contract->client->address->city ?? '', $contract->client->address->state ?? ''])->filter()->implode(', ') ?: 'No location' }}
+                            </td>
+                            <td>{{ $contractService->service->service ?? 'No service' }}</td>
+                            <td>Monthly</td>
+                            <td>{{ $contractService->quantity }}</td>
+                            <td>${{ number_format($contractService->unit_price, 2) }}</td>
+                            <td>${{ number_format($contractService->quantity * $contractService->unit_price, 2) }}</td>
+                        </tr>
+                    @endforeach
+                    <!-- Total Row -->
+                    <tr style="background-color: #f0f0f0; font-weight: bold;">
+                        <td colspan="5" style="text-align: right;">TOTAL AMOUNT:</td>
+                        <td>${{ number_format($totalAmount, 2) }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        @endif
+
+        <!-- Service Specifications Section -->
+        @php
+            $allSpecifications = collect();
+            foreach($contract->contractServices as $contractService) {
+                if($contractService->service && $contractService->service->type === 'service' && $contractService->service->specifications) {
+                    $allSpecifications = $allSpecifications->merge($contractService->service->specifications);
+                }
+            }
+            $uniqueSpecifications = $allSpecifications->unique('description');
+        @endphp
+
+        @if($uniqueSpecifications->count() > 0)
+            <div class="specifications-section">
+                <div class="specifications-title">SERVICE SPECIFICATIONS:</div>
+                @foreach($uniqueSpecifications as $specification)
                     <div class="specification-item">{{ $specification->description }}</div>
                 @endforeach
-            @else
-                <div class="specification-item">No specifications available</div>
-            @endif
-        </div>
+            </div>
+        @endif
 
-        <!-- Contract Table -->
-        <table class="contract-table">
-            <thead>
-                <tr>
-                    <th>Location</th>
-                    <th>Type of Service</th>
-                    <th>Frequency</th>
-                    <th>Qty</th>
-                    <th>Rate</th>
-                    <th>Total</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>{{ $contract->client->address->city ?? 'No location' }}{{ $contract->client->address->city && $contract->client->address->state ? ', ' : '' }}{{ $contract->client->address->state ?? '' }}</td>
-                    <td>{{ $contract->service->service ?? 'No service' }}</td>
-                    <td>Monthly</td>
-                    <td>{{ $contract->product_quantity }}</td>
-                    <td>${{ number_format($contract->product_cost, 2) }}</td>
-                    <td>${{ number_format($contract->product_cost * $contract->product_quantity, 2) }}</td>
-                </tr>
-            </tbody>
-        </table>
+        <!-- Terms & Conditions Section -->
+        @php
+            $termsServices = $contract->contractServices->filter(function($contractService) {
+                return $contractService->service && $contractService->service->type === 'terms';
+            });
+        @endphp
+
+        @if($termsServices->count() > 0)
+            <div class="specifications-section">
+                <div class="specifications-title">TERMS & CONDITIONS:</div>
+                @foreach($termsServices as $termsService)
+                    <div class="terms-service">
+                        <div class="terms-service-title">{{ $termsService->service->service }}:</div>
+                        @if($termsService->service->specifications && $termsService->service->specifications->count() > 0)
+                            @foreach($termsService->service->specifications as $specification)
+                                <div class="specification-item">{{ $specification->description }}</div>
+                            @endforeach
+                        @endif
+                    </div>
+                @endforeach
+            </div>
+        @endif
     </div>
 
 </body>

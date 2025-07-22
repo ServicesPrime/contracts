@@ -5,14 +5,18 @@ namespace App\Http\Controllers;
 use App\Models\Client;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\Contract;
+use App\Models\ContractService;
 use App\Models\Service;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use setasign\Fpdi\Tcpdf\Fpdi;
 
 class ContractController extends Controller
 {
 
+    // CONTROLADOR CORREGIDO
     public function index(Request $request)
     {
         $search = $request->input('search');
@@ -21,7 +25,7 @@ class ContractController extends Controller
             'client' => function ($query) {
                 $query->with('address'); // Cargar la dirección del cliente
             },
-            'service' // Cargar el servicio relacionado
+            'contractServices.service.specifications' // CAMBIAR: Cargar servicios a través de la tabla pivote
         ])
             ->when($search, function ($query, $search) {
                 $query->where('contract_number', 'like', "%$search%")
@@ -33,8 +37,8 @@ class ContractController extends Controller
                             ->orWhere('email', 'like', "%$search%")
                             ->orWhere('phone', 'like', "%$search%");
                     })
-                    // Buscar por servicio
-                    ->orWhereHas('service.specifications', function ($serviceQuery) use ($search) {
+                    // CAMBIAR: Buscar por servicios a través de contractServices
+                    ->orWhereHas('contractServices.service', function ($serviceQuery) use ($search) {
                         $serviceQuery->where('service', 'like', "%$search%")
                             ->orWhere('type', 'like', "%$search%");
                     })
@@ -48,7 +52,7 @@ class ContractController extends Controller
             })
             ->orderBy('contract_number', 'desc')
             ->get();
-
+        //dd($contracts);
         return Inertia::render('Contracts/Index', [
             'contracts' => $contracts,
             'filters' => [
@@ -56,6 +60,7 @@ class ContractController extends Controller
             ],
         ]);
     }
+
     public function create()
     {
         // Cargar clientes con sus direcciones
@@ -68,54 +73,114 @@ class ContractController extends Controller
             ->orderBy('service')
             ->get();
 
+        $contractNumber = $this->generateContractNumber();
+        //dd($contractNumber);
         return Inertia::render('Contracts/Create', [
             'clients' => $clients,
-            'services' => $services
+            'services' => $services,
+            'contractNumber' => $contractNumber
         ]);
     }
 
     public function store(Request $request)
     {
+        //dd($request);
+        // Primero validamos los campos básicos
         $request->validate([
             'contract_number' => 'required|unique:contracts|numeric',
             'client_id' => 'required|exists:clients,id',
             'department' => 'required|string|max:255',
-            'service_id' => 'required|exists:services,id',
-            'product_quantity' => 'required|integer|min:1',
-            'product_cost' => 'required|numeric|min:0',
             'date' => 'required|date',
+            'services' => 'required|array|min:1',
+            'services.*.service_id' => 'required|exists:services,id',
         ]);
 
-        $contract = Contract::create([
-            'contract_number' => $request->contract_number,
-            'client_id' => $request->client_id,
-            'department' => $request->department,
-            'service_id' => $request->service_id,
-            'product_quantity' => $request->product_quantity,
-            'product_cost' => $request->product_cost,
-            'date' => $request->date,
+        // Validación condicional para quantity y unit_price
+        $request->validate([
+            'services.*.quantity' => [
+                'nullable',
+                'integer',
+                'min:1',
+                function ($attribute, $value, $fail) use ($request) {
+                    $index = explode('.', $attribute)[1];
+                    $serviceId = $request->input("services.{$index}.service_id");
+
+                    if ($serviceId) {
+                        $service = \App\Models\Service::find($serviceId);
+                        if ($service && $service->type === 'service' && empty($value)) {
+                            $fail('The quantity field is required for service type.');
+                        }
+                    }
+                }
+            ],
+            'services.*.unit_price' => [
+                'nullable',
+                'numeric',
+                'min:0',
+                function ($attribute, $value, $fail) use ($request) {
+                    $index = explode('.', $attribute)[1];
+                    $serviceId = $request->input("services.{$index}.service_id");
+
+                    if ($serviceId) {
+                        $service = \App\Models\Service::find($serviceId);
+                        if ($service && $service->type === 'service' && empty($value)) {
+                            $fail('The unit price field is required for service type.');
+                        }
+                    }
+                }
+            ]
         ]);
 
-        return redirect()->route('contracts.index')
-            ->with('success', 'Contract created successfully.');
+        try {
+            DB::beginTransaction();
+
+            // Crear el contrato
+            $contract = Contract::create([
+                'contract_number' => $request->contract_number,
+                'client_id' => $request->client_id,
+                'department' => $request->department,
+                'date' => $request->date
+            ]);
+
+            // Crear los servicios del contrato
+            foreach ($request->services as $serviceData) {
+                ContractService::create([
+                    'contract_id' => $contract->id,
+                    'service_id' => $serviceData['service_id'],
+                    'quantity' => $serviceData['quantity'],
+                    'unit_price' => $serviceData['unit_price']
+                    // NO incluir 'subtotal' aquí
+                ]);
+            }
+
+            DB::commit();
+
+            return redirect()->route('contracts.index')
+                ->with('success', 'Contrato creado exitosamente con ' . count($request->services) . ' servicio(s).');
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Error al crear el contrato: ' . $e->getMessage());
+        }
     }
 
     public function edit(Contract $contract)
     {
-        // Cargar el contrato con sus relaciones
-        $contract->load(['client.address', 'service.specifications']);
+        $contract->load(['client.address', 'contractServices.service.specifications']);
 
-        // Cargar clientes y servicios para los selectores
-        $clients = Client::with('address')
-            ->orderBy('name')
-            ->get();
+        // Formatear la fecha explícitamente
+        $contractData = $contract->toArray();
+        if ($contract->date) {
+            $contractData['date'] = $contract->date->format('Y-m-d');
+        }
 
-        $services = Service::with('specifications')
-            ->orderBy('service')
-            ->get();
+        $clients = Client::with('address')->orderBy('name')->get();
+        $services = Service::with('specifications')->orderBy('service')->get();
 
         return Inertia::render('Contracts/Create', [
-            'contract' => $contract,
+            'contract' => $contractData,  // Usar los datos formateados
             'clients' => $clients,
             'services' => $services
         ]);
@@ -123,28 +188,87 @@ class ContractController extends Controller
 
     public function update(Request $request, Contract $contract)
     {
+        // Primero validamos los campos básicos
         $request->validate([
             'contract_number' => 'required|unique:contracts,contract_number,' . $contract->id . '|numeric',
             'client_id' => 'required|exists:clients,id',
             'department' => 'required|string|max:255',
-            'service_id' => 'required|exists:services,id',
-            'product_quantity' => 'required|integer|min:1',
-            'product_cost' => 'required|numeric|min:0',
             'date' => 'required|date',
+            'services' => 'required|array|min:1',
+            'services.*.service_id' => 'required|exists:services,id',
         ]);
 
-        $contract->update([
-            'contract_number' => $request->contract_number,
-            'client_id' => $request->client_id,
-            'department' => $request->department,
-            'service_id' => $request->service_id,
-            'product_quantity' => $request->product_quantity,
-            'product_cost' => $request->product_cost,
-            'date' => $request->date,
+        // Validación condicional para quantity y unit_price
+        $request->validate([
+            'services.*.quantity' => [
+                'nullable',
+                'integer',
+                'min:1',
+                function ($attribute, $value, $fail) use ($request) {
+                    $index = explode('.', $attribute)[1];
+                    $serviceId = $request->input("services.{$index}.service_id");
+
+                    if ($serviceId) {
+                        $service = \App\Models\Service::find($serviceId);
+                        if ($service && $service->type === 'service' && empty($value)) {
+                            $fail('The quantity field is required for service type.');
+                        }
+                    }
+                }
+            ],
+            'services.*.unit_price' => [
+                'nullable',
+                'numeric',
+                'min:0',
+                function ($attribute, $value, $fail) use ($request) {
+                    $index = explode('.', $attribute)[1];
+                    $serviceId = $request->input("services.{$index}.service_id");
+
+                    if ($serviceId) {
+                        $service = \App\Models\Service::find($serviceId);
+                        if ($service && $service->type === 'service' && empty($value)) {
+                            $fail('The unit price field is required for service type.');
+                        }
+                    }
+                }
+            ]
         ]);
 
-        return redirect()->route('contracts.index')
-            ->with('success', 'Contract updated successfully.');
+        try {
+            DB::beginTransaction();
+
+            // Actualizar el contrato
+            $contract->update([
+                'contract_number' => $request->contract_number,
+                'client_id' => $request->client_id,
+                'department' => $request->department,
+                'date' => $request->date
+            ]);
+
+            // Eliminar los servicios existentes
+            $contract->contractServices()->delete();
+
+            // Crear los nuevos servicios del contrato
+            foreach ($request->services as $serviceData) {
+                ContractService::create([
+                    'contract_id' => $contract->id,
+                    'service_id' => $serviceData['service_id'],
+                    'quantity' => $serviceData['quantity'] ?? null,
+                    'unit_price' => $serviceData['unit_price'] ?? null
+                ]);
+            }
+
+            DB::commit();
+
+            return redirect()->route('contracts.index')
+                ->with('success', 'Contrato actualizado exitosamente con ' . count($request->services) . ' servicio(s).');
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Error al actualizar el contrato: ' . $e->getMessage());
+        }
     }
     public function destroy(Contract $contract)
     {
@@ -154,394 +278,69 @@ class ContractController extends Controller
             ->with('success', 'Contract deleted successfully.');
     }
 
-
-
-
-    // O si prefieres mantener el mismo formato, puedes hacer esto:
-    public function generatePDFCompatible($contractId)
+    private function generateContractNumber()
     {
-        $contract = Contract::with([
+        $today = now();
+        $year = $today->format('Y');
+        $month = $today->format('m');
+        $day = $today->format('d');
+
+        // Buscar el último contrato ordenado por contract_number
+        $lastContract = Contract::orderBy('contract_number', 'desc')->first();
+
+        if ($lastContract) {
+            // Extraer los primeros 4 números del último contrato
+            preg_match('/^(\d{4})/', $lastContract->contract_number, $matches);
+            $lastNumber = isset($matches[1]) ? intval($matches[1]) : 0;
+            $nextNumber = $lastNumber + 1;
+        } else {
+            // Si no hay contratos, empezar desde 0001
+            $nextNumber = 1;
+        }
+
+        // Formatear: 4 dígitos + mes + día + año
+        $sequentialNumber = str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
+        $contractNumber = $sequentialNumber . $month . $day . $year;
+
+        return $contractNumber;
+    }
+
+   public function downloadPdf(Contract $contract)
+{
+    try {
+        // Cargar el contrato con todas las relaciones necesarias
+        $contract->load([
             'client.address',
-            'service.specifications'
-        ])->findOrFail($contractId);
+            'contractServices.service.specifications'
+        ]);
 
-        // Crear un objeto que simule la estructura anterior para mantener compatibilidad
-        $contractForPDF = (object) [
-            'id' => $contract->id,
-            'contract_number' => $contract->contract_number,
-            'name' => $contract->client->name,  // Mapear cliente->name a name
-            'location' => $contract->client->address->full_address,  // Mapear dirección a location
-            'department' => $contract->department,
-            'product_description' => $contract->service->service,  // Mapear servicio a product_description
-            'product_quantity' => $contract->product_quantity,
-            'product_cost' => $contract->product_cost,
-            'date' => $contract->date,
+        // Generar el PDF usando la vista blade
+        $pdf = PDF::loadView('contracts.pdf', compact('contract'));
+        
+        // Configurar opciones del PDF
+        $pdf->setPaper('A4', 'portrait');
+        $pdf->setOptions([
+            'dpi' => 150,
+            'defaultFont' => 'sans-serif',
+            'isHtml5ParserEnabled' => true,
+            'isPhpEnabled' => true
+        ]);
 
-            // Datos adicionales que ahora tienes disponibles
-            'client' => $contract->client,
-            'service' => $contract->service,
-            'address' => $contract->client->address,
-        ];
+        // Generar nombre del archivo
+        $filename = 'work-order-' . $contract->contract_number . '.pdf';
 
-        $pdf = PDF::loadView('contracts.pdf', ['contract' => $contractForPDF]);
+        // Retornar el PDF para descarga
+        return $pdf->download($filename);
 
-        return $pdf->download('contract_' . $contract->contract_number . '.pdf');
+    } catch (\Exception $e) {
+        // Log del error
+        Log::error('Error generando PDF del contrato: ' . $e->getMessage(), [
+            'contract_id' => $contract->id,
+            'error' => $e->getTraceAsString()
+        ]);
+
+        // Retornar error al usuario
+        return back()->with('error', 'Error al generar el PDF. Inténtalo de nuevo.');
     }
-
-    public function generateContract($contractId)
-    {
-        $contract = Contract::with(['client.address', 'service.specifications'])->findOrFail($contractId);
-        
-        // Crear instancia de FPDI (que extiende TCPDF)
-        $pdf = new Fpdi('P', 'mm', 'A4', true, 'UTF-8', false);
-        
-        // Configurar el PDF
-        $pdf->SetCreator('Tu Empresa');
-        $pdf->SetAuthor('Sistema de Contratos');
-        $pdf->SetTitle('Work Order - ' . $contract->contract_number);
-        
-        // Remover header y footer por defecto
-        $pdf->setPrintHeader(false);
-        $pdf->setPrintFooter(false);
-        
-        // Configurar márgenes
-        $pdf->SetMargins(0, 0, 0);
-        $pdf->SetAutoPageBreak(false, 0);
-        
-        // Agregar página
-        $pdf->AddPage();
-        
-        // Usar el template como fondo
-        $templatePath = storage_path('app/public/template/template contracts1.pdf');
-        
-        // Importar el template (requiere TCPDI o similar)
-        $pageCount = $pdf->setSourceFile($templatePath);
-        $templateId = $pdf->importPage(1);
-        $pdf->useTemplate($templateId, 0, 0);
-        
-        // Ahora agregar el texto sobre el template
-        $pdf->SetFont('helvetica', '', 10);
-        $pdf->SetTextColor(0, 0, 0);
-        
-        // WORK SITE (ajusta las coordenadas según tu template)
-        $pdf->SetXY(20, 45); // X, Y en milímetros
-        $workSite = $contract->client->address->street ?? 'No street address';
-        $workSite .= "\n" . ($contract->client->address->city ?? '') . 
-                    ($contract->client->address->city && $contract->client->address->state ? ', ' : '') . 
-                    ($contract->client->address->state ?? '') . ' ' . 
-                    ($contract->client->address->zip_code ?? '');
-        $pdf->MultiCell(50, 10, $workSite, 0, 'L');
-        
-        // BILL TO
-        $pdf->SetXY(85, 45);
-        $billTo = ($contract->client->name ?? 'No client name') . "\n";
-        $billTo .= "Email: " . ($contract->client->email ?? 'No email') . "\n";
-        $billTo .= "Phone: " . ($contract->client->phone ?? 'No phone') . "\n";
-        $billTo .= "Area: " . ($contract->client->area ?? 'No area');
-        $pdf->MultiCell(50, 10, $billTo, 0, 'L');
-        
-        // WORK ORDER NUMBER
-        $pdf->SetFont('helvetica', 'B', 12);
-        $pdf->SetXY(150, 55);
-        $pdf->Cell(40, 10, $contract->contract_number, 0, 0, 'C');
-        
-        // Otros campos (ajusta coordenadas)
-        $pdf->SetFont('helvetica', '', 10);
-        
-        // WORK O. DATE
-        $pdf->SetXY(20, 80);
-        $pdf->Cell(40, 10, \Carbon\Carbon::parse($contract->date)->format('m/d/Y'));
-        
-        // REQUESTED BY
-        $pdf->SetXY(85, 80);
-        $pdf->Cell(40, 10, $contract->client->name ?? 'No client name');
-        
-        // DEPARTMENT
-        $pdf->SetXY(150, 80);
-        $pdf->Cell(40, 10, $contract->department);
-        
-        // SERVICE
-        $pdf->SetXY(20, 120);
-        $service = $contract->service->service ?? 'No service specified';
-        if($contract->service->type) {
-            $service .= ' (' . ($contract->service->type === 'service' ? 'Service' : 'Terms & Conditions') . ')';
-        }
-        $pdf->Cell(160, 10, $service);
-        
-        // Especificaciones
-        if($contract->service && $contract->service->specifications && count($contract->service->specifications) > 0) {
-            $y = 135;
-            foreach($contract->service->specifications as $specification) {
-                $pdf->SetXY(25, $y);
-                $pdf->Cell(150, 5, "• " . $specification->description);
-                $y += 5;
-            }
-        }
-        
-        // Tabla de contrato (ajustar coordenadas según tu template)
-        $pdf->SetXY(20, 180);
-        
-        // Location
-        $location = ($contract->client->address->city ?? 'No location') . 
-                   ($contract->client->address->city && $contract->client->address->state ? ', ' : '') . 
-                   ($contract->client->address->state ?? '');
-        $pdf->Cell(30, 10, $location, 0, 0, 'C');
-        
-        // Type of Service
-        $pdf->SetXY(50, 180);
-        $pdf->Cell(30, 10, $contract->service->service ?? 'No service', 0, 0, 'C');
-        
-        // Frequency
-        $pdf->SetXY(80, 180);
-        $pdf->Cell(30, 10, 'Monthly', 0, 0, 'C');
-        
-        // Qty
-        $pdf->SetXY(110, 180);
-        $pdf->Cell(20, 10, $contract->product_quantity, 0, 0, 'C');
-        
-        // Rate
-        $pdf->SetXY(130, 180);
-        $pdf->Cell(25, 10, '$' . number_format($contract->product_cost, 2), 0, 0, 'C');
-        
-        // Total
-        $pdf->SetXY(155, 180);
-        $pdf->Cell(25, 10, '$' . number_format($contract->product_cost * $contract->product_quantity, 2), 0, 0, 'C');
-        
-        // Generar el PDF
-        return $pdf->Output('work_order_' . $contract->contract_number . '.pdf', 'I');
-    }
-
-
-
-    
-    public function generatePdf($id)
-    {
-        try {
-            // Obtener el contrato con todas sus relaciones
-            $contract = Contract::with(['client.address', 'service.specifications'])->findOrFail($id);
-            
-            // Crear instancia de FPDI
-            $pdf = new Fpdi('P', 'mm', 'A4', true, 'UTF-8', false);
-            
-            // Configurar el PDF
-            $pdf->SetCreator('Your Company');
-            $pdf->SetAuthor('Contract Management System');
-            $pdf->SetTitle('Work Order - ' . $contract->contract_number);
-            $pdf->SetSubject('Work Order Contract');
-            
-            // Remover header y footer por defecto
-            $pdf->setPrintHeader(false);
-            $pdf->setPrintFooter(false);
-            
-            // Configurar márgenes
-            $pdf->SetMargins(0, 0, 0);
-            $pdf->SetAutoPageBreak(false, 0);
-            
-            // Agregar página
-            $pdf->AddPage();
-            
-            // Usar el template como fondo
-            $templatePath = storage_path('app/public/template/template contracts1.pdf');
-            
-            // Verificar que el template existe
-            if (!file_exists($templatePath)) {
-                throw new \Exception('Template PDF not found at: ' . $templatePath);
-            }
-            
-            // Importar el template
-            $pageCount = $pdf->setSourceFile($templatePath);
-            $templateId = $pdf->importPage(1);
-            $pdf->useTemplate($templateId, 0, 0);
-            
-            // Configurar fuente y color por defecto
-            $pdf->SetFont('helvetica', '', 9);
-            $pdf->SetTextColor(0, 0, 0);
-            
-            // WORK SITE (columna izquierda)
-            $pdf->SetXY(20, 50); // Ajustar estas coordenadas según tu template
-            $workSite = ($contract->client->address->street ?? 'No street address') . "\n";
-            $workSite .= ($contract->client->address->city ?? '') . 
-                        ($contract->client->address->city && $contract->client->address->state ? ', ' : '') . 
-                        ($contract->client->address->state ?? '') . ' ' . 
-                        ($contract->client->address->zip_code ?? '') . "\n";
-            $workSite .= ($contract->client->address->country ?? '');
-            $pdf->MultiCell(60, 4, $workSite, 0, 'L');
-            
-            // BILL TO (columna central)
-            $pdf->SetXY(85, 50); // Ajustar coordenadas
-            $billTo = ($contract->client->name ?? 'No client name') . "\n";
-            $billTo .= "Email: " . ($contract->client->email ?? 'No email') . "\n";
-            $billTo .= "Phone: " . ($contract->client->phone ?? 'No phone') . "\n";
-            $billTo .= "Area: " . ($contract->client->area ?? 'No area');
-            $pdf->MultiCell(60, 4, $billTo, 0, 'L');
-            
-            // WORK ORDER NUMBER (columna derecha)
-            $pdf->SetFont('helvetica', 'B', 12);
-            $pdf->SetTextColor(185, 31, 50); // Color rojo del template
-            $pdf->SetXY(150, 60); // Ajustar coordenadas
-            $pdf->Cell(40, 10, $contract->contract_number, 0, 0, 'C');
-            
-            // Resetear color y fuente
-            $pdf->SetFont('helvetica', '', 9);
-            $pdf->SetTextColor(0, 0, 0);
-            
-            // WORK O. DATE
-            $pdf->SetXY(20, 85); // Ajustar coordenadas
-            $pdf->Cell(50, 5, \Carbon\Carbon::parse($contract->date)->format('m/d/Y'));
-            
-            // REQUESTED BY
-            $pdf->SetXY(85, 85); // Ajustar coordenadas
-            $pdf->Cell(50, 5, $contract->client->name ?? 'No client name');
-            
-            // DEPARTMENT
-            $pdf->SetXY(150, 85); // Ajustar coordenadas
-            $pdf->Cell(50, 5, $contract->department ?? '');
-            
-            // INVOICE # FOR BILL
-            $pdf->SetXY(20, 100); // Ajustar coordenadas
-            $pdf->Cell(50, 5, $contract->contract_number);
-            
-            // TERMS
-            $pdf->SetXY(110, 100); // Ajustar coordenadas
-            $pdf->Cell(30, 5, '15');
-            
-            // SERVICE
-            $pdf->SetXY(20, 125); // Ajustar coordenadas
-            $service = $contract->service->service ?? 'No service specified';
-            if(isset($contract->service->type)) {
-                $service .= ' (' . ($contract->service->type === 'service' ? 'Service' : 'Terms & Conditions') . ')';
-            }
-            $pdf->Cell(170, 5, $service);
-            
-            // Especificaciones
-            if(isset($contract->service->specifications) && count($contract->service->specifications) > 0) {
-                $y = 135; // Coordenada Y inicial para especificaciones
-                foreach($contract->service->specifications as $specification) {
-                    $pdf->SetXY(25, $y);
-                    $pdf->Cell(160, 4, "• " . $specification->description);
-                    $y += 5; // Incrementar Y para la siguiente línea
-                }
-            }
-            
-            // Datos de la tabla (ajustar según la posición de tu tabla en el template)
-            $tableY = 180; // Ajustar según tu template
-            
-            // Location
-            $pdf->SetXY(20, $tableY);
-            $location = ($contract->client->address->city ?? 'No location') . 
-                       ($contract->client->address->city && $contract->client->address->state ? ', ' : '') . 
-                       ($contract->client->address->state ?? '');
-            $pdf->Cell(35, 8, $location, 0, 0, 'C');
-            
-            // Type of Service
-            $pdf->SetXY(55, $tableY);
-            $pdf->Cell(35, 8, $contract->service->service ?? 'No service', 0, 0, 'C');
-            
-            // Frequency
-            $pdf->SetXY(90, $tableY);
-            $pdf->Cell(25, 8, 'Monthly', 0, 0, 'C');
-            
-            // Qty
-            $pdf->SetXY(115, $tableY);
-            $pdf->Cell(20, 8, $contract->product_quantity, 0, 0, 'C');
-            
-            // Rate
-            $pdf->SetXY(135, $tableY);
-            $pdf->Cell(25, 8, '$' . number_format($contract->product_cost, 2), 0, 0, 'C');
-            
-            // Total
-            $pdf->SetXY(160, $tableY);
-            $pdf->Cell(30, 8, '$' . number_format($contract->product_cost * $contract->product_quantity, 2), 0, 0, 'C');
-            
-            // Generar el PDF y enviarlo al navegador
-            $filename = 'work_order_' . $contract->contract_number . '.pdf';
-            
-            return response($pdf->Output($filename, 'S'))
-                ->header('Content-Type', 'application/pdf')
-                ->header('Content-Disposition', 'inline; filename="' . $filename . '"');
-                
-        } catch (\Exception $e) {
-            // En caso de error, retornar un mensaje de error
-            return response()->json([
-                'error' => 'Error generating PDF: ' . $e->getMessage()
-            ], 500);
-        }
-    }
-    
-    // Método adicional para descargar el PDF (opcional)
-    public function downloadPdf($id)
-    {
-        try {
-            $contract = Contract::with(['client.address', 'service.specifications'])->findOrFail($id);
-            
-            
-            
-            $filename = 'work_order_' . $contract->contract_number . '.pdf';
-            
-            // La diferencia es usar 'attachment' en lugar de 'inline'
-            return response($pdf->Output($filename, 'S'))
-                ->header('Content-Type', 'application/pdf')
-                ->header('Content-Disposition', 'attachment; filename="' . $filename . '"');
-                
-        } catch (\Exception $e) {
-            return back()->with('error', 'Error downloading PDF: ' . $e->getMessage());
-        }
-    }
-    
-    // Método para probar coordenadas (temporal)
-    public function testCoordinates()
-    {
-        // Crear instancia de FPDI
-        $pdf = new Fpdi('P', 'mm', 'A4', true, 'UTF-8', false);
-        
-        // Configurar el PDF
-        $pdf->setPrintHeader(false);
-        $pdf->setPrintFooter(false);
-        $pdf->SetMargins(0, 0, 0);
-        $pdf->SetAutoPageBreak(false, 0);
-        $pdf->AddPage();
-        
-        // Usar el template como fondo
-        $templatePath = storage_path('app/public/template/template contracts1.pdf');
-        
-        try {
-            // Importar el template
-            $pageCount = $pdf->setSourceFile($templatePath);
-            $templateId = $pdf->importPage(1);
-            $pdf->useTemplate($templateId, 0, 0);
-            
-            // Crear una cuadrícula para identificar coordenadas
-            $pdf->SetDrawColor(255, 0, 0); // Líneas rojas
-            $pdf->SetLineWidth(0.1);
-            
-            // Líneas verticales cada 10mm
-            for ($x = 0; $x <= 210; $x += 10) {
-                $pdf->Line($x, 0, $x, 297);
-                if ($x % 20 == 0) {
-                    $pdf->SetFont('helvetica', '', 6);
-                    $pdf->SetXY($x, 2);
-                    $pdf->Cell(10, 5, $x, 0, 0, 'C');
-                }
-            }
-            
-            // Líneas horizontales cada 10mm
-            for ($y = 0; $y <= 297; $y += 10) {
-                $pdf->Line(0, $y, 210, $y);
-                if ($y % 20 == 0) {
-                    $pdf->SetFont('helvetica', '', 6);
-                    $pdf->SetXY(2, $y);
-                    $pdf->Cell(10, 5, $y, 0, 0, 'L');
-                }
-            }
-            
-            return response($pdf->Output('test_coordinates.pdf', 'S'))
-                ->header('Content-Type', 'application/pdf')
-                ->header('Content-Disposition', 'inline; filename="test_coordinates.pdf"');
-                
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Error: ' . $e->getMessage()]);
-        }
-    }
-
-
+}
 }

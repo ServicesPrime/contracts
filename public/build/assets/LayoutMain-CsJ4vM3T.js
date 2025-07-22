@@ -1,0 +1,1 @@
+import{a as t,b as s}from"./LayoutAuthenticated-D6VXQ95G.js";import{c as o,o as r,w as a,a as _,r as n}from"./app-DHKPQ0Ih.js";const m={__name:"LayoutMain",setup(c){return(e,l)=>(r(),o(s,null,{default:a(()=>[_(t,null,{default:a(()=>[n(e.$slots,"default")]),_:3})]),_:3}))}};export{m as _};

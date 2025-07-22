@@ -55,17 +55,16 @@ Route::middleware('auth')->group(function () {
     Route::resource('user', UserController::class)->parameters(['user' => 'user']);
 
     //Route::get('/contracts', [ContractController::class, 'index'])->name('contracts.index');
-     Route::resource('contracts', ContractController::class);
+    Route::resource('contracts', ContractController::class);
     Route::get('/contracts/{contract}/pdf', [ContractController::class, 'downloadPdf'])->name('contracts.pdf');
-   
+
 
     Route::resource('client', ClientController::class);
     Route::resource('services', ServiceController::class);
 
 
-// Ruta para generar contrato real
-Route::get('/generate-contract/{id}', [ContractController::class, 'generateContract']);
-
+    // Ruta para generar contrato real
+    Route::get('/generate-contract/{id}', [ContractController::class, 'generateContract']);
 });
 
 

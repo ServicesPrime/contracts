@@ -23,7 +23,7 @@
   <script setup>
   import { reactive } from 'vue'
   import { router } from '@inertiajs/vue3'
-  import EditableCell from './EditableCell.vue'
+  //import EditableCell from './EditableCell.vue'
   
   const props = defineProps({
     contract: Object
