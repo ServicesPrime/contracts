@@ -32,7 +32,6 @@
               <th class="py-2 px-4">Contract #</th>
               <th class="py-2 px-4">Client</th>
               <th class="py-2 px-4">Address</th>
-              <th class="py-2 px-4">Department</th>
               <th class="py-2 px-4">Services</th>
               <th class="py-2 px-4">Total Amount</th>
               <th class="py-2 px-4">Date</th>
@@ -77,7 +76,7 @@
                 </div>
                 <span v-else class="text-gray-400 italic text-sm">No address</span>
               </td>
-              <td class="py-2 px-4">{{ contract.department }}</td>
+            
               <td class="py-2 px-4">
                 <div v-if="contract.contract_services && contract.contract_services.length > 0">
                   <!-- Show first service with summary -->
@@ -145,197 +144,12 @@
       </div>
     </div>
 
-    <!-- PDF Preview Modal -->
-    <div 
-      v-if="showPreview" 
-      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
-      @click="closePreview"
-    >
-      <div 
-        class="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden"
-        @click.stop
-      >
-        <!-- Modal Header -->
-        <div class="bg-gray-100 px-6 py-4 border-b flex justify-between items-center">
-          <div>
-            <h3 class="text-lg font-semibold text-gray-900">Contract Preview</h3>
-            <p class="text-sm text-gray-600">Work Order #{{ previewContract?.contract_number }}</p>
-          </div>
-          <div class="flex space-x-2">
-            <a
-              :href="`/contracts/${previewContract?.id}/pdf`"
-              target="_blank"
-              class="bg-red-600 text-white px-3 py-2 rounded hover:bg-red-700 transition text-sm"
-            >
-              Download PDF
-            </a>
-            <button 
-              @click="closePreview"
-              class="bg-gray-300 text-gray-700 px-3 py-2 rounded hover:bg-gray-400 transition text-sm"
-            >
-              Close
-            </button>
-          </div>
-        </div>
-
-        <!-- Modal Content - PDF Preview -->
-        <div class="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
-          <div class="pdf-preview bg-white border border-gray-200 shadow-sm">
-            <!-- PDF Header -->
-            <div class="text-center border-b-2 border-red-600 pb-3 mb-5">
-              <h1 class="text-2xl font-bold text-red-600 mb-1">JOB WORK ORDER</h1>
-              <p class="text-xs text-gray-600">"The Best Services in the Industry or Nothing at All"</p>
-            </div>
-
-            <!-- Three Columns Section -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-              <div>
-                <span class="text-red-600 font-bold text-sm block mb-1">WORK SITE:</span>
-                <div class="text-xs text-gray-700">
-                  <div v-if="previewContract?.client?.address?.name_account">
-                    <strong>{{ previewContract.client.address.name_account }}</strong>
-                  </div>
-                  <div v-if="previewContract?.client?.address?.street">
-                    {{ previewContract.client.address.street }}
-                  </div>
-                  <div v-if="previewContract?.client?.address?.city || previewContract?.client?.address?.state">
-                    {{ [previewContract.client.address.city, previewContract.client.address.state, previewContract.client.address.zip_code].filter(Boolean).join(', ') }}
-                  </div>
-                  <div v-if="previewContract?.client?.address?.country">
-                    {{ previewContract.client.address.country }}
-                  </div>
-                  <div v-if="previewContract?.client?.address?.full_address && !previewContract?.client?.address?.street">
-                    {{ previewContract.client.address.full_address }}
-                  </div>
-                </div>
-              </div>
-              
-              <div>
-                <span class="text-red-600 font-bold text-sm block mb-1">BILL TO:</span>
-                <div class="text-xs text-gray-700">
-                  <div class="font-medium">{{ previewContract?.client?.name }}</div>
-                  <div><strong>Email:</strong> {{ previewContract?.client?.email }}</div>
-                  <div><strong>Phone:</strong> {{ previewContract?.client?.phone }}</div>
-                  <div v-if="previewContract?.client?.area"><strong>Area:</strong> {{ previewContract?.client?.area }}</div>
-                </div>
-              </div>
-              
-              <div>
-                <div class="text-xs text-gray-700 mb-2">
-                  The following number must appear on all related correspondence, shipping papers, and invoices:
-                </div>
-                <span class="text-red-600 font-bold text-sm block mb-1">WORK ORDER NUMBER:</span>
-                <span class="text-red-600 font-bold text-sm">{{ previewContract?.contract_number }}</span>
-              </div>
-            </div>
-
-            <!-- Details Section -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-              <div>
-                <span class="text-red-600 font-bold text-sm block mb-1">WORK DATE:</span>
-                <span class="text-xs text-gray-700">{{ formatDate(previewContract?.date) }}</span>
-              </div>
-              <div>
-                <span class="text-red-600 font-bold text-sm block mb-1">REQUESTED BY:</span>
-                <span class="text-xs text-gray-700">{{ previewContract?.client?.name }}</span>
-              </div>
-              <div>
-                <span class="text-red-600 font-bold text-sm block mb-1">DEPARTMENT:</span>
-                <span class="text-xs text-gray-700">{{ previewContract?.department }}</span>
-              </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-              <div>
-                <span class="text-red-600 font-bold text-sm block mb-1">INVOICE # FOR BILL:</span>
-                <span class="text-xs text-gray-700">{{ previewContract?.contract_number }}</span>
-              </div>
-              <div>
-                <span class="text-red-600 font-bold text-sm block mb-1">TERMS:</span>
-                <span class="text-xs text-gray-700">15</span>
-              </div>
-            </div>
-
-            <!-- Contract Services Table - Only show paid services -->
-            <div v-if="getPaidServices(previewContract).length > 0" class="overflow-x-auto mb-6">
-              <table class="w-full border-collapse border border-gray-300 text-xs">
-                <thead>
-                  <tr class="bg-red-600 text-white">
-                    <th class="border border-gray-300 p-2 text-center font-bold">Location</th>
-                    <th class="border border-gray-300 p-2 text-center font-bold">Type of Service</th>
-                    <th class="border border-gray-300 p-2 text-center font-bold">Frequency</th>
-                    <th class="border border-gray-300 p-2 text-center font-bold">Qty</th>
-                    <th class="border border-gray-300 p-2 text-center font-bold">Rate</th>
-                    <th class="border border-gray-300 p-2 text-center font-bold">Total</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr 
-                    v-for="contractService in getPaidServices(previewContract)" 
-                    :key="contractService.id"
-                  >
-                    <td class="border border-gray-300 p-2 text-center">
-                      {{ [previewContract?.client?.address?.city, previewContract?.client?.address?.state].filter(Boolean).join(', ') }}
-                    </td>
-                    <td class="border border-gray-300 p-2 text-center">{{ contractService.service?.service }}</td>
-                    <td class="border border-gray-300 p-2 text-center">Monthly</td>
-                    <td class="border border-gray-300 p-2 text-center">{{ contractService.quantity }}</td>
-                    <td class="border border-gray-300 p-2 text-center">${{ formatAmount(contractService.unit_price) }}</td>
-                    <td class="border border-gray-300 p-2 text-center">${{ formatAmount(contractService.quantity * contractService.unit_price) }}</td>
-                  </tr>
-                  <!-- Total Row -->
-                  <tr class="bg-gray-100 font-bold">
-                    <td colspan="5" class="border border-gray-300 p-2 text-right">TOTAL AMOUNT:</td>
-                    <td class="border border-gray-300 p-2 text-center">${{ formatAmount(calculateContractTotal(previewContract)) }}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
-            <!-- Services Details Section -->
-            <div class="mb-6" v-if="previewContract?.contract_services && previewContract.contract_services.length > 0">
-              <!-- Service Specifications -->
-              <div v-if="getServiceSpecifications(previewContract).length > 0" class="mb-6">
-                <div class="text-red-600 font-bold text-sm mb-4 border-b border-red-200 pb-2">SERVICE SPECIFICATIONS:</div>
-                <ul class="list-disc list-inside space-y-1">
-                  <li 
-                    v-for="spec in getServiceSpecifications(previewContract)" 
-                    :key="spec.id"
-                    class="text-xs text-gray-700"
-                  >
-                    {{ spec.description }}
-                  </li>
-                </ul>
-              </div>
-
-              <!-- Terms & Conditions -->
-              <div v-if="getTermsAndConditions(previewContract).length > 0" class="mb-6">
-                <div class="text-red-600 font-bold text-sm mb-4 border-b border-red-200 pb-2">TERMS & CONDITIONS:</div>
-                
-                <div 
-                  v-for="termsService in getTermsAndConditions(previewContract)" 
-                  :key="termsService.id"
-                  class="mb-4"
-                >
-                  <div class="text-gray-800 font-medium text-sm mb-2">{{ termsService.service?.service }}:</div>
-                  <div v-if="termsService.service?.specifications && termsService.service.specifications.length > 0">
-                    <ul class="list-disc list-inside space-y-1 ml-2">
-                      <li 
-                        v-for="specification in termsService.service.specifications" 
-                        :key="specification.id"
-                        class="text-xs text-gray-700"
-                      >
-                        {{ specification.description }}
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <!-- Contract Preview Component -->
+    <ContractPreview 
+      :show="showPreview" 
+      :contract="previewContract" 
+      @close="closePreview" 
+    />
   </LayoutMain>
 </template>
 
@@ -343,6 +157,7 @@
 import { ref } from 'vue'
 import { router } from '@inertiajs/vue3'
 import LayoutMain from "@/Layouts/LayoutMain.vue"
+import ContractPreview from "@/Components/PDF/ContractPreview.vue"
 
 const props = defineProps({
   contracts: Array,
@@ -385,7 +200,7 @@ const deleteContract = (contractId) => {
 }
 
 const formatDate = (date) => {
-  if (!date) return ''
+  if (!date) return 'N/A'
   const d = new Date(date)
   return d.toLocaleDateString('en-US', { 
     month: '2-digit', 
@@ -425,45 +240,5 @@ const getTermsServicesFromContract = (contract) => {
   if (!contract || !contract.contract_services) return 0
   
   return contract.contract_services.filter(cs => cs.service?.type === 'terms').length
-}
-
-const getServiceSpecifications = (contract) => {
-  if (!contract || !contract.contract_services) return []
-  
-  const specifications = []
-  contract.contract_services.forEach(cs => {
-    if (cs.service?.type === 'service' && cs.service?.specifications) {
-      specifications.push(...cs.service.specifications)
-    }
-  })
-  
-  // Remove duplicates based on description
-  return specifications.filter((spec, index, self) => 
-    index === self.findIndex(s => s.description === spec.description)
-  )
-}
-
-const getTermsAndConditions = (contract) => {
-  if (!contract || !contract.contract_services) return []
-  
-  return contract.contract_services.filter(cs => cs.service?.type === 'terms')
-}
-
-const getPaidServices = (contract) => {
-  if (!contract || !contract.contract_services) return []
-  
-  return contract.contract_services.filter(cs => cs.service?.type === 'service')
-}
-
-// Close modal with Escape key
-const handleKeydown = (e) => {
-  if (e.key === 'Escape' && showPreview.value) {
-    closePreview()
-  }
-}
-  
-// Add event listener for escape key
-if (typeof window !== 'undefined') {
-  window.addEventListener('keydown', handleKeydown)
 }
 </script>
