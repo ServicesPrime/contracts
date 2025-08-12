@@ -305,42 +305,41 @@ class ContractController extends Controller
         return $contractNumber;
     }
 
-   public function downloadPdf(Contract $contract)
-{
-    try {
-        // Cargar el contrato con todas las relaciones necesarias
-        $contract->load([
-            'client.address',
-            'contractServices.service.specifications'
-        ]);
+    public function downloadPdf(Contract $contract)
+    {
+        try {
+            // Cargar el contrato con todas las relaciones necesarias
+            $contract->load([
+                'client.address',
+                'contractServices.service.specifications'
+            ]);
 
-        // Generar el PDF usando la vista blade
-        $pdf = PDF::loadView('contracts.pdf', compact('contract'));
-        
-        // Configurar opciones del PDF
-        $pdf->setPaper('A4', 'portrait');
-        $pdf->setOptions([
-            'dpi' => 150,
-            'defaultFont' => 'sans-serif',
-            'isHtml5ParserEnabled' => true,
-            'isPhpEnabled' => true
-        ]);
+            // Generar el PDF usando la vista blade
+            $pdf = PDF::loadView('contracts.pdf', compact('contract'));
 
-        // Generar nombre del archivo
-        $filename = 'work-order-' . $contract->contract_number . '.pdf';
+            // Configurar opciones del PDF
+            $pdf->setPaper('A4', 'portrait');
+            $pdf->setOptions([
+                'dpi' => 150,
+                'defaultFont' => 'sans-serif',
+                'isHtml5ParserEnabled' => true,
+                'isPhpEnabled' => true
+            ]);
 
-        // Retornar el PDF para descarga
-        return $pdf->download($filename);
+            // Generar nombre del archivo
+            $filename = 'work-order-' . $contract->contract_number . '.pdf';
 
-    } catch (\Exception $e) {
-        // Log del error
-        Log::error('Error generando PDF del contrato: ' . $e->getMessage(), [
-            'contract_id' => $contract->id,
-            'error' => $e->getTraceAsString()
-        ]);
+            // Retornar el PDF para descarga
+            return $pdf->download($filename);
+        } catch (\Exception $e) {
+            // Log del error
+            Log::error('Error generando PDF del contrato: ' . $e->getMessage(), [
+                'contract_id' => $contract->id,
+                'error' => $e->getTraceAsString()
+            ]);
 
-        // Retornar error al usuario
-        return back()->with('error', 'Error al generar el PDF. Inténtalo de nuevo.');
+            // Retornar error al usuario
+            return back()->with('error', 'Error al generar el PDF. Inténtalo de nuevo.');
+        }
     }
-}
 }
