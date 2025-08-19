@@ -90,5 +90,11 @@ $bldg64 = file_exists($bldgPath)
     {{-- Incluir página 22 - BUDGET BREAKDOWN --}}
     @include('contracts.pagina22', ['pageNumber' => 22])
     
+    {{-- Incluir página 23 - DETAILED COST BREAKDOWN --}}
+    @include('contracts.pagina23', ['pageNumber' => 23])
+    
+    {{-- Incluir página 24 - COST DISTRIBUTION ANALYSIS --}}
+    @include('contracts.pagina24', ['pageNumber' => 24])
+    
 </body>
 </html>
