@@ -24,6 +24,9 @@ $watermark64 = file_exists($watermarkPath)
     </div>
     @endif
 
+    <!-- Número de página -->
+    <div class="page-number">{{ $pageNumber ?? 2 }}</div>
+
     <div class="content content-with-padding" style="position: relative; z-index: 2;">
         
         <h2>Payment Terms, Bill Rates, and Fees</h2>

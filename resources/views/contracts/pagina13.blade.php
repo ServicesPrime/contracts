@@ -1,6 +1,6 @@
 {{-- C:\laragon\www\contracts\resources\views\contracts\pagina13.blade.php --}}
 
-<!-- ====== PÁGINA 13 - CONTINUACIÓN ====== -->
+<!-- ====== PÁGINA 13 - TECHNICAL ANNEX ====== -->
 <div class="page">
 @php
 $watermarkPath = storage_path('app/public/Prime.png');
@@ -24,45 +24,43 @@ $watermark64 = file_exists($watermarkPath)
     </div>
     @endif
 
+    <!-- Número de página -->
+    <div class="page-number">{{ $pageNumber ?? 13 }}</div>
+
     <div class="content content-with-padding" style="position: relative; z-index: 2;">
         
-        <p>
-            Payee on all such insurance policies. The Contractor's requirement to procure and maintain such insurance coverage shall not negate or reduce Contractor's obligations.
-            CLIENT shall have the right to require Contractor to increase the amounts and otherwise upgrade the insurance provided by Contractor hereunder as CLIENT deems appropriate in its reasonable discretion.
-            This section 9 shall survive the expiration or termination of this Agreement.
-        </p>
+        <h2 class="service-areas-title">TECHNICAL ANNEX – SCOPE OF THE INITIAL DEEP CLEANING SERVICE</h2>
 
-        <p>
-            [As necessary, per negotiation--] On CLIENT's request, PRIME will give CLIENT certificates of this insurance coverage or, with the insurer's concurrence, make CLIENT an additional insured for PRIME's services.
-        </p>
+        <p>This annex aims to outline, as a reference, the areas, activities, and quality criteria recommended for carrying out the Initial Deep Cleaning Service, with the objective of reaching an optimal level of cleanliness that will serve as the basis for the regular service.</p>
 
-        <h3>Late Payment Penalty</h3>
-        <p>
-            CLIENT agrees to pay net within 15 to 30 days from the date of the invoice and to pay interest on any unpaid balances after the agreed payment term at the compounded rate of 3.5% per day (Annual Percentage Rate of 3.5%) or the maximum legal rate, whichever one is higher, calculated from the end of the payment term.
-        </p>
+        <h3>1. Areas included:</h3>
+        <ul>
+            <li>Classrooms, offices, restrooms, hallways, sports areas, cafeteria, and other spaces agreed upon by the parties.</li>
+        </ul>
 
-        <h3>No Staff Hire - Always; Fee</h3>
-        <p>
-            CLIENT and PRIME agree not to directly or indirectly engage the services of any personnel directly involved in the execution of this Agreement, without prior written consent from the other party, for the duration of the Agreement and for two years thereafter.
-            Any party violating this paragraph will pay the other party a fee for 30% of the employee's annualized compensation within the new employer.
-        </p>
+        <h3>2. Activities included:</h3>
+        <ul>
+            <li>Deep cleaning of floors, walls, and ceilings.</li>
+            <li>Disinfection of restrooms, locker rooms, and common areas.</li>
+            <li>Cleaning of accessible interior and exterior windows.</li>
+            <li>Cleaning of fixed furniture and equipment.</li>
+            <li>Removal of accumulated dust from high surfaces and accessible ducts.</li>
+            <li>Cleaning and organizing folders/files.</li>
+            <li>Cleaning and treatment of all types of floors.</li>
+            <li>Power washing of exterior walkways and areas.</li>
+            <li>Deep cleaning of all kitchens and vent hoods.</li>
+        </ul>
 
-        <h3>Nature of Relationship</h3>
-        <p>
-            The services that PRIME will render to CLIENT under this agreement will be as an independent contractor.
-            Nothing contained in this Agreement will be construed to create the relationship of principal and agent, or employer and employee, between PRIME and CLIENT.
-        </p>
+        <h3>3. Activities not included (require separate quotation):</h3>
+        <ul>
+            <li>Work at height requiring scaffolding or harnesses.</li>
+            <li>Polishing or crystallization of special floors.</li>
+            <li>Cleaning of internal ventilation ducts.</li>
+            <li>Painting, repairs, or renovations.</li>
+        </ul>
 
-        <h3>Headings</h3>
-        <p>
-            The headings of the paragraphs of this Agreement are inserted for the convenience of reference.
-            They will in no way define, limit, extend, or aid in the construction of the scope, extent, or intent of this Agreement.
-        </p>
-
-        <h3>Arbitration</h3>
-        <p>
-            In the event of any controversy or dispute arising from this Agreement, the party at fault will be responsible for covering all expenses related to arbitration, as per the Federal Arbitration Act and before the American Arbitration Association (AAA) at the AAA location in Texas closest to PRIME's office.
-        </p>
+        <h3>4. Completion standard:</h3>
+        <p>All included areas must be free from visible dirt, unpleasant odors, and with surfaces clean to the touch, as verified by both parties.</p>
         
     </div>
 </div>

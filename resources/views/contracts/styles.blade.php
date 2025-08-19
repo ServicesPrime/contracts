@@ -548,4 +548,36 @@
         line-height: 1.4;
         z-index: 1001;
     }
+
+    /* NUMERACIÓN DE PÁGINAS */
+    .page-number {
+        position: fixed;
+        bottom: 110px;
+        /* Un renglón más arriba del footer */
+        left: 50%;
+        /* Centrado horizontalmente */
+        transform: translateX(-50%);
+        /* Ajuste para centrado perfecto */
+        z-index: 1002;
+        /* Más alto que el footer (1000) */
+        color: #1c2969;
+        font-size: 10pt;
+        font-family: Arial, sans-serif;
+        font-weight: normal;
+        background-color: rgba(255, 255, 255, 0.8);
+        /* Fondo semi-transparente para mejor visibilidad */
+        padding: 2px 5px;
+        border-radius: 3px;
+        text-align: center;
+    }
+
+    /* Ocultar numeración en la portada */
+    .page.cover .page-number {
+        display: none;
+    }
+
+    /* Asegurar que la numeración esté por encima del footer */
+    .page:not(.cover) .page-number {
+        display: block;
+    }
 </style>

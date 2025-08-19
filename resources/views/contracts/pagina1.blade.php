@@ -24,11 +24,14 @@ $watermark64 = file_exists($watermarkPath)
     </div>
     @endif
 
+    <!-- Número de página -->
+    <div class="page-number">{{ $pageNumber ?? 1 }}</div>
+
     <div class="content content-with-padding" style="position: relative; z-index: 2;">
         <h1>GENERAL TEMPORARY SERVICES AGREEMENT</h1>
         
         <p>
-            PRIME FACILITY SERVICES GROUP, with its principal office located at 8303 Westglen Dr, TX 77063 ("PRIME"), and Hyatt Regency Baytown- Houston, with its principal office located at "{{ $contract->client->address->full_address ?? '100 Convention Center Way Baytown,TX, 77520' }}" ("CLIENT") agree to the terms and conditions outlined in this Staffing Agreement (the "Agreement").
+            PRIME FACILITY SERVICES GROUP, with its principal office located at 8303 Westglen Dr, TX 77063 ("PRIME"), and  {{ $contract->client->address->name_account ?? 'CLIENT COMPANY'}}, with its principal office located at "{{ $contract->client->address->full_address ?? '100 Convention Center Way Baytown,TX, 77520' }}" ("CLIENT") agree to the terms and conditions outlined in this Staffing Agreement (the "Agreement").
         </p>
         
         <h2>Prime Facility Services Group (Prime) Duties and Responsibilities</h2>

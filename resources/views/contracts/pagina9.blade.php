@@ -1,6 +1,4 @@
-{{-- C:\laragon\www\contracts\resources\views\contracts\pagina9.blade.php --}}
-
-<!-- ====== PÁGINA 9 - EXHIBIT A / OVERNIGHT KITCHEN CLEANING ====== -->
+<!-- ====== PÁGINA 9 - INITIAL DEEP CLEANING SERVICE ====== -->
 <div class="page">
 @php
 $watermarkPath = storage_path('app/public/Prime.png');
@@ -24,67 +22,22 @@ $watermark64 = file_exists($watermarkPath)
     </div>
     @endif
 
+    <!-- Número de página -->
+<div class="page-number">{{ $pageNumber ?? 9 }}</div>
+
     <div class="content content-with-padding" style="position: relative; z-index: 2;">
         
-        <h3 class="exhibit-title">EXHIBIT A</h3>
-        
-        <h2 class="overnight-cleaning-title">OVERNIGHT KITCHEN CLEANING</h2>
+        <h2 class="service-areas-title">CLAUSE – INITIAL DEEP CLEANING SERVICE</h2>
 
-        <h2 class="fees-title">FEES, PLUS TAXES</h2>
+        <p>To promote a more efficient and mutually beneficial provision of services, <strong>PRIME</strong> recommends performing an Initial Deep Cleaning Service at the <strong>CLIENT's</strong> premises. The purpose of this service is to prepare the areas and bring them to an optimal level of cleanliness and hygiene, from which the assigned permanent staff can maintain such conditions through the regular contracted service.</p>
 
-        <table class="pricing-table">
-            <thead>
-                <tr>
-                    <th>Description</th>
-                    <th>Frequency</th>
-                    <th>Bill Rate (Monthly)</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Kitchen Cleaning 7 days per week (Main Kitchen)</td>
-                    <td>Monthly</td>
-                    <td>$6,089.56</td>
-                </tr>
-            </tbody>
-        </table>
+        <p>It is proposed that the Initial Deep Cleaning Service be a one-time service, conducted prior to the start of regular maintenance, with an estimated duration of up to <strong>forty-five (45) calendar days</strong> from the start date of the intervention.</p>
 
-        <table class="exhibit-signature-table">
-            <tr>
-                <td class="exhibit-signature-cell">
-                    <strong>{{ $contract->client->address->name_account ?? 'CLIENT COMPANY' }}</strong>
-                    <br><br><br><br>
-                    <div class="exhibit-signature-line">
-                    </div>
-                    <div class="exhibit-signature-label">Signature</div>
-                    <div class="exhibit-signature-line">
-                    </div>
-                    <div class="exhibit-signature-label">Printed Name</div>
-                    <div class="exhibit-signature-line">
-                    </div>
-                    <div class="exhibit-signature-label">Title</div>
-                    <div class="exhibit-signature-line">
-                    </div>
-                    <div class="exhibit-signature-label">Date</div>
-                </td>
-                <td class="exhibit-signature-cell">
-                    <strong>Prime Facility Services Group</strong>
-                    <br><br><br><br>
-                    <div class="exhibit-signature-line">
-                    </div>
-                    <div class="exhibit-signature-label">Signature</div>
-                    <div class="exhibit-signature-line">
-                    </div>
-                    <div class="exhibit-signature-label">Printed Name</div>
-                    <div class="exhibit-signature-line">
-                    </div>
-                    <div class="exhibit-signature-label">Title</div>
-                    <div class="exhibit-signature-line">
-                    </div>
-                    <div class="exhibit-signature-label">Date</div>
-                </td>
-            </tr>
-        </table>
+        <p>This cleaning would involve intensive tasks, the use of specialized equipment and products, as well as any additional personnel PRIME deems necessary to meet the established objectives.</p>
+
+        <p>The cost of the Initial Deep Cleaning Service shall be agreed separately from the value of the regular service, with the option for the CLIENT to pay in <strong>six (6) consecutive monthly installments, without interest</strong>, starting from the date of issuance of the first corresponding invoice.</p>
+
+        <p>If, for reasons beyond PRIME's control, the condition of the premises requires additional extraordinary interventions after the initial cleaning (due to events, construction works, change of use, etc.), these will be quoted and must be approved in writing before execution.</p>
         
     </div>
 </div>
@@ -99,4 +52,3 @@ $watermark64 = file_exists($watermarkPath)
         </div>
     </div>
 </div>
-<!-- ====== FIN PÁGINA 9 ====== -->

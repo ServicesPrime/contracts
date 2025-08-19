@@ -24,12 +24,15 @@ $watermark64 = file_exists($watermarkPath)
     </div>
     @endif
 
+    <!-- Número de página -->
+<div class="page-number">{{ $pageNumber ?? 7 }}</div>
+
     <div class="content content-with-padding" style="position: relative; z-index: 2;">
         
         <h2 class="terms-title">TERMS OF AGREEMENT</h2>
 
         <p>
-            Terms of Agreement will be for 1 year from the first date both parties have executed it.
+            Terms of Agreement will be for 4 years from the first date both parties have executed it.
             The Agreement may be terminated by either party upon 30 days written notice.
             This clause applies to all services described in the Agreement, except if a party becomes bankrupt or insolvent,
             discontinues operations, or fails to make payments as required; either party may terminate the agreement upon 24 hours written notice.

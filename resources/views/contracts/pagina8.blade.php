@@ -24,6 +24,9 @@ $watermark64 = file_exists($watermarkPath)
     </div>
     @endif
 
+    <!-- Número de página -->
+<div class="page-number">{{ $pageNumber ?? 8 }}</div>
+
     <div class="content content-with-padding" style="position: relative; z-index: 2;">
         
         <h2 class="service-areas-title">SERVICE AREAS & SCOPE OF WORK</h2>

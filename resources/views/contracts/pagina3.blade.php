@@ -23,6 +23,8 @@ $watermark64 = file_exists($watermarkPath)
         <img src="{{ $watermark64 }}" alt="Watermark" style="width: 1200px; height: auto;">
     </div>
     @endif
+    <!-- Número de página -->
+<div class="page-number">{{ $pageNumber ?? 3 }}</div>
 
     <div class="content content-with-padding" style="position: relative; z-index: 2;">
         

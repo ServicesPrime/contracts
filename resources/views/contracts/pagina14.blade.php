@@ -1,6 +1,6 @@
 {{-- C:\laragon\www\contracts\resources\views\contracts\pagina14.blade.php --}}
 
-<!-- ====== PÁGINA 14 - ÚLTIMA PÁGINA ====== -->
+<!-- ====== PÁGINA 14 - OPTIONAL PROVISIONS ====== -->
 <div class="page">
 @php
 $watermarkPath = storage_path('app/public/Prime.png');
@@ -24,47 +24,37 @@ $watermark64 = file_exists($watermarkPath)
     </div>
     @endif
 
+    <!-- Número de página -->
+    <div class="page-number">{{ $pageNumber ?? 14 }}</div>
+
     <div class="content content-with-padding" style="position: relative; z-index: 2;">
         
+        <h2 class="optional-provisions-title">OPTIONAL PROVISIONS</h2>
+
+        <h3>Emergency Provision</h3>
         <p>
-            The prevailing party will be entitled to receive reasonable attorney's fees incurred during the arbitration process,
-            and any other relief granted by the arbitrator will be binding upon the parties.
-            The arbitrator, however, shall not have the authority to modify any terms of this Agreement.
-            It should be noted that any award rendered by the arbitrator can be entered in any court of competent jurisdiction — contract interpretation.
+            Prime Facility Services Group will perform the necessary services by the terms stipulated in this Agreement remotely via email and conferences.
+            It is usually typical for Prime Facility Services Group to perform several site visits per week to the Client's place of business to obtain needed documents and review employee performance.
+            Emergency Provisions and site visits will be limited and only necessary if required.
         </p>
 
-        <h3>Choice of Law</h3>
+        <h3>Price Increase</h3>
         <p>
-            This agreement will be governed by and construed by the laws of Texas without reference to any conflicts of law principles thereof.
+            Starting from the contract inception date, an annual price increase clause of 3.1% shall be incorporated into this Agreement.
+            Each year, on the anniversary of the contract commencement, the agreed-upon prices for the products or services provided under this Agreement will be subject to an upward adjustment following prevailing market conditions, inflation rates, and any other relevant factors.
+            The price increase percentage shall be determined through a mutual agreement in good faith.
+            This provision ensures that the pricing remains fair and reflects the current economic climate, enabling both parties to sustain a successful and beneficial long-term business relationship.
         </p>
 
-        <h3>Assignment of Agreement</h3>
+        <h3>Insurance</h3>
         <p>
-            CLIENT shall not transfer or assign this Agreement without the written consent of PRIME,
-            and any attempted assignment without such consent shall immediately terminate this Agreement.
+            During the term of this Agreement and so long after that, as Contractor may have any obligation to CLIENT under this Agreement, Contractor shall at its own cost and expense procure and maintain in full force and effect (or cause to be procured and maintained at no cost to CLIENT) insurance with sound and reputable insurance companies of the type and in such amounts as adequate for all risks by sound and prudent business practices for the type of business operation, activities, and services to be provided and performed by Contractor under this Agreement and as approved by CLIENT from time to time, including, without limitation, (i) worker's compensation and employer's liability, (ii) general liability, (iii) automobile liability and (iv) protective liability.
         </p>
 
-        <h3>Entire Agreement</h3>
         <p>
-            This Agreement constitutes the entire agreement between the parties and supersedes all prior negotiations, representations, or agreements relating to the subject matter herein.
-            This Agreement may not be modified except by a written instrument signed by both parties.
-        </p>
-
-        <h3>Severability</h3>
-        <p>
-            If any provision of this Agreement is held to be invalid or unenforceable, the remainder of this Agreement shall remain in full force and effect.
-            The invalid or unenforceable provision shall be replaced by a valid and enforceable provision that achieves the same economic effect.
-        </p>
-
-        <h3>Counterparts</h3>
-        <p>
-            This Agreement may be executed in counterparts, each of which shall be deemed an original, but all of which together shall constitute one and the same instrument.
-            Electronic signatures shall be deemed valid and binding.
-        </p>
-
-        <h3>Effective Date</h3>
-        <p>
-            This Agreement shall become effective on the date last signed by both parties and shall remain in effect for the term specified herein, unless terminated earlier in accordance with the provisions contained herein.
+            In no event shall the insurance coverage required hereunder fall below the amounts set forth on Exhibit ___ attached hereto and incorporated herein by reference.
+            Upon the execution of this Agreement, Contractor shall immediately provide to CLIENT true and accurate Certificates of Insurance (endorsed adequately by an authorized representative of the insurance company) evidencing that the insurance required hereunder is in force and effect and that such insurance will not be canceled or materially changed without giving CLIENT at least thirty (30) days prior written notice.
+            Except to the extent prohibited by applicable Federal or State law, CLIENT shall be named as an additional insured and loss.
         </p>
         
     </div>
@@ -80,4 +70,4 @@ $watermark64 = file_exists($watermarkPath)
         </div>
     </div>
 </div>
-<!-- ====== FIN PÁGINA 14 - ÚLTIMA PÁGINA ====== -->
+<!-- ====== FIN PÁGINA 14 ====== -->

@@ -1,6 +1,6 @@
 {{-- C:\laragon\www\contracts\resources\views\contracts\pagina11.blade.php --}}
 
-<!-- ====== PÁGINA 11 - EXHIBIT C: CONFIDENTIALITY AGREEMENT ====== -->
+<!-- ====== PÁGINA 11 - EXHIBIT B: BENEFITS WAIVER ====== -->
 <div class="page">
 @php
 $watermarkPath = storage_path('app/public/Prime.png');
@@ -24,58 +24,59 @@ $watermark64 = file_exists($watermarkPath)
     </div>
     @endif
 
+    <!-- Número de página -->
+    <div class="page-number">{{ $pageNumber ?? 11 }}</div>
+
     <div class="content content-with-padding" style="position: relative; z-index: 2;">
         
-        <h2 class="exhibit-c-title">EXHIBIT C</h2>
-        <h3 class="confidentiality-title">CONFIDENTIALITY AGREEMENT FOR ASSIGNED EMPLOYEES</h3>
+        <h2 class="exhibit-b-title">EXHIBIT B</h2>
+        <h3 class="benefits-waiver-title">BENEFITS WAIVER FOR PRIME ASSOCIATES</h3>
 
-        <p><strong style="color: #b41f24;">Assigned Employee Confidentiality Agreement</strong></p>
-
-        <p>As a condition of my assignment by PRIME to CLIENT, I at this moment agree as follows:</p>
-
-        <ul>
-            <li>I will not use, disclose, or in any way reveal or disseminate to unauthorized parties any information I gain through contact with materials or documents made available through my assignment at CLIENT or which I learn about during such assignment.</li>
-            <li>I will not disclose, in any way, reveal or disseminate any information about CLIENT or its operating methods and procedures that come to my attention because of this assignment.</li>
-            <li>Under no circumstances will I remove physical or electronic documents or copies of documents from CLIENT's premises.</li>
-            <li>I understand that I will be responsible for any direct or consequential damages resulting from any violation of this Agreement.</li>
-            <li>The obligations of this Agreement will survive my employment by PRIME.</li>
-        </ul>
+        <p>
+            <strong style="color: #b41f24;">Agreement and Waiver</strong><br>
+            Considering my assignment to CLIENT by PRIME, I agree that I am solely an employee of PRIME for benefits plan purposes
+            and am eligible only for such benefits as PRIME may offer me as its employee. I further understand and agree that I am not suitable for or
+            entitled to participate in or make any claim upon any benefit plan, policy, or practice offered by CLIENT, its parents, affiliates, subsidiaries,
+            or successors to any point of their direct employees, regardless of the length of my assignment to CLIENT by PRIME and regardless of whether
+            I am held to be a common-law employee of CLIENT for any purpose; and therefore, with full knowledge and understanding, I at this moment
+            expressly waive any claim or right that I may have, now or in the future, to such benefits and agree not to make any claim for such uses.
+        </p>
 
         <br><br>
 
-        <table class="exhibit-c-signature-table">
+        <table class="exhibit-b-signature-table">
             <tr>
-                <td class="exhibit-c-signature-cell">
+                <td class="exhibit-b-signature-cell">
                     <strong style="color: #b41f24;">{{ $contract->client->address->name_account ?? 'CLIENT COMPANY' }}</strong>
                     <br><br><br><br>
-                    <div class="exhibit-c-signature-line">
+                    <div class="exhibit-b-signature-line">
                     </div>
-                    <div class="exhibit-c-signature-label">Signature</div>
-                    <div class="exhibit-c-signature-line">
+                    <div class="exhibit-b-signature-label">Signature</div>
+                    <div class="exhibit-b-signature-line">
                     </div>
-                    <div class="exhibit-c-signature-label">Printed Name</div>
-                    <div class="exhibit-c-signature-line">
+                    <div class="exhibit-b-signature-label">Printed Name</div>
+                    <div class="exhibit-b-signature-line">
                     </div>
-                    <div class="exhibit-c-signature-label">Title</div>
-                    <div class="exhibit-c-signature-line">
+                    <div class="exhibit-b-signature-label">Title</div>
+                    <div class="exhibit-b-signature-line">
                     </div>
-                    <div class="exhibit-c-signature-label">Date</div>
+                    <div class="exhibit-b-signature-label">Date</div>
                 </td>
-                <td class="exhibit-c-signature-cell">
+                <td class="exhibit-b-signature-cell">
                     <strong style="color: #b41f24;">Prime Facility Services Group</strong>
                     <br><br><br><br>
-                    <div class="exhibit-c-signature-line">
+                    <div class="exhibit-b-signature-line">
                     </div>
-                    <div class="exhibit-c-signature-label">Signature</div>
-                    <div class="exhibit-c-signature-line">
+                    <div class="exhibit-b-signature-label">Signature</div>
+                    <div class="exhibit-b-signature-line">
                     </div>
-                    <div class="exhibit-c-signature-label">Printed Name</div>
-                    <div class="exhibit-c-signature-line">
+                    <div class="exhibit-b-signature-label">Printed Name</div>
+                    <div class="exhibit-b-signature-line">
                     </div>
-                    <div class="exhibit-c-signature-label">Title</div>
-                    <div class="exhibit-c-signature-line">
+                    <div class="exhibit-b-signature-label">Title</div>
+                    <div class="exhibit-b-signature-line">
                     </div>
-                    <div class="exhibit-c-signature-label">Date</div>
+                    <div class="exhibit-b-signature-label">Date</div>
                 </td>
             </tr>
         </table>

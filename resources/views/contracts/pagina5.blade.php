@@ -8,6 +8,7 @@ $watermark64 = file_exists($watermarkPath)
     ? 'data:image/png;base64,' . base64_encode(file_get_contents($watermarkPath))
     : '';
 @endphp
+
     <!-- Marca de agua de fondo -->
     @if($watermark64)
     <div style="
@@ -23,46 +24,48 @@ $watermark64 = file_exists($watermarkPath)
     </div>
     @endif
 
+    <!-- Número de página -->
+    <div class="page-number">{{ $pageNumber ?? 5 }}</div>
+
     <div class="content content-with-padding" style="position: relative; z-index: 2;">
         
         <h2 class="notices-title">NOTICES</h2>
-
+        
         <p class="notices-intro">
-            All notices required under this Agreement shall be in writing, and if to the
-            <strong>CLIENT</strong> shall be sufficient in all respects if delivered in person or sent by a nationally recognized overnight courier service or by registered or certified mail to:
+            All notices required under this Agreement shall be in writing, and if to the 
+            <strong>CLIENT</strong> shall be sufficient in all respects if delivered in person or sent by a 
+            nationally recognized overnight courier service or by registered or certified 
+            mail to:
         </p>
 
-        <div class="notice-section">
-            <div class="notice-label">
-                Client:
-            </div>
-            <div class="notice-content">
-                Executive Chef {{ $contract->client->name ?? 'CLIENT NAME' }}<br>
-                {{ $contract->client->address->name_account ?? 'CLIENT COMPANY' }}<br>
-                {{ $contract->client->address->street ?? 'CLIENT STREET' }}<br>
-                {{ $contract->client->address->city ?? 'CITY' }}, {{ $contract->client->address->state ?? 'STATE' }}, {{ $contract->client->address->zip_code ?? 'ZIP CODE' }}
+        <div class="notice-section" style="margin-bottom: 25px;">
+            <div class="notice-label">Client:</div>
+            <div class="notice-content" style="margin-left: 85px;">
+                <span style="margin-left: 100px; display: inline-block;">Executive Director of Facilities and Construction<br>
+                Scott Benson</span><br><br>
+                <span style="margin-left: 100px; display: inline-block;">Awty International School<br>
+                7455 Awty School Ln<br>
+                Houston, TX, 77055</span>
             </div>
         </div>
 
-        <div class="notice-section">
-            <div class="notice-label">
-                Attn:
-            </div>
-            <div class="notice-content">
-                {{ $contract->client->phone ?? 'CLIENT PHONE' }}<br>
-                {{ $contract->client->email ?? 'CLIENT EMAIL' }}
+        <div class="notice-section" style="margin-bottom: 35px;">
+            <div class="notice-label">Attn:</div>
+            <div class="notice-content" style="margin-left: -100px;">
+                (713)6864850<br>
+                sbenson@awty.org
             </div>
         </div>
 
-        <p class="notices-intro" style="margin-top: 25px;">
-            Moreover, if to <strong>Contractor</strong> shall be sufficient in all respects if delivered in person or sent by a nationally recognized overnight courier service or by registered or certified mail to:
+        <p style="text-align: center; margin: 40px auto 20px; max-width: 75%; color: #1c2969; font-size: 11pt; line-height: 1.5;">
+            Moreover, if to Contractor shall be sufficient in all respects if delivered in 
+            person or sent by a nationally recognized overnight courier service or by 
+            registered or certified mail to:
         </p>
 
-        <div class="notice-section">
-            <div class="notice-label">
-                Temporary Service<br><span style="text-align: right; display: block;">Provider:</span>
-            </div>
-            <div class="notice-content">
+        <div class="notice-section" style="margin-bottom: 25px;">
+            <div class="notice-label">Temporary Service Provider:</div>
+            <div class="notice-content" style="margin-left: -15px;">
                 Prime Facility Services Group<br>
                 8303 Westglen Dr<br>
                 Houston, Texas 77063
@@ -70,10 +73,8 @@ $watermark64 = file_exists($watermarkPath)
         </div>
 
         <div class="notice-section">
-            <div class="notice-label">
-                Attn:
-            </div>
-            <div class="notice-content">
+            <div class="notice-label">Attn:</div>
+            <div class="notice-content" style="margin-left: 85px;">
                 Patty Perez – President<br>
                 Or<br>
                 Rafael S. Perez Jr. – Sr. Vice President

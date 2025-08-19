@@ -1,6 +1,6 @@
 {{-- C:\laragon\www\contracts\resources\views\contracts\pagina10.blade.php --}}
 
-<!-- ====== PÁGINA 10 - EXHIBIT B: BENEFITS WAIVER ====== -->
+<!-- ====== PÁGINA 10 - EXHIBIT A / OVERNIGHT KITCHEN CLEANING ====== -->
 <div class="page">
 @php
 $watermarkPath = storage_path('app/public/Prime.png');
@@ -24,56 +24,67 @@ $watermark64 = file_exists($watermarkPath)
     </div>
     @endif
 
+    <!-- Número de página -->
+    <div class="page-number">{{ $pageNumber ?? 10 }}</div>
+
     <div class="content content-with-padding" style="position: relative; z-index: 2;">
         
-        <h2 class="exhibit-b-title">EXHIBIT B</h2>
-        <h3 class="benefits-waiver-title">BENEFITS WAIVER FOR PRIME ASSOCIATES</h3>
+        <h3 class="exhibit-title">EXHIBIT A</h3>
+        
+        <h2 class="overnight-cleaning-title">OVERNIGHT KITCHEN CLEANING</h2>
 
-        <p>
-            <strong style="color: #b41f24;">Agreement and Waiver</strong><br>
-            Considering my assignment to CLIENT by PRIME, I agree that I am solely an employee of PRIME for benefits plan purposes
-            and am eligible only for such benefits as PRIME may offer me as its employee. I further understand and agree that I am not suitable for or
-            entitled to participate in or make any claim upon any benefit plan, policy, or practice offered by CLIENT, its parents, affiliates, subsidiaries,
-            or successors to any point of their direct employees, regardless of the length of my assignment to CLIENT by PRIME and regardless of whether
-            I am held to be a common-law employee of CLIENT for any purpose; and therefore, with full knowledge and understanding, I at this moment
-            expressly waive any claim or right that I may have, now or in the future, to such benefits and agree not to make any claim for such uses.
-        </p>
+        <h2 class="fees-title">FEES, PLUS TAXES</h2>
 
-        <br><br>
+        <table class="pricing-table">
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Frequency</th>
+                    <th>Bill Rate (Monthly)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Kitchen Cleaning 7 days per week (Main Kitchen)</td>
+                    <td>Monthly</td>
+                    <td>$6,089.56</td>
+                </tr>
+            </tbody>
+        </table>
 
-        <table class="exhibit-b-signature-table">
+        <table class="exhibit-signature-table">
             <tr>
-                <td class="exhibit-b-signature-cell">
-                    <strong style="color: #b41f24;">{{ $contract->client->address->name_account ?? 'CLIENT COMPANY' }}</strong>
+                <td class="exhibit-signature-cell">
+                    <strong>{{ $contract->client->address->name_account ?? 'CLIENT COMPANY' }}</strong>
                     <br><br><br><br>
-                    <div class="exhibit-b-signature-line">
+                    <div class="exhibit-signature-line">
                     </div>
-                    <div class="exhibit-b-signature-label">Signature</div>
-                    <div class="exhibit-b-signature-line">
+                    <div class="exhibit-signature-label">Signature</div>
+                    <div class="exhibit-signature-line">
                     </div>
-                    <div class="exhibit-b-signature-label">Printed Name</div>
-                    <div class="exhibit-b-signature-line">
+                    <div class="exhibit-signature-label">Printed Name</div>
+                    <div class="exhibit-signature-line">
                     </div>
-                    <div class="exhibit-b-signature-label">Title</div>
-                    <div class="exhibit-b-signature-line">
+                    <div class="exhibit-signature-label">Title</div>
+                    <div class="exhibit-signature-line">
                     </div>
-                    <div class="exhibit-b-signature-label">Date</div>
+                    <div class="exhibit-signature-label">Date</div>
                 </td>
-                <td class="exhibit-b-signature-cell">
-                    <strong style="color: #b41f24;">Prime Facility Services Group</strong>
+                <td class="exhibit-signature-cell">
+                    <strong>Prime Facility Services Group</strong>
                     <br><br><br><br>
-                    <div class="exhibit-b-signature-line">
+                    <div class="exhibit-signature-line">
                     </div>
-                    <div class="exhibit-b-signature-label">Signature</div>
-                    <div class="exhibit-b-signature-line">
+                    <div class="exhibit-signature-label">Signature</div>
+                    <div class="exhibit-signature-line">
                     </div>
-                    <div class="exhibit-b-signature-label">Printed Name</div>
-                    <div class="exhibit-b-signature-line">
+                    <div class="exhibit-signature-label">Printed Name</div>
+                    <div class="exhibit-signature-line">
                     </div>
-                    <div class="exhibit-b-signature-label">Title</div>
-                    <div class="exhibit-b-signature-line">
+                    <div class="exhibit-signature-label">Title</div>
+                    <div class="exhibit-signature-line">
                     </div>
-                    <div class="exhibit-b-signature-label">Date</div>
+                    <div class="exhibit-signature-label">Date</div>
                 </td>
             </tr>
         </table>

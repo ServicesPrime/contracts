@@ -2,13 +2,21 @@
 
 <!-- ====== PORTADA / PRIMERA PÁGINA ====== -->
 <div class="page cover" style="position:relative; min-height:100vh;">
+@php
+// Agregar la ruta del logo ATWY SCHOOL
+$atwySChoolPath = storage_path('app/public/LOGOTIPO ATWY SCHOOL.png');
+$atwySchool64 = file_exists($atwySChoolPath)
+    ? 'data:image/png;base64,' . base64_encode(file_get_contents($atwySChoolPath))
+    : '';
+@endphp
+
     <div class="content content-with-padding" style="text-align:center; padding:0 30px;">
         <!-- Logo PRIME (primera vez - arriba) -->
         @if($logo64)
         <img src="{{ $logo64 }}" alt="Prime Logo" style="width:800px; height:auto; margin-top:20px;">
         @endif
 
-        <p style="color:#b41f24; font-size:38px; text-align:center; margin:10px 0 30px;">
+        <p style="color:#b41f24; font-size:60px; text-align:center; margin:10px 0 30px; font-weight:bold;">
             "The Best Services In The<br>
             Industry Or Nothing At All"
         </p>
@@ -24,10 +32,10 @@
         Facility Management Services Agreement
     </div>
 
-    <!-- Logo PRIME (segunda vez - MOVIDO MUCHO MÁS ABAJO) -->
-    @if($logo64)
+    <!-- Logo AWTY SCHOOL (reemplazando el segundo logo de PRIME) -->
+    @if($atwySchool64)
     <div class="content-with-padding" style="text-align:center; margin-top:150px; padding:0 30px;">
-        <img src="{{ $logo64 }}" alt="Prime Logo" style="width:400px; height:auto;">
+        <img src="{{ $atwySchool64 }}" alt="AWTY School Logo" style="width:500px; height:auto;">
     </div>
     @endif
 
