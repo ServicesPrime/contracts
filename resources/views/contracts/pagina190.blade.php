@@ -1,6 +1,6 @@
-{{-- C:\laragon\www\contracts\resources\views\contracts\pagina22.blade.php --}}
+{{-- C:\laragon\www\contracts\resources\views\contracts\pagina19.blade.php --}}
 
-<!-- ====== PÁGINA 22 - BUDGET BREAKDOWN ====== -->
+<!-- ====== PÁGINA 19 - BUDGET BREAKDOWN ====== -->
 <div class="page">
 @php
 $watermarkPath = storage_path('app/public/Prime.png');
@@ -25,7 +25,7 @@ $watermark64 = file_exists($watermarkPath)
     @endif
 
     <!-- Número de página -->
-    <div class="page-number">{{ $pageNumber ?? 22 }}</div>
+    <div class="page-number">{{ $pageNumber ?? 19 }}</div>
 
     <div class="content content-with-padding" style="position: relative; z-index: 2;">
         
@@ -101,4 +101,4 @@ $watermark64 = file_exists($watermarkPath)
         </div>
     </div>
 </div>
-<!-- ====== FIN PÁGINA 22 ====== -->
+<!-- ====== FIN PÁGINA 19 ====== -->

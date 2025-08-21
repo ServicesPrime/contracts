@@ -1,6 +1,6 @@
-{{-- C:\laragon\www\contracts\resources\views\contracts\pagina13.blade.php --}}
+{{-- C:\laragon\www\contracts\resources\views\contracts\service_areas.blade.php --}}
 
-<!-- ====== PÁGINA 13 - TECHNICAL ANNEX ====== -->
+<!-- ====== SERVICE AREAS PAGE ====== -->
 <div class="page">
 @php
 $watermarkPath = storage_path('app/public/Prime.png');
@@ -25,42 +25,113 @@ $watermark64 = file_exists($watermarkPath)
     @endif
 
     <!-- Número de página -->
-    <div class="page-number">{{ $pageNumber ?? 13 }}</div>
+    <div class="page-number">{{ $pageNumber ?? 17 }}</div>
 
     <div class="content content-with-padding" style="position: relative; z-index: 2;">
         
-        <h2 class="service-areas-title">TECHNICAL ANNEX – SCOPE OF THE INITIAL DEEP CLEANING SERVICE</h2>
+        <h2 class="service-areas-title">SERVICE AREAS</h2>
 
-        <p>This annex aims to outline, as a reference, the areas, activities, and quality criteria recommended for carrying out the Initial Deep Cleaning Service, with the objective of reaching an optimal level of cleanliness that will serve as the basis for the regular service.</p>
+        <div style="margin: 30px 0;">
+            <div style="margin-bottom: 40px;">
+                <div style="background-color: #b41f24; color: white; padding: 8px 15px; font-weight: bold; font-size: 12pt; display: inline-block; margin-bottom: 0;">
+                    MAIN CAMPUS BUILDINGS
 
-        <h3>1. Areas included:</h3>
-        <ul>
-            <li>Classrooms, offices, restrooms, hallways, sports areas, cafeteria, and other spaces agreed upon by the parties.</li>
-        </ul>
+                </div>
+                <table style="width: 100%; border-collapse: collapse; background-color: transparent; margin-top: 0;">
+                    <tbody>
+                        <tr style="border: 1px solid #ccc;">
+                            <td style="padding: 8px 15px; background-color: transparent; border-right: 1px solid #ccc;">Levant Building</td>
+                            <td style="padding: 8px 15px; text-align: right; background-color: transparent; width: 160px;">65,000 sq ft</td>
+                        </tr>
+                        <tr style="border: 1px solid #ccc;">
+                            <td style="padding: 8px 15px; background-color: transparent; border-right: 1px solid #ccc;">Campus Center (Phase 1)</td>
+                            <td style="padding: 8px 15px; text-align: right; background-color: transparent;">105,000 sq ft</td>
+                        </tr>
+                        <tr style="border: 1px solid #ccc;">
+                            <td style="padding: 8px 15px; background-color: transparent; border-right: 1px solid #ccc;">Chevron Makerspace (Phase 2)</td>
+                            <td style="padding: 8px 15px; text-align: right; background-color: transparent;">10,000 sq ft</td>
+                        </tr>
+                        <tr style="border: 1px solid #ccc;">
+                            <td style="padding: 8px 15px; background-color: transparent; border-right: 1px solid #ccc;">Elementary School</td>
+                            <td style="padding: 8px 15px; text-align: right; background-color: transparent;">105,000 sq ft</td>
+                        </tr>
+                        <tr style="border: 1px solid #ccc;">
+                            <td style="padding: 8px 15px; background-color: transparent; border-right: 1px solid #ccc;">PAAC</td>
+                            <td style="padding: 8px 15px; text-align: right; background-color: transparent;">65,000 sq ft</td>
+                        </tr>
+                        <tr style="border: 1px solid #ccc;">
+                            <td style="padding: 8px 15px; background-color: transparent; border-right: 1px solid #ccc;">Building A</td>
+                            <td style="padding: 8px 15px; text-align: right; background-color: transparent;">25,900 sq ft</td>
+                        </tr>
+                        <tr style="border: 1px solid #ccc;">
+                            <td style="padding: 8px 15px; background-color: transparent; border-right: 1px solid #ccc;">Building B</td>
+                            <td style="padding: 8px 15px; text-align: right; background-color: transparent;">25,900 sq ft</td>
+                        </tr>
+                        <tr style="border: 1px solid #ccc;">
+                            <td style="padding: 8px 15px; background-color: transparent; border-right: 1px solid #ccc;">Building C</td>
+                            <td style="padding: 8px 15px; text-align: right; background-color: transparent;">25,900 sq ft</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
-        <h3>2. Activities included:</h3>
-        <ul>
-            <li>Deep cleaning of floors, walls, and ceilings.</li>
-            <li>Disinfection of restrooms, locker rooms, and common areas.</li>
-            <li>Cleaning of accessible interior and exterior windows.</li>
-            <li>Cleaning of fixed furniture and equipment.</li>
-            <li>Removal of accumulated dust from high surfaces and accessible ducts.</li>
-            <li>Cleaning and organizing folders/files.</li>
-            <li>Cleaning and treatment of all types of floors.</li>
-            <li>Power washing of exterior walkways and areas.</li>
-            <li>Deep cleaning of all kitchens and vent hoods.</li>
-        </ul>
+            <div style="margin-bottom: 40px;">
+                <div style="background-color: #b41f24; color: white; padding: 8px 15px; font-weight: bold; font-size: 12pt; display: inline-block; margin-bottom: 0;">
+                    AWTY CENTER
+                </div>
+                <table style="width: 100%; border-collapse: collapse; background-color: transparent; margin-top: 0;">
+                    <tbody>
+                        <tr style="border: 1px solid #ccc;">
+                            <td style="padding: 8px 15px; background-color: transparent; border-right: 1px solid #ccc;">Awty Center Pre-K</td>
+                            <td style="padding: 8px 15px; text-align: right; background-color: transparent; width: 160px;">7,513 sq ft</td>
+                        </tr>
+                        <tr style="border: 1px solid #ccc;">
+                            <td style="padding: 8px 15px; background-color: transparent; border-right: 1px solid #ccc;">Max 1</td>
+                            <td style="padding: 8px 15px; text-align: right; background-color: transparent;">1,956 sq ft</td>
+                        </tr>
+                        <tr style="border: 1px solid #ccc;">
+                            <td style="padding: 8px 15px; background-color: transparent; border-right: 1px solid #ccc;">Max 2</td>
+                            <td style="padding: 8px 15px; text-align: right; background-color: transparent;">2,834 sq ft</td>
+                        </tr>
+                        <tr style="border: 1px solid #ccc;">
+                            <td style="padding: 8px 15px; background-color: transparent; border-right: 1px solid #ccc;">Max 3</td>
+                            <td style="padding: 8px 15px; text-align: right; background-color: transparent;">1,956 sq ft</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
-        <h3>3. Activities not included (require separate quotation):</h3>
-        <ul>
-            <li>Work at height requiring scaffolding or harnesses.</li>
-            <li>Polishing or crystallization of special floors.</li>
-            <li>Cleaning of internal ventilation ducts.</li>
-            <li>Painting, repairs, or renovations.</li>
-        </ul>
+            <div style="margin-bottom: 40px;">
+                <div style="background-color: #b41f24; color: white; padding: 8px 15px; font-weight: bold; font-size: 12pt; display: inline-block; margin-bottom: 0;">
+                    CENTRAL STADIUM
+                </div>
+                <table style="width: 100%; border-collapse: collapse; background-color: transparent; margin-top: 0;">
+                    <tbody>
+                        <tr style="border: 1px solid #ccc;">
+                            <td style="padding: 8px 15px; background-color: transparent; border-right: 1px solid #ccc;">Athletic Services</td>
+                            <td style="padding: 8px 15px; text-align: right; background-color: transparent; width: 160px;">10,112 sq ft</td>
+                        </tr>
+                        <tr style="border: 1px solid #ccc;">
+                            <td style="padding: 8px 15px; background-color: transparent; border-right: 1px solid #ccc;">Athletic Concession Stand</td>
+                            <td style="padding: 8px 15px; text-align: right; background-color: transparent;">1,824 sq ft</td>
+                        </tr>
+                        <tr style="border: 1px solid #ccc;">
+                            <td style="padding: 8px 15px; background-color: transparent; border-right: 1px solid #ccc;">Athletic Press Box</td>
+                            <td style="padding: 8px 15px; text-align: right; background-color: transparent;">288 sq ft</td>
+                        </tr>
+                        <tr style="border: 1px solid #ccc;">
+                            <td style="padding: 8px 15px; background-color: transparent; border-right: 1px solid #ccc;">Athletic Guard Booth</td>
+                            <td style="padding: 8px 15px; text-align: right; background-color: transparent;">100 sq ft</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
-        <h3>4. Completion standard:</h3>
-        <p>All included areas must be free from visible dirt, unpleasant odors, and with surfaces clean to the touch, as verified by both parties.</p>
+            <div style="text-align: right; margin-top: -10px; font-size: 14pt; font-weight: bold; color: #b41f24;">
+             TOTAL: 454,283 sq ft
+            </div>
+
+        </div>
         
     </div>
 </div>
@@ -75,4 +146,4 @@ $watermark64 = file_exists($watermarkPath)
         </div>
     </div>
 </div>
-<!-- ====== FIN PÁGINA 13 ====== -->
+<!-- ====== FIN SERVICE AREAS PAGE ====== -->

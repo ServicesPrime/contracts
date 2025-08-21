@@ -1,6 +1,6 @@
-{{-- C:\laragon\www\contracts\resources\views\contracts\pagina13.blade.php --}}
+{{-- C:\laragon\www\contracts\resources\views\contracts\pagina12.blade.php --}}
 
-<!-- ====== PÁGINA 13 - TECHNICAL ANNEX ====== -->
+<!-- ====== PÁGINA 12 - TECHNICAL ANNEX ====== -->
 <div class="page">
 @php
 $watermarkPath = storage_path('app/public/Prime.png');
@@ -25,7 +25,7 @@ $watermark64 = file_exists($watermarkPath)
     @endif
 
     <!-- Número de página -->
-    <div class="page-number">{{ $pageNumber ?? 13 }}</div>
+    <div class="page-number">{{ $pageNumber ?? 12 }}</div>
 
     <div class="content content-with-padding" style="position: relative; z-index: 2;">
         
@@ -75,4 +75,4 @@ $watermark64 = file_exists($watermarkPath)
         </div>
     </div>
 </div>
-<!-- ====== FIN PÁGINA 13 ====== -->
+<!-- ====== FIN PÁGINA 12 ====== -->

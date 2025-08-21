@@ -1,6 +1,6 @@
-{{-- C:\laragon\www\contracts\resources\views\contracts\pagina11.blade.php --}}
+{{-- C:\laragon\www\contracts\resources\views\contracts\pagina16.blade.php --}}
 
-<!-- ====== PÁGINA 11 - EXHIBIT B: BENEFITS WAIVER ====== -->
+<!-- ====== PÁGINA 16 - EXHIBIT B: BENEFITS WAIVER ====== -->
 <div class="page">
 @php
 $watermarkPath = storage_path('app/public/Prime.png');
@@ -24,12 +24,17 @@ $watermark64 = file_exists($watermarkPath)
     </div>
     @endif
 
-    <!-- Número de página -->
-    <div class="page-number">{{ $pageNumber ?? 11 }}</div>
+
 
     <div class="content content-with-padding" style="position: relative; z-index: 2;">
         
-        <h2 class="exhibit-b-title">EXHIBIT B</h2>
+        <h1 style="
+            color: #b41f24;
+            font-size: 32px;
+            font-weight: bold;
+            margin: 0 0 20px 0;
+            letter-spacing: 1px;
+        ">EXHIBIT B</h1>
         <h3 class="benefits-waiver-title">BENEFITS WAIVER FOR PRIME ASSOCIATES</h3>
 
         <p>
@@ -82,6 +87,7 @@ $watermark64 = file_exists($watermarkPath)
         </table>
         
     </div>
+      <div class="page-number">{{ $pageNumber ?? 13 }}</div>
 </div>
 
 <!-- Footer fijo global -->
@@ -94,4 +100,4 @@ $watermark64 = file_exists($watermarkPath)
         </div>
     </div>
 </div>
-<!-- ====== FIN PÁGINA 11 ====== -->
+<!-- ====== FIN PÁGINA 16 ====== -->

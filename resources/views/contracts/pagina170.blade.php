@@ -1,4 +1,6 @@
-<!-- ====== PÁGINA 9 - INITIAL DEEP CLEANING SERVICE ====== -->
+{{-- C:\laragon\www\contracts\resources\views\contracts\pagina11.blade.php --}}
+
+<!-- ====== PÁGINA 11 - INITIAL DEEP CLEANING SERVICE ====== -->
 <div class="page">
 @php
 $watermarkPath = storage_path('app/public/Prime.png');
@@ -23,7 +25,7 @@ $watermark64 = file_exists($watermarkPath)
     @endif
 
     <!-- Número de página -->
-<div class="page-number">{{ $pageNumber ?? 9 }}</div>
+    <div class="page-number">{{ $pageNumber ?? 11 }}</div>
 
     <div class="content content-with-padding" style="position: relative; z-index: 2;">
         
@@ -52,3 +54,4 @@ $watermark64 = file_exists($watermarkPath)
         </div>
     </div>
 </div>
+<!-- ====== FIN PÁGINA 11 ====== -->

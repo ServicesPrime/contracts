@@ -11,21 +11,11 @@
 
     /* Evitar que el contenido se corte entre páginas al imprimir */
     @media print {
-    .page {
-        break-after: page;
-        page-break-after: always;
+        .page {
+            break-after: page;
+            page-break-after: always;
+        }
     }
-    
-.footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-    margin: 0 -0.5in; /* Extender más allá de los márgenes de página */
-    z-index: 1000;
-}
-}
 
     /* Asegurar que ningún elemento se divida entre páginas */
     .page,
@@ -51,9 +41,8 @@
 
     /* Configuración general */
     * {
-    box-sizing: border-box;
-    font-family: Arial, sans-serif !important; /* Agregar !important */
-}
+        box-sizing: border-box;
+    }
 
     html,
     body {
@@ -505,31 +494,30 @@
         font-family: Arial, sans-serif;
     }
 
-.footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    width: 100vw;
-    margin-left: calc(-50vw + 50%);
-    z-index: 1000;
-}
+    /* Footer fijo - AJUSTADO PARA IMPRESIÓN */
+    .footer {
+        position: fixed;
+        bottom: 15px; /* Cambiado de 0 a 15px para subirlo */
+        left: 0;
+        right: 0;
+        z-index: 1000;
+    }
 
     .footer-red {
         background-color: #b41f24;
-        height: 10px;
+        height: 8px; /* Reducido de 10px a 8px para ser más compacto */
         width: 100%;
     }
 
     .footer-blue {
         background-color: #162469ff;
-        padding: 15px 35px;
+        padding: 12px 35px; /* Reducido de 15px a 12px */
         text-align: center;
         color: #fff;
-        font-size: 11pt;
+        font-size: 10pt; /* Reducido de 11pt a 10pt */
         font-weight: normal;
         width: 100%;
-        line-height: 1.3;
+        line-height: 1.2; /* Reducido de 1.3 a 1.2 */
         font-family: Arial, sans-serif;
     }
 
@@ -539,8 +527,7 @@
 
     /* Ajustes para que el contenido no se superponga con el footer */
     .page:not(.cover) {
-        padding-bottom: 90px;
-        /* Espacio para el footer */
+        padding-bottom: 75px; /* Reducido de 90px a 75px */
     }
 
     /* Estilos específicos para la portada */
@@ -561,23 +548,18 @@
         z-index: 1001;
     }
 
-    /* NUMERACIÓN DE PÁGINAS */
+    /* NUMERACIÓN DE PÁGINAS - TAMBIÉN AJUSTADA */
     .page-number {
         position: fixed;
-        bottom: 110px;
-        /* Un renglón más arriba del footer */
+        bottom: 95px; /* Ajustado de 110px a 95px */
         left: 50%;
-        /* Centrado horizontalmente */
         transform: translateX(-50%);
-        /* Ajuste para centrado perfecto */
         z-index: 1002;
-        /* Más alto que el footer (1000) */
         color: #1c2969;
         font-size: 10pt;
         font-family: Arial, sans-serif;
         font-weight: normal;
         background-color: rgba(255, 255, 255, 0.8);
-        /* Fondo semi-transparente para mejor visibilidad */
         padding: 2px 5px;
         border-radius: 3px;
         text-align: center;
@@ -592,4 +574,11 @@
     .page:not(.cover) .page-number {
         display: block;
     }
+    h3.titulo-centro {
+   text-align: center !important;
+}
+h2 {
+        text-decoration: underline;
+    }
+
 </style>

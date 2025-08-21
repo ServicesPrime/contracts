@@ -1,6 +1,6 @@
-{{-- C:\laragon\www\contracts\resources\views\contracts\pagina12.blade.php --}}
+{{-- C:\laragon\www\contracts\resources\views\contracts\pagina14.blade.php --}}
 
-<!-- ====== PÁGINA 12 - EXHIBIT C: CONFIDENTIALITY AGREEMENT ====== -->
+<!-- ====== PÁGINA 17 - EXHIBIT C: CONFIDENTIALITY AGREEMENT ====== -->
 <div class="page">
 @php
 $watermarkPath = storage_path('app/public/Prime.png');
@@ -24,12 +24,17 @@ $watermark64 = file_exists($watermarkPath)
     </div>
     @endif
 
-    <!-- Número de página -->
-    <div class="page-number">{{ $pageNumber ?? 12 }}</div>
+
 
     <div class="content content-with-padding" style="position: relative; z-index: 2;">
         
-        <h2 class="exhibit-c-title">EXHIBIT C</h2>
+        <h1 style="
+            color: #b41f24;
+            font-size: 32px;
+            font-weight: bold;
+            margin: 0 0 20px 0;
+            letter-spacing: 1px;
+        ">EXHIBIT C</h1>
         <h3 class="confidentiality-title">CONFIDENTIALITY AGREEMENT FOR ASSIGNED EMPLOYEES</h3>
 
         <p><strong style="color: #b41f24;">Assigned Employee Confidentiality Agreement</strong></p>
@@ -84,6 +89,7 @@ $watermark64 = file_exists($watermarkPath)
         </table>
         
     </div>
+      <div class="page-number">{{ $pageNumber ?? 14 }}</div>
 </div>
 
 <!-- Footer fijo global -->
@@ -96,4 +102,4 @@ $watermark64 = file_exists($watermarkPath)
         </div>
     </div>
 </div>
-<!-- ====== FIN PÁGINA 12 ====== -->
+<!-- ====== FIN PÁGINA 17 ====== -->

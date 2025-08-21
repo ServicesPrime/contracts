@@ -1,6 +1,6 @@
-{{-- C:\laragon\www\contracts\resources\views\contracts\pagina19.blade.php --}}
+{{-- C:\laragon\www\contracts\resources\views\contracts\pagina22.blade.php --}}
 
-<!-- ====== PÁGINA 19 - ADDITIONAL STAFF SERVICES ====== -->
+<!-- ====== PÁGINA 22 - BUDGET BREAKDOWN ====== -->
 <div class="page">
 @php
 $watermarkPath = storage_path('app/public/Prime.png');
@@ -25,114 +25,67 @@ $watermark64 = file_exists($watermarkPath)
     @endif
 
     <!-- Número de página -->
-    <div class="page-number">{{ $pageNumber ?? 19 }}</div>
+    <div class="page-number">{{ $pageNumber ?? 22 }}</div>
 
     <div class="content content-with-padding" style="position: relative; z-index: 2;">
         
-        <h2 class="service-areas-title">ADDITIONAL STAFF SERVICES</h2>
+        <h2 class="service-areas-title">BUDGET BREAKDOWN</h2>
 
         <p style="margin-bottom: 30px; background-color: transparent;">
-            Prime Facility Services Group offers additional specialized staff services to complement the core facility 
-            management services. The following positions are available upon request with their corresponding hourly rates.
+            The following breakdown details all costs associated with the facility management services 
+            outlined in this agreement, including labor, materials, equipment, and applicable taxes.
         </p>
 
-        <div style="margin: 30px 0;">
-            <div style="margin-bottom: 40px;">
-                <div style="background-color: #b41f24; color: white; padding: 8px 15px; font-weight: bold; font-size: 12pt; display: inline-block; margin-bottom: 0;">
-                    HOUSEKEEPING
-                </div>
-                <table style="width: 100%; border-collapse: collapse; background-color: transparent; margin-top: 0;">
-                    <tbody>
-                        <tr style="border: 1px solid #ccc;">
-                            <td style="padding: 8px 15px; background-color: transparent; border-right: 1px solid #ccc;">Housekeeping Supervisor</td>
-                            <td style="padding: 8px 15px; text-align: right; background-color: transparent; width: 80px;">$22.40</td>
-                        </tr>
-                        <tr style="border: 1px solid #ccc;">
-                            <td style="padding: 8px 15px; background-color: transparent; border-right: 1px solid #ccc;">Project Houseman</td>
-                            <td style="padding: 8px 15px; text-align: right; background-color: transparent;">$17.50</td>
-                        </tr>
-                        <tr style="border: 1px solid #ccc;">
-                            <td style="padding: 8px 15px; background-color: transparent; border-right: 1px solid #ccc;">Laundry Attendant</td>
-                            <td style="padding: 8px 15px; text-align: right; background-color: transparent;">$17.50</td>
-                        </tr>
-                        <tr style="border: 1px solid #ccc;">
-                            <td style="padding: 8px 15px; background-color: transparent; border-right: 1px solid #ccc;">GRA (Guest Room Attendant) Inspector</td>
-                            <td style="padding: 8px 15px; text-align: right; background-color: transparent;">$19.60</td>
-                        </tr>
-                        <tr style="border: 1px solid #ccc;">
-                            <td style="padding: 8px 15px; background-color: transparent; border-right: 1px solid #ccc;">Banquet Houseman</td>
-                            <td style="padding: 8px 15px; text-align: right; background-color: transparent;">$19.60</td>
-                        </tr>
-                        <tr style="border: 1px solid #ccc;">
-                            <td style="padding: 8px 15px; background-color: transparent; border-right: 1px solid #ccc;">Houseman</td>
-                            <td style="padding: 8px 15px; text-align: right; background-color: transparent;">$17.50</td>
-                        </tr>
-                        <tr style="border: 1px solid #ccc;">
-                            <td style="padding: 8px 15px; background-color: transparent; border-right: 1px solid #ccc;">Housekeeper</td>
-                            <td style="padding: 8px 15px; text-align: right; background-color: transparent;">$17.50</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div style="margin-bottom: 40px;">
-                <div style="background-color: #b41f24; color: white; padding: 8px 15px; font-weight: bold; font-size: 12pt; display: inline-block; margin-bottom: 0;">
-                    FOOD & BEVERAGE
-                </div>
-                <table style="width: 100%; border-collapse: collapse; background-color: transparent; margin-top: 0;">
-                    <tbody>
-                        <tr style="border: 1px solid #ccc;">
-                            <td style="padding: 8px 15px; background-color: transparent; border-right: 1px solid #ccc;">Line Cook</td>
-                            <td style="padding: 8px 15px; text-align: right; background-color: transparent; width: 80px;">$22.40</td>
-                        </tr>
-                        <tr style="border: 1px solid #ccc;">
-                            <td style="padding: 8px 15px; background-color: transparent; border-right: 1px solid #ccc;">Cook</td>
-                            <td style="padding: 8px 15px; text-align: right; background-color: transparent;">$21.00</td>
-                        </tr>
-                        <tr style="border: 1px solid #ccc;">
-                            <td style="padding: 8px 15px; background-color: transparent; border-right: 1px solid #ccc;">Barista</td>
-                            <td style="padding: 8px 15px; text-align: right; background-color: transparent;">$19.60</td>
-                        </tr>
-                        <tr style="border: 1px solid #ccc;">
-                            <td style="padding: 8px 15px; background-color: transparent; border-right: 1px solid #ccc;">Prep Cook</td>
-                            <td style="padding: 8px 15px; text-align: right; background-color: transparent;">$19.60</td>
-                        </tr>
-                        <tr style="border: 1px solid #ccc;">
-                            <td style="padding: 8px 15px; background-color: transparent; border-right: 1px solid #ccc;">Server</td>
-                            <td style="padding: 8px 15px; text-align: right; background-color: transparent;">$22.40</td>
-                        </tr>
-                        <tr style="border: 1px solid #ccc;">
-                            <td style="padding: 8px 15px; background-color: transparent; border-right: 1px solid #ccc;">Bartender</td>
-                            <td style="padding: 8px 15px; text-align: right; background-color: transparent;">$23.80</td>
-                        </tr>
-                        <tr style="border: 1px solid #ccc;">
-                            <td style="padding: 8px 15px; background-color: transparent; border-right: 1px solid #ccc;">Banquet Server</td>
-                            <td style="padding: 8px 15px; text-align: right; background-color: transparent;">$21.00</td>
-                        </tr>
-                        <tr style="border: 1px solid #ccc;">
-                            <td style="padding: 8px 15px; background-color: transparent; border-right: 1px solid #ccc;">Food Runner</td>
-                            <td style="padding: 8px 15px; text-align: right; background-color: transparent;">$21.00</td>
-                        </tr>
-                        <tr style="border: 1px solid #ccc;">
-                            <td style="padding: 8px 15px; background-color: transparent; border-right: 1px solid #ccc;">Busser</td>
-                            <td style="padding: 8px 15px; text-align: right; background-color: transparent;">$17.50</td>
-                        </tr>
-                        <tr style="border: 1px solid #ccc;">
-                            <td style="padding: 8px 15px; background-color: transparent; border-right: 1px solid #ccc;">Dishwasher</td>
-                            <td style="padding: 8px 15px; text-align: right; background-color: transparent;">$18.20</td>
-                        </tr>
-                        <tr style="border: 1px solid #ccc;">
-                            <td style="padding: 8px 15px; background-color: transparent; border-right: 1px solid #ccc;">Dining Room Attendant</td>
-                            <td style="padding: 8px 15px; text-align: right; background-color: transparent;">$21.00</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+        <div style="margin: 50px auto; max-width: 600px;">
+            <table style="width: 100%; border-collapse: collapse; background-color: transparent; border: 2px solid #b41f24;">
+                <tbody>
+                    <tr style="border-bottom: 1px solid #ccc;">
+                        <td style="padding: 15px 20px; background-color: transparent; border-right: 1px solid #ccc; font-weight: normal;">21 Employees</td>
+                        <td style="padding: 15px 20px; text-align: right; background-color: transparent; font-weight: normal;">$34,256.25</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #ccc;">
+                        <td style="padding: 15px 20px; background-color: transparent; border-right: 1px solid #ccc; font-weight: normal;">1 Leader</td>
+                        <td style="padding: 15px 20px; text-align: right; background-color: transparent; font-weight: normal;">$3,132.00</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #ccc;">
+                        <td style="padding: 15px 20px; background-color: transparent; border-right: 1px solid #ccc; font-weight: normal;">Tax, Insurance and Fringe Benefits</td>
+                        <td style="padding: 15px 20px; text-align: right; background-color: transparent; font-weight: normal;">$7,452.60</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #ccc;">
+                        <td style="padding: 15px 20px; background-color: transparent; border-right: 1px solid #ccc; font-weight: normal;">Materials</td>
+                        <td style="padding: 15px 20px; text-align: right; background-color: transparent; font-weight: normal;">$3,500.00</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #ccc;">
+                        <td style="padding: 15px 20px; background-color: transparent; border-right: 1px solid #ccc; font-weight: normal;">Equipment</td>
+                        <td style="padding: 15px 20px; text-align: right; background-color: transparent; font-weight: normal;">$977.00</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #ccc;">
+                        <td style="padding: 15px 20px; background-color: transparent; border-right: 1px solid #ccc; font-weight: normal;">Overhead</td>
+                        <td style="padding: 15px 20px; text-align: right; background-color: transparent; font-weight: normal;">$2,465.89</td>
+                    </tr>
+                    <tr style="border-bottom: 2px solid #b41f24;">
+                        <td style="padding: 15px 20px; background-color: transparent; border-right: 1px solid #ccc; font-weight: normal;">Profit</td>
+                        <td style="padding: 15px 20px; text-align: right; background-color: transparent; font-weight: normal;">$3,491.35</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #ccc; background-color: rgba(180, 31, 36, 0.1);">
+                        <td style="padding: 15px 20px; background-color: rgba(180, 31, 36, 0.1); border-right: 1px solid #ccc; font-weight: bold; color: #b41f24;">Subtotal</td>
+                        <td style="padding: 15px 20px; text-align: right; background-color: rgba(180, 31, 36, 0.1); font-weight: bold; color: #b41f24;">$55,275.09</td>
+                    </tr>
+                    <tr style="border-bottom: 2px solid #b41f24;">
+                        <td style="padding: 15px 20px; background-color: transparent; border-right: 1px solid #ccc; font-weight: normal;">State Taxes</td>
+                        <td style="padding: 15px 20px; text-align: right; background-color: transparent; font-weight: normal;">$4,560.19</td>
+                    </tr>
+                    <tr style="background-color: rgba(180, 31, 36, 0.2);">
+                        <td style="padding: 20px; background-color: rgba(180, 31, 36, 0.2); border-right: 1px solid #b41f24; font-weight: bold; color: #b41f24; font-size: 14pt;">TOTAL</td>
+                        <td style="padding: 20px; text-align: right; background-color: rgba(180, 31, 36, 0.2); font-weight: bold; color: #b41f24; font-size: 14pt;">$59,835.28</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
 
-        <p style="margin-top: 25px; font-size: 10pt; color: #666; background-color: transparent;">
-            <strong>Note:</strong> All rates are subject to applicable taxes and may be adjusted based on specific requirements, 
-            schedule demands, or specialized skills needed. Minimum hour requirements may apply for certain positions.
+        <p style="margin-top: 40px; font-size: 10pt; color: #666; background-color: transparent; text-align: center;">
+            <strong>Note:</strong> All amounts are in USD and subject to the terms and conditions outlined in this service agreement. 
+            State taxes are calculated based on current applicable rates and may be subject to change.
         </p>
         
     </div>
@@ -148,4 +101,4 @@ $watermark64 = file_exists($watermarkPath)
         </div>
     </div>
 </div>
-<!-- ====== FIN PÁGINA 19 ====== -->
+<!-- ====== FIN PÁGINA 22 ====== -->

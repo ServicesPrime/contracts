@@ -1,6 +1,6 @@
-{{-- C:\laragon\www\contracts\resources\views\contracts\pagina14.blade.php --}}
+{{-- C:\laragon\www\contracts\resources\views\contracts\pagina18.blade.php --}}
 
-<!-- ====== PÁGINA 14 - OPTIONAL PROVISIONS ====== -->
+<!-- ====== PÁGINA 18 - SCOPE OF WORK ====== -->
 <div class="page">
 @php
 $watermarkPath = storage_path('app/public/Prime.png');
@@ -25,36 +25,51 @@ $watermark64 = file_exists($watermarkPath)
     @endif
 
     <!-- Número de página -->
-    <div class="page-number">{{ $pageNumber ?? 14 }}</div>
+    <div class="page-number">{{ $pageNumber ?? 18 }}</div>
 
     <div class="content content-with-padding" style="position: relative; z-index: 2;">
         
-        <h2 class="optional-provisions-title">OPTIONAL PROVISIONS</h2>
+        <h2 class="service-areas-title">SCOPE OF WORK</h2>
 
-        <h3>Emergency Provision</h3>
-        <p>
-            Prime Facility Services Group will perform the necessary services by the terms stipulated in this Agreement remotely via email and conferences.
-            It is usually typical for Prime Facility Services Group to perform several site visits per week to the Client's place of business to obtain needed documents and review employee performance.
-            Emergency Provisions and site visits will be limited and only necessary if required.
+        <p style="margin-bottom: 30px;">
+            Prime Facility Services Group will provide comprehensive facility management services for all designated areas 
+            within the Awty International School campus. The following services will be performed according to the 
+            specified schedule and quality standards outlined in this agreement.
         </p>
 
-        <h3>Price Increase</h3>
+        <h3>Daily Services</h3>
+        <ul style="margin-bottom: 25px;">
+            <li>Daily classroom and restroom cleaning</li>
+            <li>Trash removal and recycling services</li>
+            <li>Floor care: sweeping, mopping, and buffing as needed</li>
+            <li>Dusting of surfaces and vents</li>
+            <li>Disinfection of high-touch surfaces</li>
+        </ul>
+
+        <h3>Periodic Services</h3>
+        <ul style="margin-bottom: 25px;">
+            <li>Periodic deep cleaning and summer break preparation</li>
+            <li>Restocking of restroom supplies</li>
+            <li>Cafeteria and gym maintenance as required</li>
+        </ul>
+
+        <h3>Service Standards</h3>
         <p>
-            Starting from the contract inception date, an annual price increase clause of 3.1% shall be incorporated into this Agreement.
-            Each year, on the anniversary of the contract commencement, the agreed-upon prices for the products or services provided under this Agreement will be subject to an upward adjustment following prevailing market conditions, inflation rates, and any other relevant factors.
-            The price increase percentage shall be determined through a mutual agreement in good faith.
-            This provision ensures that the pricing remains fair and reflects the current economic climate, enabling both parties to sustain a successful and beneficial long-term business relationship.
+            All services will be performed to the highest professional standards using environmentally friendly cleaning 
+            products where possible. Prime Facility Services Group will ensure that all work is completed during 
+            designated hours to minimize disruption to educational activities.
         </p>
 
-        <h3>Insurance</h3>
         <p>
-            During the term of this Agreement and so long after that, as Contractor may have any obligation to CLIENT under this Agreement, Contractor shall at its own cost and expense procure and maintain in full force and effect (or cause to be procured and maintained at no cost to CLIENT) insurance with sound and reputable insurance companies of the type and in such amounts as adequate for all risks by sound and prudent business practices for the type of business operation, activities, and services to be provided and performed by Contractor under this Agreement and as approved by CLIENT from time to time, including, without limitation, (i) worker's compensation and employer's liability, (ii) general liability, (iii) automobile liability and (iv) protective liability.
+            Regular quality inspections will be conducted to ensure compliance with agreed-upon standards. Any issues 
+            or concerns will be addressed promptly and professionally.
         </p>
 
+        <h3>Equipment and Supplies</h3>
         <p>
-            In no event shall the insurance coverage required hereunder fall below the amounts set forth on Exhibit ___ attached hereto and incorporated herein by reference.
-            Upon the execution of this Agreement, Contractor shall immediately provide to CLIENT true and accurate Certificates of Insurance (endorsed adequately by an authorized representative of the insurance company) evidencing that the insurance required hereunder is in force and effect and that such insurance will not be canceled or materially changed without giving CLIENT at least thirty (30) days prior written notice.
-            Except to the extent prohibited by applicable Federal or State law, CLIENT shall be named as an additional insured and loss.
+            Prime Facility Services Group will provide all necessary equipment, cleaning supplies, and materials required 
+            to perform the services outlined in this scope of work. All equipment will be maintained in good working 
+            condition and replaced as needed.
         </p>
         
     </div>
@@ -70,4 +85,4 @@ $watermark64 = file_exists($watermarkPath)
         </div>
     </div>
 </div>
-<!-- ====== FIN PÁGINA 14 ====== -->
+<!-- ====== FIN PÁGINA 18 ====== -->
