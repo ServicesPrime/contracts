@@ -61,6 +61,7 @@
               :clients="clients"
               :services="services"
               :is-editing="isEditing"
+              :selected-organization="selectedOrganization"
               @update:form="updateForm"
               @submit="submitForm"
               @cancel="goBack"
@@ -184,7 +185,8 @@ const form = useForm({
   department: props.contract?.department || '',
   date: isEditing.value ? props.contract?.date : new Date().toISOString().split('T')[0],
   services: initializeServices(),
-  organization: null // New field for organization
+  organization: null, // Organization field
+  schoolData: {} // School data object
 })
 
 // Handle organization selection
@@ -242,16 +244,34 @@ const previewContract = computed(() => {
 
 // Form update handler
 const updateForm = (newFormData) => {
+  // Debug: Log para verificar qué datos llegan
+  console.log('updateForm called with:', newFormData)
+  
   // Update form fields
   Object.keys(newFormData).forEach(key => {
     if (key in form) {
       form[key] = newFormData[key]
     }
   })
+  
+  // Debug: Log para verificar el estado actual del form
+  console.log('Form state after update:', {
+    organization: form.organization,
+    schoolData: form.schoolData,
+    services: form.services
+  })
 }
 
 // Form actions
 const submitForm = () => {
+  // Debug: Log para verificar qué datos se están enviando
+  console.log('submitForm called with form data:', {
+    organization: form.organization,
+    schoolData: form.schoolData,
+    services: form.services,
+    allFormData: form.data()
+  })
+  
   if (isEditing.value) {
     form.put(route('contracts.update', props.contract.id))
   } else {

@@ -16,7 +16,7 @@ public function up(): void
         $table->unsignedBigInteger('contract_number')->unique();
         $table->foreignId('client_id')->constrained('clients')->onDelete('cascade');
         $table->string('department'); 
-        $table->date('date'); 
+        $table->date('date')->nullable(); 
         $table->date('start_date')->nullable();           // fecha de inicio
         $table->date('end_date')->nullable();  
         $table->timestamps();

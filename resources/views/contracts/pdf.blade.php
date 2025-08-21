@@ -21,41 +21,7 @@ $bldg64 = file_exists($bldgPath)
     : '';
 @endphp
 
-    {{-- Incluir la portada (sin número de página) --}}
-  {{--  @include('contracts.portada', ['logo64' => $logo64, 'bldg64' => $bldg64])
-    @include('contracts.paginathankyou', ['logo64' => $logo64, 'bldg64' => $bldg64])
-   @include('contracts.pagina1', ['pageNumber' => 1])
-    @include('contracts.pagina2', ['pageNumber' => 2])
-    @include('contracts.pagina3', ['pageNumber' => 3])
-    @include('contracts.pagina4', ['pageNumber' => 4])
-    @include('contracts.pagina5', ['pageNumber' => 5])
-    @include('contracts.pagina6', ['pageNumber' => 6])
-    @include('contracts.pagina7', ['pageNumber' => 7])
-    @include('contracts.pagina8', ['pageNumber' => 8])
-    @include('contracts.pagina9', ['pageNumber' => 9])
-    @include('contracts.pagina10', ['pageNumber' => 10])
-    @include('contracts.pagina11', ['pageNumber' => 11])
-    @include('contracts.pagina12', ['pageNumber' => 12])
-    @include('contracts.pagina13', ['pageNumber' => 13])
-    @include('contracts.pagina14', ['pageNumber' => 14])
-    @include('contracts.pagina15', ['pageNumber' => 15])
-    @include('contracts.pagina16', ['pageNumber' => 16])
-    @include('contracts.pagina17', ['pageNumber' => 17])
-    @include('contracts.pagina18', ['pageNumber' => 18])
-    @include('contracts.pagina19', ['pageNumber' => 19])
-    @include('contracts.pagina20', ['pageNumber' => 20])
-    @include('contracts.pagina21', ['pageNumber' => 21]) --}}
+@include('contracts.portada', ['logo64' => $logo64, 'bldg64' => $bldg64])
 
-
-
-{{-- @include('contracts.pagina170', ['pageNumber' => 170])
-@include('contracts.pagina180', ['pageNumber' => 180])
-@include('contracts.pagina190', ['pageNumber' => 190])
-@include('contracts.pagina200', ['pageNumber' => 200])
-@include('contracts.pagina210', ['pageNumber' => 210])
- @include('contracts.pagina220', ['pageNumber' => 220])  --}}
-{{-- @include('contracts.pagina230', ['pageNumber' => 230]) --}}
-@include('contracts.pagina300', ['pageNumber' => 300])
-    
 </body>
 </html>

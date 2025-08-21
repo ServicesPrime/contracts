@@ -3,46 +3,47 @@
 namespace App\Http\Controllers;
 
 use App\Models\Client;
-use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\Contract;
-use App\Models\ContractService;
 use App\Models\Service;
+use App\Services\ContractService;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
-use setasign\Fpdi\Tcpdf\Fpdi;
 
 class ContractController extends Controller
 {
+    protected $contractService;
 
-    // CONTROLADOR CORREGIDO
+    public function __construct(ContractService $contractService)
+    {
+        $this->contractService = $contractService;
+    }
+
     public function index(Request $request)
     {
         $search = $request->input('search');
 
         $contracts = Contract::with([
             'client' => function ($query) {
-                $query->with('address'); // Cargar la dirección del cliente
+                $query->with('address');
             },
-            'contractServices.service.specifications' // CAMBIAR: Cargar servicios a través de la tabla pivote
+            'contractServices.service.specifications',
+            'contractSchool' // Cargar datos de school si existen
         ])
             ->when($search, function ($query, $search) {
                 $query->where('contract_number', 'like', "%$search%")
                     ->orWhere('department', 'like', "%$search%")
                     ->orWhere('date', 'like', "%$search%")
-                    // Buscar por nombre del cliente
                     ->orWhereHas('client', function ($clientQuery) use ($search) {
                         $clientQuery->where('name', 'like', "%$search%")
                             ->orWhere('email', 'like', "%$search%")
                             ->orWhere('phone', 'like', "%$search%");
                     })
-                    // CAMBIAR: Buscar por servicios a través de contractServices
                     ->orWhereHas('contractServices.service', function ($serviceQuery) use ($search) {
                         $serviceQuery->where('service', 'like', "%$search%")
                             ->orWhere('type', 'like', "%$search%");
                     })
-                    // Buscar por dirección del cliente
                     ->orWhereHas('client.address', function ($addressQuery) use ($search) {
                         $addressQuery->where('street', 'like', "%$search%")
                             ->orWhere('city', 'like', "%$search%")
@@ -52,7 +53,29 @@ class ContractController extends Controller
             })
             ->orderBy('contract_number', 'desc')
             ->get();
-        //dd($contracts);
+
+        // Agregar información del tipo de contrato y calcular totales
+        $contracts = $contracts->map(function ($contract) {
+            // Determinar el tipo de contrato
+            $contract->contract_type = $contract->contractSchool ? 'school' : 'jwo';
+
+            // Calcular el total según el tipo
+            if ($contract->contract_type === 'school') {
+                $contract->total_amount = $contract->contractSchool ?
+                    ($contract->contractSchool->labor_cost + $contract->contractSchool->chemical_cost) : 0;
+                $contract->description = $contract->contractSchool ?
+                    $contract->contractSchool->frequency : 'School Contract';
+            } else {
+                $contract->total_amount = $contract->contractServices->sum(function ($cs) {
+                    return ($cs->quantity ?? 0) * ($cs->unit_price ?? 0);
+                });
+                $serviceCount = $contract->contractServices->count();
+                $contract->description = "{$serviceCount} service(s)";
+            }
+
+            return $contract;
+        });
+
         return Inertia::render('Contracts/Index', [
             'contracts' => $contracts,
             'filters' => [
@@ -63,18 +86,10 @@ class ContractController extends Controller
 
     public function create()
     {
-        // Cargar clientes con sus direcciones
-        $clients = Client::with('address')
-            ->orderBy('name')
-            ->get();
-
-        // Cargar servicios con sus especificaciones
-        $services = Service::with('specifications')
-            ->orderBy('service')
-            ->get();
-
+        $clients = Client::with('address')->orderBy('name')->get();
+        $services = Service::with('specifications')->orderBy('service')->get();
         $contractNumber = $this->generateContractNumber();
-        //dd($contractNumber);
+
         return Inertia::render('Contracts/Create', [
             'clients' => $clients,
             'services' => $services,
@@ -84,103 +99,76 @@ class ContractController extends Controller
 
     public function store(Request $request)
     {
-        //dd($request);
-        // Primero validamos los campos básicos
-        $request->validate([
-            'contract_number' => 'required|unique:contracts|numeric',
-            'client_id' => 'required|exists:clients,id',
-            'department' => 'required|string|max:255',
-            'date' => 'required|date',
-            'services' => 'required|array|min:1',
-            'services.*.service_id' => 'required|exists:services,id',
-        ]);
-
-        // Validación condicional para quantity y unit_price
-        $request->validate([
-            'services.*.quantity' => [
-                'nullable',
-                'integer',
-                'min:1',
-                function ($attribute, $value, $fail) use ($request) {
-                    $index = explode('.', $attribute)[1];
-                    $serviceId = $request->input("services.{$index}.service_id");
-
-                    if ($serviceId) {
-                        $service = \App\Models\Service::find($serviceId);
-                        if ($service && $service->type === 'service' && empty($value)) {
-                            $fail('The quantity field is required for service type.');
-                        }
-                    }
-                }
-            ],
-            'services.*.unit_price' => [
-                'nullable',
-                'numeric',
-                'min:0',
-                function ($attribute, $value, $fail) use ($request) {
-                    $index = explode('.', $attribute)[1];
-                    $serviceId = $request->input("services.{$index}.service_id");
-
-                    if ($serviceId) {
-                        $service = \App\Models\Service::find($serviceId);
-                        if ($service && $service->type === 'service' && empty($value)) {
-                            $fail('The unit price field is required for service type.');
-                        }
-                    }
-                }
-            ]
-        ]);
-
+        // dd($request);
         try {
-            DB::beginTransaction();
+            // Debug: Imprimir los datos que llegan
+            Log::info('Controller - Store method called with data:', $request->all());
 
-            // Crear el contrato
-            $contract = Contract::create([
-                'contract_number' => $request->contract_number,
-                'client_id' => $request->client_id,
-                'department' => $request->department,
-                'date' => $request->date
-            ]);
+            $contract = $this->contractService->createContract($request);
 
-            // Crear los servicios del contrato
-            foreach ($request->services as $serviceData) {
-                ContractService::create([
-                    'contract_id' => $contract->id,
-                    'service_id' => $serviceData['service_id'],
-                    'quantity' => $serviceData['quantity'],
-                    'unit_price' => $serviceData['unit_price']
-                    // NO incluir 'subtotal' aquí
-                ]);
-            }
-
-            DB::commit();
+            Log::info('Controller - Contract created successfully with ID: ' . $contract->id);
 
             return redirect()->route('contracts.index')
-                ->with('success', 'Contrato creado exitosamente con ' . count($request->services) . ' servicio(s).');
-        } catch (\Exception $e) {
-            DB::rollBack();
+                ->with('success', 'Contract created successfully!');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            Log::error('Controller - Validation errors:', $e->errors());
 
-            return redirect()->back()
+            return back()
+                ->withErrors($e->errors())
                 ->withInput()
-                ->with('error', 'Error al crear el contrato: ' . $e->getMessage());
+                ->with('error', 'Validation failed: ' . implode(', ', array_keys($e->errors())));
+        } catch (\Exception $e) {
+            Log::error('Controller - General error:', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return back()
+                ->withErrors(['error' => 'Failed to create contract: ' . $e->getMessage()])
+                ->withInput()
+                ->with('error', 'Error: ' . $e->getMessage());
         }
     }
 
     public function edit(Contract $contract)
     {
-        $contract->load(['client.address', 'contractServices.service.specifications']);
+        // Cargar relaciones según el tipo de contrato
+        $contract->load(['client.address', 'contractServices.service.specifications', 'contractSchool']);
 
         // Formatear la fecha explícitamente
         $contractData = $contract->toArray();
         if ($contract->date) {
             $contractData['date'] = $contract->date->format('Y-m-d');
         }
+        if ($contract->start_date) {
+            $contractData['start_date'] = $contract->start_date->format('Y-m-d');
+        }
+        if ($contract->end_date) {
+            $contractData['end_date'] = $contract->end_date->format('Y-m-d');
+        }
+
+        // Determinar el tipo de organización
+        $contractData['organization'] = $contract->contractSchool ? 'school' : 'jwo';
+
+        // Si es un contrato school, formatear los datos
+        if ($contract->contractSchool) {
+            $contractData['schoolData'] = [
+                'start_date' => $contract->start_date ? $contract->start_date->format('Y-m-d') : '',
+                'end_date' => $contract->end_date ? $contract->end_date->format('Y-m-d') : '',
+                'percentage' => $contract->contractSchool->percentage,
+                'work_days' => $contract->contractSchool->work_days,
+                'labor_cost' => $contract->contractSchool->labor_cost,
+                'chemical_cost' => $contract->contractSchool->chemical_cost,
+                'frequency' => $contract->contractSchool->frequency,
+                'cost_per_monthly' => 0
+            ];
+        }
 
         $clients = Client::with('address')->orderBy('name')->get();
         $services = Service::with('specifications')->orderBy('service')->get();
 
         return Inertia::render('Contracts/Create', [
-            'contract' => $contractData,  // Usar los datos formateados
+            'contract' => $contractData,
             'clients' => $clients,
             'services' => $services
         ]);
@@ -188,88 +176,18 @@ class ContractController extends Controller
 
     public function update(Request $request, Contract $contract)
     {
-        // Primero validamos los campos básicos
-        $request->validate([
-            'contract_number' => 'required|unique:contracts,contract_number,' . $contract->id . '|numeric',
-            'client_id' => 'required|exists:clients,id',
-            'department' => 'required|string|max:255',
-            'date' => 'required|date',
-            'services' => 'required|array|min:1',
-            'services.*.service_id' => 'required|exists:services,id',
-        ]);
-
-        // Validación condicional para quantity y unit_price
-        $request->validate([
-            'services.*.quantity' => [
-                'nullable',
-                'integer',
-                'min:1',
-                function ($attribute, $value, $fail) use ($request) {
-                    $index = explode('.', $attribute)[1];
-                    $serviceId = $request->input("services.{$index}.service_id");
-
-                    if ($serviceId) {
-                        $service = \App\Models\Service::find($serviceId);
-                        if ($service && $service->type === 'service' && empty($value)) {
-                            $fail('The quantity field is required for service type.');
-                        }
-                    }
-                }
-            ],
-            'services.*.unit_price' => [
-                'nullable',
-                'numeric',
-                'min:0',
-                function ($attribute, $value, $fail) use ($request) {
-                    $index = explode('.', $attribute)[1];
-                    $serviceId = $request->input("services.{$index}.service_id");
-
-                    if ($serviceId) {
-                        $service = \App\Models\Service::find($serviceId);
-                        if ($service && $service->type === 'service' && empty($value)) {
-                            $fail('The unit price field is required for service type.');
-                        }
-                    }
-                }
-            ]
-        ]);
-
         try {
-            DB::beginTransaction();
-
-            // Actualizar el contrato
-            $contract->update([
-                'contract_number' => $request->contract_number,
-                'client_id' => $request->client_id,
-                'department' => $request->department,
-                'date' => $request->date
-            ]);
-
-            // Eliminar los servicios existentes
-            $contract->contractServices()->delete();
-
-            // Crear los nuevos servicios del contrato
-            foreach ($request->services as $serviceData) {
-                ContractService::create([
-                    'contract_id' => $contract->id,
-                    'service_id' => $serviceData['service_id'],
-                    'quantity' => $serviceData['quantity'] ?? null,
-                    'unit_price' => $serviceData['unit_price'] ?? null
-                ]);
-            }
-
-            DB::commit();
+            $this->contractService->updateContract($request, $contract);
 
             return redirect()->route('contracts.index')
-                ->with('success', 'Contrato actualizado exitosamente con ' . count($request->services) . ' servicio(s).');
+                ->with('success', 'Contract updated successfully!');
         } catch (\Exception $e) {
-            DB::rollBack();
-
-            return redirect()->back()
-                ->withInput()
-                ->with('error', 'Error al actualizar el contrato: ' . $e->getMessage());
+            return back()
+                ->withErrors(['error' => 'Failed to update contract: ' . $e->getMessage()])
+                ->withInput();
         }
     }
+
     public function destroy(Contract $contract)
     {
         $contract->delete();
@@ -278,6 +196,49 @@ class ContractController extends Controller
             ->with('success', 'Contract deleted successfully.');
     }
 
+public function downloadPdf(Contract $contract)
+{
+    try {
+        $contract->load([
+            'client.address',
+            'contractServices.service.specifications',
+            'contractSchool'
+        ]);
+
+        // Determinar el tipo de contrato y la vista correspondiente
+        $isSchoolContract = $contract->contractSchool !== null;
+        
+        if ($isSchoolContract) {
+            // Vista para contratos School
+            $pdf = PDF::loadView('contractsschool.pdf', compact('contract'));
+            $filename = 'school-contract-' . $contract->contract_number . '.pdf';
+        } else {
+            // Vista para contratos JWO
+            $pdf = PDF::loadView('contracts.pdf', compact('contract'));
+            $filename = 'work-order-' . $contract->contract_number . '.pdf';
+        }
+
+        $pdf->setPaper('A4', 'portrait');
+        $pdf->setOptions([
+            'dpi' => 150,
+            'defaultFont' => 'sans-serif',
+            'isHtml5ParserEnabled' => true,
+            'isPhpEnabled' => true
+        ]);
+
+        return $pdf->download($filename);
+        
+    } catch (\Exception $e) {
+        Log::error('Error generando PDF del contrato: ' . $e->getMessage(), [
+            'contract_id' => $contract->id,
+            'contract_type' => $contract->contractSchool ? 'school' : 'jwo',
+            'error' => $e->getTraceAsString()
+        ]);
+
+        return back()->with('error', 'Error al generar el PDF. Inténtalo de nuevo.');
+    }
+}
+
     private function generateContractNumber()
     {
         $today = now();
@@ -285,61 +246,19 @@ class ContractController extends Controller
         $month = $today->format('m');
         $day = $today->format('d');
 
-        // Buscar el último contrato ordenado por contract_number
         $lastContract = Contract::orderBy('contract_number', 'desc')->first();
 
         if ($lastContract) {
-            // Extraer los primeros 4 números del último contrato
             preg_match('/^(\d{4})/', $lastContract->contract_number, $matches);
             $lastNumber = isset($matches[1]) ? intval($matches[1]) : 0;
             $nextNumber = $lastNumber + 1;
         } else {
-            // Si no hay contratos, empezar desde 0001
             $nextNumber = 1;
         }
 
-        // Formatear: 4 dígitos + mes + día + año
         $sequentialNumber = str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
         $contractNumber = $sequentialNumber . $month . $day . $year;
 
         return $contractNumber;
-    }
-
-    public function downloadPdf(Contract $contract)
-    {
-        try {
-            // Cargar el contrato con todas las relaciones necesarias
-            $contract->load([
-                'client.address',
-                'contractServices.service.specifications'
-            ]);
-
-            // Generar el PDF usando la vista blade
-            $pdf = PDF::loadView('contracts.pdf', compact('contract'));
-
-            // Configurar opciones del PDF
-            $pdf->setPaper('A4', 'portrait');
-            $pdf->setOptions([
-                'dpi' => 150,
-                'defaultFont' => 'sans-serif',
-                'isHtml5ParserEnabled' => true,
-                'isPhpEnabled' => true
-            ]);
-
-            // Generar nombre del archivo
-            $filename = 'work-order-' . $contract->contract_number . '.pdf';
-
-            // Retornar el PDF para descarga
-            return $pdf->download($filename);
-        } catch (\Exception $e) {
-            // Log del error
-            Log::error('Error generando PDF del contrato: ' . $e->getMessage(), [
-                'contract_id' => $contract->id,
-                'error' => $e->getTraceAsString()
-            ]);
-
-            // Retornar error al usuario
-            return back()->with('error', 'Error al generar el PDF. Inténtalo de nuevo.');
-        }
     }
 }
