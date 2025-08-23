@@ -21,8 +21,9 @@ $bldg64 = file_exists($bldgPath)
     : '';
 @endphp
 
+    Incluir la portada (sin número de página) 
     @include('contracts.portada', ['logo64' => $logo64, 'bldg64' => $bldg64])
- @include('contracts.paginathankyou', ['logo64' => $logo64, 'bldg64' => $bldg64])
+    @include('contracts.paginathankyou', ['logo64' => $logo64, 'bldg64' => $bldg64])
     @include('contracts.pagina1', ['pageNumber' => 1])
     @include('contracts.pagina2', ['pageNumber' => 2])
     @include('contracts.pagina3', ['pageNumber' => 3])
@@ -38,6 +39,17 @@ $bldg64 = file_exists($bldgPath)
     @include('contracts.pagina13', ['pageNumber' => 13])
     @include('contracts.pagina14', ['pageNumber' => 14])
     @include('contracts.pagina15', ['pageNumber' => 15])
-
+    @include('contracts.pagina16', ['pageNumber' => 16])
+    @include('contracts.pagina17', ['pageNumber' => 17])
+    @include('contracts.pagina18', ['pageNumber' => 18])
+    @include('contracts.pagina19', ['pageNumber' => 19])
+    @include('contracts.pagina20', ['pageNumber' => 20])
+    @include('contracts.pagina21', ['pageNumber' => 21])
+    @include('contracts.pagina22', ['pageNumber' => 22])
+    @include('contracts.pagina23', ['pageNumber' => 23])
+    @include('contracts.pagina24', ['pageNumber' => 24])
+    @include('contracts.pagina25', ['pageNumber' => 25])      
+    @include('contracts.pagina26', ['pageNumber' => 26])     
+    
 </body>
 </html>
