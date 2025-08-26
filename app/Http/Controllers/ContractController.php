@@ -214,7 +214,7 @@ public function downloadPdf(Contract $contract)
             $filename = 'school-contract-' . $contract->contract_number . '.pdf';
         } else {
             // Vista para contratos JWO
-            $pdf = PDF::loadView('contracts.pdf', compact('contract'));
+            $pdf = PDF::loadView('contractsprueba.pdf', compact('contract'));
             $filename = 'work-order-' . $contract->contract_number . '.pdf';
         }
 

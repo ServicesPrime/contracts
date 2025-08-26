@@ -151,6 +151,11 @@
           </div>
         </div>
 
+<ServiceForm 
+  :services="services"
+  @update:services="services = $event"
+  :errors="errors"
+/>
       </div>
     </div>
   </section>
@@ -160,11 +165,21 @@
 import { computed } from 'vue'
 import FormField from "@/Components/FormField.vue"
 import FormControl from "@/Components/FormControl.vue"
+import ServiceForm from "./ServicesForm.vue"
+
 
 const props = defineProps({
   schoolData: {
     type: Object,
     required: true
+  },
+  services: {  
+    type: Array,
+    default: () => [{
+      type: '',
+      service: '',
+      specifications: []
+    }]
   },
   errors: {
     type: Object,

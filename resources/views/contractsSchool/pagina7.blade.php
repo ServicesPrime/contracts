@@ -32,7 +32,7 @@ $watermark64 = file_exists($watermarkPath)
         <h2 class="terms-title">TERMS OF AGREEMENT</h2>
 
         <p>
-            TThe term of this Agreement shall be four (4) years from the date of execution by both parties. The 
+            The term of this Agreement shall be four (4) years from the date of execution by both parties. The 
 Agreement may be terminated by either party with thirty (30) days’ prior written notice. This clause 
 applies to all services described in the Agreement, except that, if either party becomes bankrupt, 
 insolvent, discontinues operations, or fails to make payments as required, the other party may 
