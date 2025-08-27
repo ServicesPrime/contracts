@@ -1,8 +1,9 @@
 {{-- C:\laragon\www\contracts\resources\views\contracts\portada.blade.php --}}
 
 <!-- ====== PORTADA / PRIMERA PÁGINA ====== -->
+
 <div class="page cover" style="position:relative; min-height:100vh;">
-@php
+ @php
 // Agregar la ruta del logo ATWY SCHOOL
 $atwySChoolPath = storage_path('app/public/LOGOTIPO ATWY SCHOOL.png');
 $atwySchool64 = file_exists($atwySChoolPath)
@@ -37,15 +38,8 @@ $atwySchool64 = file_exists($atwySChoolPath)
     <div class="content-with-padding" style="text-align:center; margin-top:150px; padding:0 30px;">
         <img src="{{ $atwySchool64 }}" alt="AWTY School Logo" style="width:500px; height:auto;">
     </div>
-    @endif
+    @endif 
 
-    <!-- Footer especial solo para la portada -->
-    <div class="footer-cover" style="
-        position:absolute; left:0; right:0; bottom:20px;
-        text-align:center; color:#b41f24; font-weight:bold;
-        font-size:24px; line-height:1.5;">
-        <div>8303 Westglen Dr - Houston, TX 77063 ~ Phone 713-338-2553 ~ Fax 713-574-3065</div>
-        <div>www.primefacilityservicesgroup.com</div>
-    </div>
+   <x-footer-cover />
 </div>
-<!-- ====== FIN PORTADA ====== -->
+

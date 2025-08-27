@@ -21,8 +21,24 @@ $bldg64 = file_exists($bldgPath)
     : '';
 @endphp
 
-{{-- @include('contracts.cover.janitorial.cover', ['logo64' => $logo64, 'bldg64' => $bldg64]) --}}
-@include('contracts.thankyou', ['logo64' => $logo64, 'bldg64' => $bldg64])
+ {{-- @include('contracts.cover.janitorial.cover', ['logo64' => $logo64, 'bldg64' => $bldg64]) 
+ @include('contracts.thankyou', ['logo64' => $logo64, 'bldg64' => $bldg64]) 
+ @include('contracts.pagina1')
+ @include('contracts.pagina2')
+ @include('contracts.pagina3')
+ @include('contracts.pagina4')
+ @include('contracts.pagina5')
+ @include('contracts.pagina6')
+ @include('contracts.pagina7')
+ @include('contracts.pagina8')
+ @include('contracts.pagina9')
+@include('contracts.pagina10')  
+@include('contracts.pagina11') 
+@include('contracts.pagina12') 
+@include('contracts.pagina13') 
+@include('contracts.pagina16')
+@include('contracts.pagina19') --}}
+@include('contracts.pagina20')
 
 </body>
 </html>

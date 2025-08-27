@@ -15,7 +15,6 @@
         @endif
     </div>
 
-    {{-- COMPONENTE WATERMARK --}}
     <x-watermark />
 
     <!-- Sección de Agradecimiento -->
@@ -23,10 +22,10 @@
         <div class="agradecimiento-section">
             <!-- Destinatario -->
             <div class="texto-normal font-bold" style="margin-bottom:25px;">
-               <div style="margin:0;">Mr. {{$contract->client->name}}</div>
-                 <div style="margin:0;">{{$contract->client->address->name_account}}</div>
-               <div style="margin:0;">{{$contract->client->address->street}}</div>
-                <div style="margin:0;">{{$contract->client->address->city}}, {{$contract->client->address->state}} {{$contract->client->address->zip_code}}</div>
+               <div style="margin:0;">{{$contract->client->name ?? null}}</div>
+                 <div style="margin:0;">{{$contract->client->address->name_account ?? null}}</div>
+               <div style="margin:0;">{{$contract->client->address->street ?? null}}</div>
+                <div style="margin:0;">{{$contract->client->address->city ?? null}}, {{$contract->client->address->state?? null}} {{$contract->client->address->zip_code ?? null}}</div>
             </div>
             
             <!-- Asunto -->
@@ -36,12 +35,12 @@
             
             <!-- Saludo -->
             <div class="texto-normal font-bold" style="margin-bottom:20px;">
-                Dear Mr. Benson,
+                Dear {{$contract->client->name ?? null}},
             </div>
             
             <!-- Cuerpo de la carta -->
             <div class="texto-normal" style="margin-bottom:18px; text-align: justify;">
-                On behalf of Prime Facility Services Group, I want to express our genuine gratitude for the opportunity to present a comprehensive janitorial services proposal for Awty International School.
+                On behalf of Prime Facility Services Group, I want to express our genuine gratitude for the opportunity to present a comprehensive janitorial services proposal for {{$contract->client->address->name_account  ?? null}}.
             </div>
             
             <div class="texto-normal" style="margin-bottom:18px; text-align: justify;">
@@ -49,11 +48,11 @@
             </div>
             
             <div class="texto-normal" style="margin-bottom:18px; text-align: justify;">
-                At Prime Facility Services Group, we take great pride in delivering not just cleaning, but a consistent, dependable standard of care that supports an environment where students and staff can thrive. With our proven expertise, attention to detail, and dedication to building lasting relationships, we are confident we can be the right partner to maintain the excellence that Awty represents.
+                At Prime Facility Services Group, we take great pride in delivering not just cleaning, but a consistent, dependable standard of care that supports an environment where students and staff can thrive. With our proven expertise, attention to detail, and dedication to building lasting relationships, we are confident we can be the right partner to maintain the excellence that {{$contract->client->address->name_account ?? null}} represents.
             </div>
             
             <div class="texto-normal" style="margin-bottom:25px; text-align: justify;">
-                Thank you again for your trust and consideration. We look forward to working together to ensure Awty International School continues to shine—inside and out.
+                Thank you again for your trust and consideration. We look forward to working together to ensure {{$contract->client->address->name_account  ?? null}} continues to shine—inside and out.
             </div>
             
             <!-- Despedida y firma -->
@@ -72,6 +71,6 @@
     </div>
 
     {{-- COMPONENTE FOOTER COVER --}}
-    <x-footer-cover />
+<x-footer-pages />
 </div>
 <!-- ====== FIN PORTADA ====== -->

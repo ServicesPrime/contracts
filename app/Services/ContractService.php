@@ -21,15 +21,19 @@ class ContractService
             $this->validateBaseRequest($request);
             Log::info('ContractService - Base validation passed');
 
-            return DB::transaction(function () use ($request) {
-                if ($request->organization === 'jwo') {
-                    Log::info('ContractService - Creating JWO contract');
-                    return $this->createJWOContract($request);
-                } else {
-                    Log::info('ContractService - Creating School contract');
-                    return $this->createSchoolContract($request);
-                }
-            });
+           return DB::transaction(function () use ($request) {
+    if ($request->organization === 'jwo') {
+        Log::info('ContractService - Creating JWO contract');
+        return $this->createJWOContract($request);
+    } elseif ($request->organization === 'school') {
+        Log::info('ContractService - Creating School contract');
+        return $this->createSchoolContract($request);
+    } else {
+        Log::info('ContractService - Creating General contract');
+        return $this->createGeneralContract($request);
+    }
+});
+
         } catch (\Illuminate\Validation\ValidationException $e) {
             Log::error('ContractService - Validation Error:', [
                 'errors' => $e->errors(),
@@ -149,38 +153,31 @@ class ContractService
         return $contract;
     }
 
-    private function createBaseContract(Request $request, string $type = 'jwo')
-    {
-        try {
-            $data = [
-                'contract_number' => $request->contract_number,
-                'client_id' => $request->client_id,
-                'department' => $request->department,
-                'date' => $request->date,
-            ];
+private function createBaseContract(Request $request, string $type = 'general')
+{
+    $data = [
+        'contract_number' => $request->contract_number,
+        'client_id'       => $request->client_id,
+        'department'      => $request->department,
+        'date'            => $request->date,
+    ];
 
-            if ($type === 'school') {
-                $data['start_date'] = $request->schoolData['start_date'];
-                $data['end_date'] = $request->schoolData['end_date'];
-            } else {
-                $data['start_date'] = $request->date;
-                $data['end_date'] = $request->date;
-            }
-
-            Log::info('ContractService - Creating contract with data:', $data);
-            $contract = Contract::create($data);
-            Log::info('ContractService - Contract created successfully with ID: ' . $contract->id);
-            
-            return $contract;
-        } catch (\Exception $e) {
-            Log::error('ContractService - Error creating base contract:', [
-                'data' => $data ?? [],
-                'message' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
-            throw $e;
-        }
+    if ($type === 'school') {
+        $data['start_date'] = $request->schoolData['start_date'];
+        $data['end_date']   = $request->schoolData['end_date'];
+    } elseif ($type === 'jwo') {
+        $data['start_date'] = $request->date;
+        $data['end_date']   = $request->date;
+    } else {
+        // general: permite que el request traiga directamente fechas
+        $data['start_date'] = $request->start_date;
+        $data['end_date']   = $request->end_date;
     }
+
+    Log::info('ContractService - Creating contract with data:', $data);
+    return Contract::create($data);
+}
+
 
     private function attachServices(Contract $contract, array $services)
     {
@@ -255,7 +252,7 @@ class ContractService
                 'client_id' => 'required|exists:clients,id',
                 'department' => 'required|string|max:255',
                 'date' => 'required|date',
-                'organization' => 'required|in:jwo,school',
+                'organization' => 'required|in:jwo,school,general',
             ]);
             
             Log::info('ContractService - Base validation completed successfully');
@@ -341,4 +338,12 @@ class ContractService
             'schoolData.cost_per_monthly' => 'required|numeric|min:0',
         ]);
     }
+    private function createGeneralContract(Request $request)
+{
+    // Validación básica (ya la tienes en validateBaseRequest)
+    $contract = $this->createBaseContract($request, 'general');
+    return $contract;
+}
+
+
 }

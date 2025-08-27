@@ -580,4 +580,6 @@
     .page:not(.cover) .page-number {
         display: block;
     }
+
+    
 </style>

@@ -2,10 +2,12 @@
 
 use App\Http\Controllers\AgencyController;
 use App\Http\Controllers\BankAccountController;
+use App\Http\Controllers\BladePreviewController;
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\PolicyController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ContractController;
+use App\Http\Controllers\ContractPreviewController;
 use App\Http\Controllers\CoverageController;
 use App\Http\Controllers\CoveragePackageController;
 use App\Http\Controllers\ModuleController;
@@ -65,6 +67,10 @@ Route::middleware('auth')->group(function () {
 
     // Ruta para generar contrato real
     Route::get('/generate-contract/{id}', [ContractController::class, 'generateContract']);
+    //previsualizador 
+Route::get('/blade-preview', [ContractPreviewController::class, 'preview'])->name('blade.preview');
+
+    
 });
 
 

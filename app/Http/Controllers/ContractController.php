@@ -99,15 +99,9 @@ class ContractController extends Controller
 
     public function store(Request $request)
     {
-        // dd($request);
         try {
-            // Debug: Imprimir los datos que llegan
-            Log::info('Controller - Store method called with data:', $request->all());
 
             $contract = $this->contractService->createContract($request);
-
-            Log::info('Controller - Contract created successfully with ID: ' . $contract->id);
-
             return redirect()->route('contracts.index')
                 ->with('success', 'Contract created successfully!');
         } catch (\Illuminate\Validation\ValidationException $e) {

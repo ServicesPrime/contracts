@@ -9,7 +9,7 @@
       </div>
 
       <!-- Organization Selection Cards -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
         
         <!-- School Card -->
         <div 
@@ -86,6 +86,45 @@
           <!-- Hover Effect Border -->
           <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-green-500 to-green-600 opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
         </div>
+
+        <!-- General Contract Card -->
+        <div 
+          @click="selectOrganization('general')"
+          class="group relative bg-white rounded-2xl shadow-lg border-2 border-gray-200 hover:border-purple-500 hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:scale-105"
+        >
+          <div class="p-8 text-center">
+            <!-- General Contract Icon -->
+            <div class="mb-6">
+              <div class="w-20 h-20 mx-auto bg-purple-100 rounded-full flex items-center justify-center group-hover:bg-purple-200 transition-colors duration-300">
+                <svg class="w-10 h-10 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                </svg>
+              </div>
+            </div>
+            
+            <!-- General Title -->
+            <h2 class="text-2xl font-bold text-gray-900 mb-3 group-hover:text-purple-600 transition-colors duration-300">
+              General Contract
+            </h2>
+            
+            <!-- General Description -->
+            <p class="text-gray-600 mb-6">
+              Create standard contracts for general business and service agreements
+            </p>
+            
+            <!-- Select Button -->
+            <div class="inline-flex items-center justify-center px-6 py-3 bg-purple-600 text-white rounded-lg font-medium group-hover:bg-purple-700 transition-colors duration-300">
+              <span>Select General</span>
+              <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+              </svg>
+            </div>
+          </div>
+          
+          <!-- Hover Effect Border -->
+          <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-purple-500 to-purple-600 opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+        </div>
+
       </div>
 
       <!-- Footer Info -->

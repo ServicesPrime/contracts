@@ -45,8 +45,13 @@
         padding-bottom: 0;
     }
 
+    /* Ajustes para que el contenido no se superponga con el footer en páginas normales */
+    .page:not(.cover) {
+        padding-bottom: 90px;
+    }
+
     /* ==========================================
-       COMPONENTE: FOOTER COVER (Reutilizable)
+       COMPONENTE: FOOTER COVER (Portada)
     ========================================== */
     .footer-cover {
         position: absolute;
@@ -63,10 +68,61 @@
     }
 
     /* ==========================================
+       COMPONENTE: FOOTER PÁGINAS (Resto de páginas)
+    ========================================== */
+    .footer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+    }
+
+    .footer-red {
+        background-color: #b41f24;
+        height: 10px;
+        width: 100%;
+    }
+
+    .footer-blue {
+        background-color: #162469ff;
+        padding: 15px 35px;
+        text-align: center;
+        color: #fff;
+        font-size: 11pt;
+        font-weight: normal;
+        width: 100%;
+        line-height: 1.3;
+        font-family: Arial, sans-serif;
+    }
+
+    .site-footer {
+        width: 100%;
+    }
+
+    /* ==========================================
+       COMPONENTE: WATERMARK (Reutilizable)
+    ========================================== */
+    .watermark {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 1;
+        opacity: 0.05;
+        pointer-events: none;
+    }
+
+    .watermark-image {
+        width: 1200px;
+        height: auto;
+    }
+
+    /* ==========================================
        CLASES UTILITARIAS (Reutilizables)
     ========================================== */
     .content-padding {
-        padding: 120px 120px 0 120px;
+        padding: 60px 120px 0 120px;
         max-width: 100%;
     }
 
@@ -103,7 +159,7 @@
     }
 
     /* ==========================================
-       CLASE TITULO (Nueva)
+       CLASES DE TEXTO (Reutilizables)
     ========================================== */
     .titulo {
         color: #b41f24;
@@ -113,27 +169,23 @@
         text-align: center;
     }
 
-    /* ==========================================
-       COMPONENTE: WATERMARK (Reutilizable)
-    ========================================== */
-    .watermark {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        z-index: 1;
-        opacity: 0.05;
-        pointer-events: none;
+    .subtitulo {
+        color: #b41f24;
+        font-size: 14pt;
+        font-family: Arial, sans-serif;
+        font-weight: bold;
+        text-align: left;
+        text-decoration: underline;
+    }
+        .subtitulo-sin {
+        color: #b41f24;
+        font-size: 14pt;
+        font-family: Arial, sans-serif;
+        font-weight: bold;
+        text-align: left;
+       
     }
 
-    .watermark-image {
-        width: 1200px;
-        height: auto;
-    }
-
-    /* ==========================================
-       CLASE TEXTO NORMAL (Nueva)
-    ========================================== */
     .texto-normal {
         font-size: 11pt;
         font-family: Arial, sans-serif;
@@ -141,14 +193,93 @@
         color: #1c2969;
     }
 
-    /* ==========================================
-       CLASE SCRIPT TITLE (Nueva)
-    ========================================== */
     .script-title {
         font-family: 'Script MT Bold', cursive;
         font-weight: bold;
         color: #b41f24;
         font-size: 11pt;
         line-height: 1.5;
+    }
+
+    /* ==========================================
+       NUMERACIÓN DE PÁGINAS
+    ========================================== */
+    .page-number {
+        position: fixed;
+        bottom: 110px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1002;
+        color: #1c2969;
+        font-size: 10pt;
+        font-family: Arial, sans-serif;
+        font-weight: normal;
+        background-color: rgba(255, 255, 255, 0.8);
+        padding: 2px 5px;
+        border-radius: 3px;
+        text-align: center;
+    }
+
+    /* Ocultar numeración en la portada */
+    .page.cover .page-number {
+        display: none;
+    }
+
+    /* Mostrar numeración en páginas normales */
+    .page:not(.cover) .page-number {
+        display: block;
+    }
+
+    /* ==========================================
+       ESTILOS ESPECÍFICOS PARA PÁGINA DE NOTICES
+    ========================================== */
+    .notices-title {
+        text-align: center;
+        color: #b41f24;
+        font-size: 13pt !important;
+        font-weight: bold;
+        margin: 15px 0 25px 0;
+        font-family: Arial, sans-serif;
+    }
+
+    .notices-intro {
+        text-align: center;
+        max-width: 75%;
+        margin: 0 auto 20px auto;
+        font-size: 11pt !important;
+        line-height: 1.5;
+        color: #1c2969;
+        font-family: Arial, sans-serif;
+    }
+
+    .notice-section {
+        position: relative;
+        max-width: 90%;
+        margin: 15px auto;
+        line-height: 1.5;
+        text-align: center;
+    }
+
+    .notice-label {
+        position: absolute;
+        left: 25%;
+        top: 0;
+        color: #b41f24;
+        font-weight: bold;
+        font-size: 11pt !important;
+        font-family: Arial, sans-serif;
+        white-space: nowrap;
+        transform: translateX(-100%);
+        margin-right: 10px;
+    }
+
+    .notice-content {
+        color: #1c2969;
+        text-align: left;
+        font-size: 11pt !important;
+        line-height: 1.5;
+        font-family: Arial, sans-serif;
+        display: inline-block;
+        margin: 0 auto;
     }
 </style>

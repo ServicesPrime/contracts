@@ -185,17 +185,20 @@ const showServicesSection = computed(() => {
   return props.selectedOrganization === 'jwo' || props.form.organization === 'jwo'
 })
 
-// Check if form can be submitted
 const canSubmitForm = computed(() => {
   if (showServicesSection.value) {
     // For JWO: require at least one service
     return props.form.services && props.form.services.length > 0
   } else if (showSchoolForm.value) {
-    // For School: require basic fields (you can adjust these requirements)
-    return true // or add specific validation for school form
+    // For School: require basic fields (puedes afinar validación)
+    return true 
+  } else if (props.selectedOrganization === 'general' || props.form.organization === 'general') {
+    // For General contracts: solo requiere datos base (contract_number, client_id, department, date)
+    return !!(props.form.contract_number && props.form.client_id && props.form.department && props.form.date)
   }
   return false
 })
+
 
 // Update services handler
 const updateServices = (newServices) => {
