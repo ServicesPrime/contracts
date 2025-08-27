@@ -1,4 +1,4 @@
-{{-- C:\laragon\www\contracts\resources\views\contracts\pdf.blade.php --}}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,23 +21,8 @@ $bldg64 = file_exists($bldgPath)
     : '';
 @endphp
 
-    @include('contracts.portada', ['logo64' => $logo64, 'bldg64' => $bldg64])
- @include('contracts.paginathankyou', ['logo64' => $logo64, 'bldg64' => $bldg64])
-    @include('contracts.pagina1', ['pageNumber' => 1])
-    @include('contracts.pagina2', ['pageNumber' => 2])
-    @include('contracts.pagina3', ['pageNumber' => 3])
-    @include('contracts.pagina4', ['pageNumber' => 4])
-    @include('contracts.pagina5', ['pageNumber' => 5])
-    @include('contracts.pagina6', ['pageNumber' => 6])
-    @include('contracts.pagina7', ['pageNumber' => 7])
-    @include('contracts.pagina8', ['pageNumber' => 8])
-    @include('contracts.pagina9', ['pageNumber' => 9])
-    @include('contracts.pagina10', ['pageNumber' => 10])
-    @include('contracts.pagina11', ['pageNumber' => 11])
-    @include('contracts.pagina12', ['pageNumber' => 12])
-    @include('contracts.pagina13', ['pageNumber' => 13])
-    @include('contracts.pagina14', ['pageNumber' => 14])
-    @include('contracts.pagina15', ['pageNumber' => 15])
+{{-- @include('contracts.cover.janitorial.cover', ['logo64' => $logo64, 'bldg64' => $bldg64]) --}}
+@include('contracts.thankyou', ['logo64' => $logo64, 'bldg64' => $bldg64])
 
 </body>
 </html>
