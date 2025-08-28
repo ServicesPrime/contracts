@@ -195,6 +195,7 @@
       :contract="previewContract" 
       @close="closePreview" 
     />
+   
   </LayoutMain>
 </template>
 

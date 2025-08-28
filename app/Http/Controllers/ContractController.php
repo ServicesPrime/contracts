@@ -29,7 +29,7 @@ class ContractController extends Controller
                 $query->with('address');
             },
             'contractServices.service.specifications',
-            'contractSchool' // Cargar datos de school si existen
+            'contractSchool' 
         ])
             ->when($search, function ($query, $search) {
                 $query->where('contract_number', 'like', "%$search%")
@@ -54,12 +54,9 @@ class ContractController extends Controller
             ->orderBy('contract_number', 'desc')
             ->get();
 
-        // Agregar información del tipo de contrato y calcular totales
+        
         $contracts = $contracts->map(function ($contract) {
-            // Determinar el tipo de contrato
             $contract->contract_type = $contract->contractSchool ? 'school' : 'jwo';
-
-            // Calcular el total según el tipo
             if ($contract->contract_type === 'school') {
                 $contract->total_amount = $contract->contractSchool ?
                     ($contract->contractSchool->labor_cost + $contract->contractSchool->chemical_cost) : 0;
@@ -192,6 +189,8 @@ class ContractController extends Controller
 
 public function downloadPdf(Contract $contract)
 {
+
+    dd($contract);
     try {
         $contract->load([
             'client.address',
@@ -199,7 +198,7 @@ public function downloadPdf(Contract $contract)
             'contractSchool'
         ]);
 
-        // Determinar el tipo de contrato y la vista correspondiente
+       
         $isSchoolContract = $contract->contractSchool !== null;
         
         if ($isSchoolContract) {

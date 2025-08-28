@@ -26,6 +26,7 @@ use App\Models\Module;
 use App\Models\PartialReceipt;
 use App\Models\User;
 use Illuminate\Foundation\Application;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -68,9 +69,42 @@ Route::middleware('auth')->group(function () {
     // Ruta para generar contrato real
     Route::get('/generate-contract/{id}', [ContractController::class, 'generateContract']);
     //previsualizador 
-Route::get('/blade-preview', [ContractPreviewController::class, 'preview'])->name('blade.preview');
 
+Route::post('/contracts/preview', [ContractPreviewController::class, 'preview'])
+    ->name('contracts.preview');
+
+
+Route::match(['GET', 'POST'], '/blade-preview', [ContractPreviewController::class, 'preview'])
+    ->name('blade.preview');
+
+Route::get('/contracts/preview-direct', [ContractPreviewController::class, 'previewDirect'])
+    ->name('contracts.preview.direct');
+
+    Route::get('/test-preview', function() {
+    $pages = ['pagina1', 'pagina2', 'pagina3'];
     
+    Log::info('🧪 TEST: Probando preview directo', ['pages' => $pages]);
+    
+    $controller = new App\Http\Controllers\ContractPreviewController();
+    $request = request();
+    $request->merge(['pages' => $pages]);
+    
+    return $controller->preview($request);
+});
+
+// Test con parámetros de query
+Route::get('/test-preview-query', [App\Http\Controllers\ContractPreviewController::class, 'previewDirect']);
+
+// Endpoint para verificar qué llega exactamente
+Route::post('/debug-preview', function(Request $request) {
+    return response()->json([
+        'method' => $request->method(),
+        'all' => $request->all(),
+        'pages' => $request->input('pages'),
+        'pages_type' => gettype($request->input('pages')),
+        'headers' => $request->headers->all()
+    ]);
+});
 });
 
 

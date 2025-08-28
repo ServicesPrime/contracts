@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\EntryFormatController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -18,7 +18,7 @@ use App\Http\Controllers\EntryFormatController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::middleware(['auth'])->get('/formats/{id}', [EntryFormatController::class, 'getFormat']);
+
 
 
 // Ejemplo
