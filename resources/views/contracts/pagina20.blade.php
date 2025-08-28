@@ -13,7 +13,7 @@
 
 <div class="content-padding" style="position: relative; z-index: 2;">
     <div class="titulo">
-        {{ $contract->client->address->name_account ?? '' }} Recommended Chemicals
+        {{ $contract->client->address->name_account ?? $client->address->name_account ?? '' }} Recommended Chemicals
     </div>
     
     @if($catalogo1)

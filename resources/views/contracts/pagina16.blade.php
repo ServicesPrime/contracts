@@ -45,7 +45,7 @@
                 <!-- Columna Cliente -->
                 <td class="signature-cell" style="padding: 20px; vertical-align: top; width: 50%;">
                     <div class="subtitulo-sin" style="margin-bottom: 40px; text-align: center;">
-                        {{ $contract->client->address->name_account ?? 'CLIENT COMPANY' }}
+                        {{ $contract->client->address->name_account ?? $client->address->name_account ?? 'CLIENT COMPANY' }}
                     </div>
         
                     <div class="signature-block">
