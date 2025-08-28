@@ -65,14 +65,14 @@ const loadPreview = async () => {
 .preview-content {
   width: 100%;
   height: auto;
-  max-height: 600px;
+  max-height: 850px; /* Aumentado de 600px a 650px */
   overflow-y: auto;
   background: white;
   border-radius: 8px;
   border: 1px solid #e5e7eb;
-  transform: scale(0.5);
+  transform: scale(0.65); /* Aumentado de 0.5 a 0.65 (30% más grande) */
   transform-origin: top left;
-  width: 200%;
+  width: 154%; /* Ajustado para compensar el nuevo scale (100/0.65 ≈ 154) */
 }
 
 /* Ajustar el contenido para que se vea bien escalado */

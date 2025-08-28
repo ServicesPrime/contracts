@@ -1,45 +1,45 @@
 // Preview refresh function
 const refreshPreview = async () => {
-  if (isLoadingPreview.value) return
-  
-  isLoadingPreview.value = true
-  previewError.value = null
-  
-  try {
-    const formData = {
-      ...form.data(),
-      contract_id: isEditing.value ? props.contract.id : null,
-      organization: selectedOrganization.value
-    }
-    
-    const response = await axios.post(route('contracts.preview'), formData, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'text/html'
-      }
-    })
-    
-    previewHtml.value = response.data
-  } catch (error) {
-    console.error('Error loading preview:', error)
-    previewError.value = error.response?.data?.message || 'Failed to load preview'
-  } finally {
-    isLoadingPreview.value = false
-  }
+if (isLoadingPreview.value) return
+
+isLoadingPreview.value = true
+previewError.value = null
+
+try {
+const formData = {
+...form.data(),
+contract_id: isEditing.value ? props.contract.id : null,
+organization: selectedOrganization.value
+}
+
+const response = await axios.post(route('contracts.preview'), formData, {
+headers: {
+'Content-Type': 'application/json',
+'Accept': 'text/html'
+}
+})
+
+previewHtml.value = response.data
+} catch (error) {
+console.error('Error loading preview:', error)
+previewError.value = error.response?.data?.message || 'Failed to load preview'
+} finally {
+isLoadingPreview.value = false
+}
 }
 
 // Watch for form changes and auto-refresh preview
 let debounceTimeout = null
 watch(() => [form.data(), selectedOrganization.value], () => {
-  // Debounce the preview refresh to avoid too many requests
-  if (debounceTimeout) {
-    clearTimeout(debounceTimeout)
-  }
-  debounceTimeout = setTimeout(() => {
-    if (showPreview.value) {
-      refreshPreview()
-    }
-  }, 1000) // 1 second debounce
+// Debounce the preview refresh to avoid too many requests
+if (debounceTimeout) {
+clearTimeout(debounceTimeout)
+}
+debounceTimeout = setTimeout(() => {
+if (showPreview.value) {
+refreshPreview()
+}
+}, 1000) // 1 second debounce
 }, { deep: true })<template>
   <LayoutMain>
     <!-- Organization Selector (only show when creating and no organization selected) -->
@@ -90,7 +90,7 @@ watch(() => [form.data(), selectedOrganization.value], () => {
                     ? 'School'
                     : selectedOrganization === 'jwo'
                       ? 'JWO'
-                : 'General Contract'
+                      : 'General Contract'
                 }}
               </div>
 
@@ -114,68 +114,67 @@ watch(() => [form.data(), selectedOrganization.value], () => {
             <span>{{ showPreview ? 'Hide Preview' : 'Show Preview' }}</span>
           </button>
         </div>
+<!-- Main Content Grid 50%-70% with custom fractions -->
+<div class="lg:grid lg:gap-8" style="grid-template-columns: 4.3fr 9fr;">
+  
+  <!-- Form Section (5fr ≈ 42%) -->
+  <div :class="{ 'block': !showPreview || !isMobile, 'hidden': showPreview && isMobile }">
+    <ContractInformationForm :form="form" :clients="clients" :services="services" :is-editing="isEditing"
+      :selected-organization="selectedOrganization" @update:form="updateForm" @submit="submitForm"
+      @cancel="goBack" />
+  </div>
 
-        <!-- Main Content Grid -->
-        <div class="lg:grid lg:grid-cols-2 lg:gap-8">
-
-          <!-- Form Section -->
-          <div :class="{ 'block': !showPreview || !isMobile, 'hidden': showPreview && isMobile }">
-            <ContractInformationForm :form="form" :clients="clients" :services="services" :is-editing="isEditing"
-              :selected-organization="selectedOrganization" @update:form="updateForm" @submit="submitForm"
-              @cancel="goBack" />
+  <!-- Preview Section (7fr ≈ 58%) -->
+  <div :class="{ 'block': !isMobile || showPreview, 'hidden': isMobile && !showPreview }">
+    <div class="sticky top-8">
+      <!-- Preview Header -->
+      <div class="bg-white rounded-t-xl shadow-sm border border-gray-200 px-6 py-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-3">
+            <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+            </svg>
+            <h3 class="text-lg font-semibold text-gray-900">Contract Preview</h3>
           </div>
-
-          <!-- Preview Section -->
-          <div :class="{ 'block': !isMobile || showPreview, 'hidden': isMobile && !showPreview }">
-            <div class="sticky top-8">
-              <!-- Preview Header -->
-              <div class="bg-white rounded-t-xl shadow-sm border border-gray-200 px-6 py-4">
-                <div class="flex items-center justify-between">
-                  <div class="flex items-center space-x-3">
-                    <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                    </svg>
-                    <h3 class="text-lg font-semibold text-gray-900">Contract Preview</h3>
-                  </div>
-                  
-                  <!-- Refresh Preview Button -->
-                  <div class="flex items-center space-x-2">
-                    
-                    <!-- Desktop toggle -->
-                    <button @click="showPreview = !showPreview"
-                      class="hidden lg:block text-gray-400 hover:text-gray-600 p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200">
-                      <svg v-if="!showPreview" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                      </svg>
-                      <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L9.878 9.878zM12.878 4.878L12.878 4.878z" />
-                      </svg>
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Preview Content -->
-              <div v-show="showPreview"
-                class="bg-gray-100 border-l border-r border-b border-gray-200 rounded-b-xl p-4 h-[500px] overflow-hidden">
-                <ContractPreview />
-              </div>
-            </div>
+                                     
+          <!-- Refresh Preview Button -->
+          <div class="flex items-center space-x-2">
+                                         
+            <!-- Desktop toggle -->
+            <button @click="showPreview = !showPreview"
+              class="hidden lg:block text-gray-400 hover:text-gray-600 p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200">
+              <svg v-if="!showPreview" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L9.878 9.878zM12.878 4.878L12.878 4.878z" />
+              </svg>
+            </button>
           </div>
         </div>
+      </div>
+
+      <!-- Preview Content -->
+      <div v-show="showPreview"
+        class="bg-gray-100 border-l border-r border-b border-gray-200 rounded-b-xl p-4 h-[600px] overflow-hidden w-full">
+        <ContractPreview />
+      </div>
+    </div>
+  </div>
+</div>
       </div>
     </div>
   </LayoutMain>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted,watch } from 'vue'
-import { useForm, router} from '@inertiajs/vue3'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
+import { useForm, router } from '@inertiajs/vue3'
 import LayoutMain from "@/Layouts/LayoutMain.vue"
 import OrganizationSelector from "./partials/OrganizationSelector.vue"
 import ContractInformationForm from "./partials/ContractInformationForm.vue"
@@ -261,24 +260,24 @@ const handleOrganizationSelected = (organization) => {
 // Preview refresh function
 const refreshPreview = async () => {
   if (isLoadingPreview.value) return
-  
+
   isLoadingPreview.value = true
   previewError.value = null
-  
+
   try {
     const formData = {
       ...form.data(),
       contract_id: isEditing.value ? props.contract.id : null,
       organization: selectedOrganization.value
     }
-    
+
     const response = await axios.post(route('contracts.preview'), formData, {
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'text/html'
       }
     })
-    
+
     previewHtml.value = response.data
   } catch (error) {
     console.error('Error loading preview:', error)
