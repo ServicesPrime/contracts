@@ -47,19 +47,20 @@
   
   // Páginas disponibles específicas para School
   const availablePages = [
-    { id: 'pagina1', label: 'Página 1 - Introducción' },
-    { id: 'pagina2', label: 'Página 2 - Términos' },
-    { id: 'pagina3', label: 'Página 3 - Servicios' },
-    { id: 'pagina4', label: 'Página 4 - Precios' },
-    { id: 'pagina5', label: 'Página 5 - Condiciones' },
-    { id: 'pagina6', label: 'Página 6 - Responsabilidades' },
-    { id: 'pagina7', label: 'Página 7 - Horarios' },
-    { id: 'pagina8', label: 'Página 8 - Equipamiento' },
-    { id: 'pagina9', label: 'Página 9 - Personal' },
-    { id: 'pagina10', label: 'Página 10 - Calidad' },
-    { id: 'pagina11', label: 'Página 11 - Seguridad' },
-    { id: 'pagina12', label: 'Página 12 - Emergencias' },
-    { id: 'pagina13', label: 'Página 13 - Comunicación' },
+
+    { id: 'pagina1', label: 'Página 1 - Services Agreement (1)' },
+    { id: 'pagina2', label: 'Página 2 - Services Agreement (2)' },
+    { id: 'pagina3', label: 'Página 3 - Services Agreement (3) ' },
+    { id: 'pagina4', label: 'Página 4 - Indemnification' },
+    { id: 'pagina5', label: 'Página 5 - Notices' },
+    { id: 'pagina6', label: 'Página 6 - Miscellaneous' },
+    { id: 'pagina7', label: 'Página 7 - Terms Of Agreement' },
+    { id: 'pagina8', label: 'Página 8 - Optional Provision (1)' },
+    { id: 'pagina9', label: 'Página 9 - Optional Provision (2)' },
+    { id: 'pagina10', label: 'Página 10 - Optional Provision (3)' },
+    { id: 'pagina11', label: 'Página 11 - Optional Provision (4)' },
+    { id: 'pagina12', label: 'Página 12 - Services Areas' },
+    { id: 'pagina13', label: 'Página 13 - Services Scope' },
     { id: 'pagina16', label: 'Página 16 - Facturación' },
     { id: 'pagina19', label: 'Página 19 - Anexos' },
     { id: 'pagina20', label: 'Página 20 - Firmas' }

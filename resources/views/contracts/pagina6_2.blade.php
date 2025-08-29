@@ -23,7 +23,7 @@
         </div>
 
         <div class="texto-normal" style="margin-bottom:15px; text-align: justify;">
-            5. The attached Exhibits are incorporated by reference and constitute an integral part of this Agreement. In particular, Exhibit A (Scope of Service and Pricing), Exhibit B (Benefits Waiver for Prime Associates), and Exhibit C (Confidentiality Agreement for Assigned Employees),shall apply to all assigned employees as a condition of their assignment. In the event of any conflict between this Agreement and any Exhibit, the terms of this Agreement shall prevail unless expressly agreed otherwise in writing.        
+            5. The attached Exhibits are incorporated by reference and constitute an integral part of this Agreement. In particular, Exhibit A (Scope of Service and Pricing), Exhibit B (Benefits Waiver for Prime Associates), and Exhibit C (Confidentiality Agreement for Assigned Employees), as well as Exhibit D (Liability/Insurance), shall apply to all assigned employees as a condition of their assignment. In the event of any conflict between this Agreement and any Exhibit, the terms of this Agreement shall prevail unless expressly agreed otherwise in writing.
         </div>
 
         <div class="texto-normal" style="margin-bottom:15px; text-align: justify;">

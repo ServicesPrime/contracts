@@ -18,7 +18,7 @@ class ContractPreviewController extends Controller
 
     public function preview(Request $request)
     {
-        // dump($request);
+        //dump($request);
         try {
             $html = $this->previewService->generatePreview($request->all());
             return $html;

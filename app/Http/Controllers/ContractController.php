@@ -203,11 +203,11 @@ public function downloadPdf(Contract $contract)
         
         if ($isSchoolContract) {
             // Vista para contratos School
-            $pdf = PDF::loadView('contracts.pdf', compact('contract'));
+            $pdf = PDF::loadView('contracts.pagina11', compact('contract'));
             $filename = 'school-contract-' . $contract->contract_number . '.pdf';
         } else {
             // Vista para contratos JWO
-            $pdf = PDF::loadView('contractsJWO.pdf', compact('contract'));
+            $pdf = PDF::loadView('contracts.pagina11', compact('contract'));
             $filename = 'work-order-' . $contract->contract_number . '.pdf';
         }
 
