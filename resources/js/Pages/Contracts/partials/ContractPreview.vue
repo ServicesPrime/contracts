@@ -65,7 +65,7 @@ const loadPreview = async () => {
 .preview-content {
   width: 100%;
   height: auto;
-  max-height: 850px; /* Aumentado de 600px a 650px */
+  max-height: 750px; /* Aumentado de 600px a 650px */
   overflow-y: auto;
   background: white;
   border-radius: 8px;

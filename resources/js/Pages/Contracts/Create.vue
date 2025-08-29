@@ -16,24 +16,9 @@
               <p class="text-gray-600 mt-2">Fill in the information below to {{ isEditing ? 'update' : 'create' }} a contract</p>
             </div>
             <div v-if="!isEditing && selectedOrganization" class="text-right">
-              <div class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium" :class="{
-                'bg-blue-100 text-blue-800': selectedOrganization === 'school',
-                'bg-green-100 text-green-800': selectedOrganization === 'jwo',
-                'bg-purple-100 text-purple-800': selectedOrganization === 'general'
-              }">
-                <svg v-if="selectedOrganization === 'school'" class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                </svg>
-                <svg v-else-if="selectedOrganization === 'jwo'" class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                </svg>
-                <svg v-else class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                </svg>
-                {{
-                  selectedOrganization === 'school' ? 'School' :
-                  selectedOrganization === 'jwo' ? 'JWO' : 'General Contract'
-                }}
+              <div class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium" :class="getOrganizationBadgeClass(selectedOrganization)">
+                <component :is="getOrganizationIcon(selectedOrganization)" class="w-4 h-4 mr-2" />
+                {{ getOrganizationLabel(selectedOrganization) }}
               </div>
               <button @click="selectedOrganization = null" class="text-sm text-gray-500 hover:text-gray-700 mt-1 block">
                 Change Organization
@@ -54,7 +39,7 @@
           </button>
         </div>
 
-        <div class="lg:grid lg:gap-8" style="grid-template-columns: 4.3fr 9fr;">
+        <div class="lg:grid lg:gap-8" style="grid-template-columns: 4.3fr 8fr;">
           
           <!-- Form Section -->
           <div :class="{ 'block': !showPreview || !isMobile, 'hidden': showPreview && isMobile }">
@@ -68,40 +53,11 @@
               @submit="submitForm"
               @cancel="goBack" />
             
-            <!-- Page Selector Component -->
-            <div class="mt-6">
-              <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <div class="flex items-center justify-between mb-4">
-                  <h3 class="text-lg font-semibold text-gray-900">Seleccionar Páginas</h3>
-                  <div class="flex space-x-2">
-                    <button @click="selectAllPages" class="text-xs px-3 py-1 bg-blue-100 text-blue-700 rounded-full hover:bg-blue-200 transition-colors">
-                      Todas
-                    </button>
-                    <button @click="selectNoPages" class="text-xs px-3 py-1 bg-gray-100 text-gray-700 rounded-full hover:bg-gray-200 transition-colors">
-                      Ninguna
-                    </button>
-                  </div>
-                </div>
-                
-                <div class="space-y-2 max-h-64 overflow-y-auto">
-                  <label v-for="page in availablePages" :key="page.id" class="flex items-center hover:bg-gray-50 p-2 rounded-lg cursor-pointer">
-                    <input 
-                      type="checkbox" 
-                      :value="page.id"
-                      v-model="selectedPages"
-                      @change="onPageSelectionChange"
-                      class="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
-                    />
-                    <span class="ml-3 text-sm text-gray-700">{{ page.label }}</span>
-                  </label>
-                </div>
-                
-                <div v-if="selectedPages.length > 0" class="mt-4 p-3 bg-blue-50 rounded-lg">
-                  <p class="text-sm text-blue-800">
-                    <span class="font-medium">{{ selectedPages.length }}</span> página(s) seleccionada(s)
-                  </p>
-                </div>
-              </div>
+            <!-- PageSchool Component - Only show for School organization -->
+            <div v-if="isSchoolOrganization" class="mt-6">
+              <PageSchool 
+                v-model="selectedPages"
+                @pages-changed="onPageSelectionChange" />
             </div>
           </div>
 
@@ -117,7 +73,7 @@
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                     </svg>
                     <h3 class="text-lg font-semibold text-gray-900">Contract Preview</h3>
-                    <div v-if="selectedPages.length > 0" class="flex items-center text-sm text-blue-600 bg-blue-50 px-2 py-1 rounded-full">
+                    <div v-if="isSchoolOrganization && selectedPages.length > 0" class="flex items-center text-sm text-blue-600 bg-blue-50 px-2 py-1 rounded-full">
                       {{ selectedPages.length }} página(s)
                     </div>
                   </div>
@@ -154,7 +110,7 @@
                 <div v-else-if="previewHtml" class="contract-preview-content bg-white rounded border" v-html="previewHtml"></div>
                 
                 <div v-else class="flex items-center justify-center h-full text-gray-500">
-                  <p>Selecciona páginas para ver el preview</p>
+                  <p>{{ isSchoolOrganization ? 'Selecciona páginas para ver el preview' : 'Preview del contrato' }}</p>
                 </div>
               </div>
             </div>
@@ -173,6 +129,7 @@ import axios from 'axios'
 import LayoutMain from "@/Layouts/LayoutMain.vue"
 import OrganizationSelector from "./partials/OrganizationSelector.vue"
 import ContractInformationForm from "./partials/ContractInformationForm.vue"
+import PageSchool from "./partials/PageSchool.vue"
 
 const props = defineProps({
   contract: { type: Object, default: () => ({}) },
@@ -189,27 +146,7 @@ const isLoadingPreview = ref(false)
 const previewError = ref(null) 
 const previewHtml = ref('')
 
-// Páginas disponibles
-const availablePages = [
-  { id: 'pagina1', label: 'Página 1 - Introducción' },
-  { id: 'pagina2', label: 'Página 2 - Términos' },
-  { id: 'pagina3', label: 'Página 3 - Servicios' },
-  { id: 'pagina4', label: 'Página 4 - Precios' },
-  { id: 'pagina5', label: 'Página 5 - Condiciones' },
-  { id: 'pagina6', label: 'Página 6 - Responsabilidades' },
-  { id: 'pagina7', label: 'Página 7 - Horarios' },
-  { id: 'pagina8', label: 'Página 8 - Equipamiento' },
-  { id: 'pagina9', label: 'Página 9 - Personal' },
-  { id: 'pagina10', label: 'Página 10 - Calidad' },
-  { id: 'pagina11', label: 'Página 11 - Seguridad' },
-  { id: 'pagina12', label: 'Página 12 - Emergencias' },
-  { id: 'pagina13', label: 'Página 13 - Comunicación' },
-  { id: 'pagina16', label: 'Página 16 - Facturación' },
-  { id: 'pagina19', label: 'Página 19 - Anexos' },
-  { id: 'pagina20', label: 'Página 20 - Firmas' }
-]
-
-// Estado de páginas seleccionadas
+// Estado de páginas seleccionadas (solo para School)
 const selectedPages = ref(['pagina1'])
 
 // Timeouts
@@ -234,6 +171,35 @@ onUnmounted(() => {
 
 // Computed
 const isEditing = computed(() => !!props.contract?.id)
+
+// Check if current organization is school-related
+const isSchoolOrganization = computed(() => {
+  return selectedOrganization.value === 'janitorial-school' || 
+         selectedOrganization.value === 'school' // Legacy support
+})
+
+// Organization helper functions
+const getOrganizationBadgeClass = (org) => {
+  if (org === 'jwo') return 'bg-green-100 text-green-800'
+  if (org === 'janitorial-school' || org === 'school') return 'bg-blue-100 text-blue-800'
+  if (org === 'staffing-hospitality') return 'bg-orange-100 text-orange-800'
+  return 'bg-gray-100 text-gray-800'
+}
+
+const getOrganizationLabel = (org) => {
+  switch (org) {
+    case 'jwo': return 'JWO'
+    case 'janitorial-school': return 'Janitorial - School'
+    case 'staffing-hospitality': return 'Staffing - Hospitality'
+    case 'school': return 'School' // Legacy support
+    default: return org
+  }
+}
+
+const getOrganizationIcon = (org) => {
+  // Return appropriate icon component based on organization
+  return 'svg' // Placeholder - replace with actual icon logic
+}
 
 // Form setup
 const initializeServices = () => {
@@ -261,34 +227,34 @@ const form = useForm({
 const handleOrganizationSelected = (organization) => {
   selectedOrganization.value = organization
   form.organization = organization
+  
+  // Reset selected pages when organization changes
+  if (!isSchoolOrganization.value) {
+    selectedPages.value = []
+  } else {
+    selectedPages.value = ['pagina1'] // Default for school
+  }
 }
 
-const onPageSelectionChange = () => {
-  if (showPreview.value && selectedPages.value.length > 0) {
+const onPageSelectionChange = (newPages) => {
+  if (showPreview.value && newPages.length > 0) {
     refreshPreview()
   }
 }
 
-const selectAllPages = () => {
-  selectedPages.value = availablePages.map(p => p.id)
-  onPageSelectionChange()
-}
-
-const selectNoPages = () => {
-  selectedPages.value = []
-  onPageSelectionChange()
-}
-
 // Preview refresh
 const refreshPreview = async () => {
-  if (isLoadingPreview.value || selectedPages.value.length === 0) return
+  if (isLoadingPreview.value) return
+  
+  // For school organizations, require page selection
+  if (isSchoolOrganization.value && selectedPages.value.length === 0) return
 
   isLoadingPreview.value = true
   previewError.value = null
 
   try {
     const requestData = {
-      pages: selectedPages.value,
+      pages: isSchoolOrganization.value ? selectedPages.value : [],
       contract_number: form.contract_number,
       client_id: form.client_id,
       department: form.department,
@@ -326,15 +292,20 @@ const updateForm = (newFormData) => {
 watch(() => [form.data(), selectedOrganization.value], () => {
   if (formDebounceTimeout) clearTimeout(formDebounceTimeout)
   formDebounceTimeout = setTimeout(() => {
-    if (showPreview.value && selectedPages.value.length > 0) {
-      refreshPreview()
+    if (showPreview.value) {
+      // Only refresh if it's not a school organization or if pages are selected
+      if (!isSchoolOrganization.value || selectedPages.value.length > 0) {
+        refreshPreview()
+      }
     }
   }, 1000)
 }, { deep: true })
 
 watch(showPreview, (newValue) => {
-  if (newValue && selectedPages.value.length > 0) {
-    refreshPreview()
+  if (newValue) {
+    if (!isSchoolOrganization.value || selectedPages.value.length > 0) {
+      refreshPreview()
+    }
   }
 })
 

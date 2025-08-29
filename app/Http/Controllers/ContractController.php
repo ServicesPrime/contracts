@@ -190,7 +190,7 @@ class ContractController extends Controller
 public function downloadPdf(Contract $contract)
 {
 
-    dd($contract);
+    
     try {
         $contract->load([
             'client.address',
@@ -207,7 +207,7 @@ public function downloadPdf(Contract $contract)
             $filename = 'school-contract-' . $contract->contract_number . '.pdf';
         } else {
             // Vista para contratos JWO
-            $pdf = PDF::loadView('contracts.pdf', compact('contract'));
+            $pdf = PDF::loadView('contractsJWO.pdf', compact('contract'));
             $filename = 'work-order-' . $contract->contract_number . '.pdf';
         }
 
