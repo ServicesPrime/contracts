@@ -1,5 +1,12 @@
 {{-- resources/views/contracts/pdf-selected.blade.php --}}
 
+{{-- WRAPPER PRINCIPAL --}}
+@php $isPreviewMode = !empty($isPreview); @endphp
+<div class="{{ $isPreviewMode ? 'preview-mode' : 'print-mode' }}" data-mode="{{ $isPreviewMode ? 'preview' : 'print' }}">
+
+    <div style="font-size:12px;color:#888;">[modo: {{ $isPreviewMode ? 'preview' : 'print' }} | isPreview={{ json_encode($isPreview) }}]</div>
+
+
 @include('contracts.styles')
 
 @php
@@ -8,6 +15,7 @@
         'selectedPages' => $selectedPages ?? 'NOT_SET',
         'selectedPages_type' => gettype($selectedPages ?? null),
         'selectedPages_count' => isset($selectedPages) ? count($selectedPages) : 0,
+        'isPreview' => $isPreview ?? 'NOT_SET',
         'all_variables' => array_keys(get_defined_vars()),
     ]);
 
@@ -28,6 +36,7 @@
         'pagina11'  => 'contracts.pagina11',
         'pagina12'  => 'contracts.pagina12',
         'pagina13'  => 'contracts.pagina13',
+        'pagina14'  => 'contracts.pagina14',
         'pagina16'  => 'contracts.pagina16',
         'pagina19'  => 'contracts.pagina19',
         'pagina20'  => 'contracts.pagina20',
@@ -63,7 +72,6 @@
         'count' => count($validPages)
     ]);
 @endphp
-
 
 @if(empty($validPages))
     <div style="padding: 2rem; text-align: center; color: #666; background: #fee2e2; border: 1px solid #fca5a5;">
@@ -120,6 +128,10 @@
     @endforeach
 @endif
 
+{{-- CERRAR EL WRAPPER AQUÍ --}}
+</div>
+
+{{-- TUS ESTILOS ORIGINALES INTACTOS --}}
 <style>
 .page-container {
     position: relative;

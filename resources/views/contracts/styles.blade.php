@@ -53,30 +53,45 @@
     /* ==========================================
        COMPONENTE: FOOTER COVER (Portada)
     ========================================== */
-    .footer-cover {
-        position: absolute;
-        bottom: 20px;
-        left: 0;
-        right: 0;
-        text-align: center;
-        color: #b41f24;
-        font-weight: bold;
-        font-size: 24px;
-        line-height: 1.5;
-        z-index: 1001;
-        font-family: Arial, sans-serif;
-    }
+    /* =========================
+   FOOTER COVER (descarga por defecto)
+========================= */
+.footer-cover {
+    position: absolute;  /* default para PDF */
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    color: #b41f24;
+    font-weight: bold;
+    font-size: 24px;
+    line-height: 1.5;
+    z-index: 1001;
+    font-family: Arial, sans-serif;
+}
 
-    /* ==========================================
-       COMPONENTE: FOOTER PÁGINAS (Resto de páginas)
-    ========================================== */
-    .footer {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        z-index: 1000;
-    }
+/* =========================
+   FOOTER GENERAL (descarga por defecto)
+========================= */
+.footer {
+    position: fixed;  /* default para PDF */
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+}
+
+/* =========================
+   OVERRIDE SOLO PARA PREVIEW
+========================= */
+.preview-mode .footer-cover,
+.preview-mode .footer {
+    position: static !important;
+    bottom: auto !important;
+    left: auto !important;
+    right: auto !important;
+}
+
 
     .footer-red {
         background-color: #b41f24;
@@ -122,9 +137,15 @@
        CLASES UTILITARIAS (Reutilizables)
     ========================================== */
     .content-padding {
-        padding: 60px 120px 0 120px;
-        max-width: 100%;
-    }
+    padding: 60px 120px 0 120px;
+    max-width: 100%;
+}
+
+/* ===== Preview (cuando isPreview llega) ===== */
+.preview-mode .content-padding {
+    padding: 60px 10px 0 10px !important;
+    max-width: 100% !important;
+}
 
     .text-center { 
         text-align: center; 

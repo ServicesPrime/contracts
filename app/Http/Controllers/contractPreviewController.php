@@ -21,6 +21,7 @@ class ContractPreviewController extends Controller
         //dump($request);
         try {
             $html = $this->previewService->generatePreview($request->all());
+            
             return $html;
             
         } catch (\Exception $e) {
