@@ -22,7 +22,8 @@
     // Mapeo completo de páginas disponibles
     $pageMap = [
         'cover'     => 'contracts.cover.janitorial.cover',
-        'thankyou'  => 'contracts.thankyou',
+        'pagina00'  => 'contracts.pagina00',
+        'pagina0'  => 'contracts.pagina0',
         'pagina1'   => 'contracts.pagina1',
         'pagina2'   => 'contracts.pagina2',
         'pagina3'   => 'contracts.pagina3',
@@ -40,6 +41,12 @@
         'pagina16'  => 'contracts.pagina16',
         'pagina19'  => 'contracts.pagina19',
         'pagina20'  => 'contracts.pagina20',
+        'pagina21'  => 'contracts.pagina21',
+        'pagina22'  => 'contracts.pagina22',
+        'pagina23'  => 'contracts.pagina23',
+        'pagina24'  => 'contracts.pagina24',
+        'pagina25'  => 'contracts.pagina25',
+        'pagina26'  => 'contracts.pagina26',
     ];
     
     // Páginas que requieren assets (logo/bldg)

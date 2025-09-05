@@ -10,8 +10,8 @@ class Service extends Model
     use HasFactory;
 
     protected $fillable = [
-        'service',   // texto/nombre del servicio
-        'type',      // enum: service|terms|area
+        'service', // texto/nombre del servicio
+        'type',    // string dinámico
     ];
 
     protected $casts = [
@@ -19,20 +19,8 @@ class Service extends Model
         'type'    => 'string',
     ];
 
-    // ===== ENUM: Constantes =====
-    const TYPE_SERVICE = 'service';
-    const TYPE_TERMS   = 'terms';
-    const TYPE_AREA    = 'area';
-
-    // Opcional: mapa para etiquetas legibles
-    public static function getTypes(): array
-    {
-        return [
-            self::TYPE_SERVICE => 'Service',
-            self::TYPE_TERMS   => 'Terms',
-            self::TYPE_AREA    => 'Area',
-        ];
-    }
+    // (Opcional) expone automáticamente "type_label" en arrays/JSON
+    protected $appends = ['type_label'];
 
     // ===== Relaciones =====
     public function specifications()
@@ -44,49 +32,51 @@ class Service extends Model
     // ===== Accessors / Helpers =====
     public function getTypeLabelAttribute(): string
     {
-        $types = self::getTypes();
-        return $types[$this->type] ?? ucfirst((string) $this->type);
+        // Si tienes un mapeo en config/services.php => ['types' => ['service' => 'Service', ...]]
+        $map = config('services.types', []); // o config('service_types', [])
+        $value = (string) ($this->attributes['type'] ?? '');
+
+        if (isset($map[$value])) {
+            return (string) $map[$value];
+        }
+
+        // Fallback: capitaliza el string dinámico
+        return $value !== '' ? ucfirst($value) : '';
     }
 
-    public function isService(): bool
-    {
-        return $this->type === self::TYPE_SERVICE;
-    }
-
-    public function isTerms(): bool
-    {
-        return $this->type === self::TYPE_TERMS;
-    }
-
-    public function isArea(): bool
-    {
-        return $this->type === self::TYPE_AREA;
-    }
-
-    // Normaliza el tipo a minúsculas por consistencia
+    // Normaliza a minúsculas y recorta espacios
     public function setTypeAttribute($value): void
     {
-        $this->attributes['type'] = strtolower((string) $value);
+        $this->attributes['type'] = strtolower(trim((string) $value));
+    }
+
+    public function setServiceAttribute($value): void
+    {
+        $this->attributes['service'] = trim((string) $value);
     }
 
     // ===== Scopes =====
     public function scopeByType($query, string $type)
     {
-        return $query->where('type', $type);
+        return $query->where('type', strtolower(trim($type)));
     }
 
-    public function scopeService($query)
+    // Útil cuando aceptas varios tipos dinámicos
+    public function scopeByTypes($query, array $types)
     {
-        return $query->byType(self::TYPE_SERVICE);
+        $types = array_map(fn ($t) => strtolower(trim((string) $t)), $types);
+        return $query->whereIn('type', $types);
     }
 
-    public function scopeTerms($query)
+    // Búsqueda sencilla por nombre o tipo
+    public function scopeSearch($query, ?string $term)
     {
-        return $query->byType(self::TYPE_TERMS);
-    }
+        if (! $term) return $query;
 
-    public function scopeArea($query)
-    {
-        return $query->byType(self::TYPE_AREA);
+        $term = trim($term);
+        return $query->where(function ($q) use ($term) {
+            $q->where('service', 'like', "%{$term}%")
+              ->orWhere('type', 'like', "%{$term}%");
+        });
     }
 }

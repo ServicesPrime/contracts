@@ -33,14 +33,18 @@ class Contract extends Model
         return $this->belongsTo(Client::class);
     }
 
+    public function page()
+    {
+        return $this->hasOne(Page::class); // contract_id en pages
+    }
     /**
      * Relación muchos a muchos con Service a través de la tabla pivote
      */
     public function services()
     {
         return $this->belongsToMany(Service::class, 'contract_services')
-                    ->withPivot('quantity', 'unit_price', 'created_at', 'updated_at')
-                    ->withTimestamps();
+            ->withPivot('quantity', 'unit_price', 'created_at', 'updated_at')
+            ->withTimestamps();
     }
 
     /**
@@ -73,11 +77,11 @@ class Contract extends Model
     public function getTotalAmountAttribute()
     {
         if ($this->contract_type === 'school') {
-            return $this->contractSchool ? 
+            return $this->contractSchool ?
                 ($this->contractSchool->labor_cost + $this->contractSchool->chemical_cost) : 0;
         }
 
-        return $this->contractServices()->get()->sum(function($contractService) {
+        return $this->contractServices()->get()->sum(function ($contractService) {
             return ($contractService->quantity ?? 0) * ($contractService->unit_price ?? 0);
         });
     }
@@ -113,8 +117,8 @@ class Contract extends Model
     public function removeService($serviceId)
     {
         return $this->contractServices()
-             ->where('service_id', $serviceId)
-             ->delete();
+            ->where('service_id', $serviceId)
+            ->delete();
     }
 
     /**
@@ -168,7 +172,7 @@ class Contract extends Model
             $start = $this->start_date;
             $end = $this->end_date;
             $days = $start->diffInDays($end);
-            
+
             if ($days == 0) {
                 return 'Single day';
             } elseif ($days < 30) {

@@ -22,10 +22,10 @@
         <div class="agradecimiento-section">
             <!-- Destinatario -->
             <div class="texto-normal font-bold" style="margin-bottom:25px;">
-               <div style="margin:0;">{{$contract->client->name ?? null}}</div>
-                 <div style="margin:0;">{{$contract->client->address->name_account ?? null}}</div>
-               <div style="margin:0;">{{$contract->client->address->street ?? null}}</div>
-                <div style="margin:0;">{{$contract->client->address->city ?? null}}, {{$contract->client->address->state?? null}} {{$contract->client->address->zip_code ?? null}}</div>
+               <div style="margin:0;">{{$contract->client->name ?? $client->name ??null}}</div>
+                 <div style="margin:0;">{{$contract->client->address->name_account ?? $client->address->name_account ?? null}}</div>
+               <div style="margin:0;">{{$contract->client->address->street ?? $client->address->street ?? null}}</div>
+                <div style="margin:0;">{{$contract->client->address->city ?? $client->address->city ?? null}}, {{$contract->client->address->state ?? $client->address->state ?? null}} {{$contract->client->address->zip_code ?? $client->address->zip_code ?? null}}</div>
             </div>
             
             <!-- Asunto -->

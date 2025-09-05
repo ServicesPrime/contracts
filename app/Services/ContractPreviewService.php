@@ -13,6 +13,7 @@ class ContractPreviewService
      */
     public function generatePreview(array $requestData): string
     {
+        
         // Procesar datos del formulario primero para obtener organización
         $formData = $this->processFormData($requestData);
         
@@ -61,14 +62,6 @@ class ContractPreviewService
             ]);
         }
 
-        // Log final de páginas a renderizar
-        Log::info('📄 Preview: páginas finales a renderizar', [
-            'organization' => $organization,
-            'pages_received' => $pages,
-            'pages_valid' => $selectedPages,
-            'count' => count($selectedPages),
-        ]);
-
         return $selectedPages;
     }
 
@@ -82,16 +75,17 @@ class ContractPreviewService
             case 'school': // Legacy support
                 // Páginas de la carpeta contracts (school)
                 return [
-                    'cover', 'thankyou', 'pagina1', 'pagina2', 'pagina3', 'pagina4',
+                     'pagina00','pagina0','pagina1', 'pagina2', 'pagina3', 'pagina4',
                     'pagina5', 'pagina6', 'pagina7', 'pagina8', 'pagina9', 'pagina10',
-                    'pagina11', 'pagina12', 'pagina13', 'pagina14','pagina16', 'pagina19', 'pagina20'
+                    'pagina11', 'pagina12', 'pagina13', 'pagina14','pagina16', 'pagina19', 'pagina20',
+                    'pagina21','pagina22','pagina23','pagina24','pagina25','pagina26'
+
                 ];
                 
             case 'jwo':
                 // Páginas de la carpeta contractsJWO
                 return [
-                    'pagina1', 'pagina2', 'pagina3', 'pagina4', 'pagina5',
-                    'pagina6', 'pagina7', 'pagina8', 'pagina9', 'pagina10'
+                    'pagina1', 'pagina2',
                 ];
                 
             case 'staffing-hospitality':
@@ -103,9 +97,10 @@ class ContractPreviewService
             default:
                 // Fallback a school
                 return [
-                    'pagina1', 'pagina2', 'pagina3', 'pagina4',
+                    'pagina00','pagina0','pagina1', 'pagina2', 'pagina3', 'pagina4',
                     'pagina5', 'pagina6', 'pagina7', 'pagina8', 'pagina9', 'pagina10',
-                    'pagina11', 'pagina12', 'pagina13', 'pagina16', 'pagina19', 'pagina20'
+                    'pagina11', 'pagina12', 'pagina13', 'pagina16', 'pagina19', 'pagina20',
+                    'pagina21','pagina22','pagina23','pagina24','pagina25',
                 ];
         }
     }
@@ -314,7 +309,7 @@ class ContractPreviewService
                 return 'contractsJWO.pdf';
                 
             case 'staffing-hospitality':
-                return 'contractsStaffing.pdf'; // Para cuando lo crees
+                return 'contractsHospitality.pdf-selected'; // Para cuando lo crees
                 
             default:
                 Log::warning('⚠️ Organización no reconocida, usando vista por defecto', [

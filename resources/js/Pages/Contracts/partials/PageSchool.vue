@@ -19,6 +19,18 @@
     </div>
     
     <div class="space-y-2 max-h-64 overflow-y-auto">
+      <!-- Página 00 -->
+      <label class="flex items-center hover:bg-gray-50 p-2 rounded-lg cursor-pointer transition-colors">
+        <input 
+          type="checkbox" 
+          value="pagina00"
+          :checked="modelValue.includes('pagina00')"
+          @change="onPageSelectionChange('pagina00', $event.target.checked)"
+          class="h-4 w-4 text-orange-600 rounded border-gray-300 focus:ring-orange-500"
+        />
+        <span class="ml-3 text-sm text-gray-700">Portada</span>
+      </label>
+
       <!-- Página 0 -->
       <label class="flex items-center hover:bg-gray-50 p-2 rounded-lg cursor-pointer transition-colors">
         <input 
@@ -28,7 +40,7 @@
           @change="onPageSelectionChange('pagina0', $event.target.checked)"
           class="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
         />
-        <span class="ml-3 text-sm text-gray-700">Página 0 - Introducción</span>
+        <span class="ml-3 text-sm text-gray-700">Thanksyou</span>
       </label>
 
       <!-- Grupo Estructura (Páginas 1-11) -->
@@ -81,23 +93,167 @@
         </div>
       </div>
 
-      <!-- Páginas restantes (12, 13, 16, 19, 20) -->
-      <div class="pt-2">
-        <label 
-          v-for="page in otherPages" 
-          :key="page.id" 
-          class="flex items-center hover:bg-gray-50 p-2 rounded-lg cursor-pointer transition-colors"
+      <!-- Grupo Information Services (Páginas 12-16) -->
+      <div class="border border-gray-200 rounded-lg">
+        <!-- Header del grupo -->
+        <div 
+          @click="toggleInformationGroup" 
+          class="flex items-center justify-between p-3 hover:bg-gray-50 cursor-pointer transition-colors border-b border-gray-200"
         >
-          <input 
-            type="checkbox" 
-            :value="page.id"
-            :checked="modelValue.includes(page.id)"
-            @change="onPageSelectionChange(page.id, $event.target.checked)"
-            class="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
-          />
-          <span class="ml-3 text-sm text-gray-700">{{ page.label }}</span>
-        </label>
+          <div class="flex items-center">
+            <svg 
+              :class="['w-4 h-4 text-gray-500 transition-transform', { 'rotate-90': isInformationExpanded }]" 
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+            <span class="ml-2 text-sm font-medium text-gray-900">Information Services</span>
+            <span class="ml-2 text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">
+              {{ getSelectedInformationPages().length }}/{{ informationPages.length }}
+            </span>
+          </div>
+          <button 
+            @click.stop="selectInformationPages"
+            class="text-xs px-2 py-1 bg-blue-50 text-blue-700 rounded hover:bg-blue-100 transition-colors"
+          >
+            Seleccionar todas
+          </button>
+        </div>
+
+        <!-- Contenido del grupo information services -->
+        <div v-show="isInformationExpanded" class="p-2 bg-gray-50">
+          <div class="space-y-1">
+            <label 
+              v-for="page in informationPages" 
+              :key="page.id" 
+              class="flex items-center hover:bg-white p-2 rounded cursor-pointer transition-colors ml-4"
+            >
+              <input 
+                type="checkbox" 
+                :value="page.id"
+                :checked="modelValue.includes(page.id)"
+                @change="onPageSelectionChange(page.id, $event.target.checked)"
+                class="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+              />
+              <span class="ml-3 text-sm text-gray-700">{{ page.label }}</span>
+            </label>
+          </div>
+        </div>
       </div>
+
+      <!-- Grupo Chemical (Páginas 19-21) -->
+      <div class="border border-gray-200 rounded-lg">
+        <!-- Header del grupo -->
+        <div 
+          @click="toggleChemicalGroup" 
+          class="flex items-center justify-between p-3 hover:bg-gray-50 cursor-pointer transition-colors border-b border-gray-200"
+        >
+          <div class="flex items-center">
+            <svg 
+              :class="['w-4 h-4 text-gray-500 transition-transform', { 'rotate-90': isChemicalExpanded }]" 
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+            <span class="ml-2 text-sm font-medium text-gray-900">Chemical</span>
+            <span class="ml-2 text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full">
+              {{ getSelectedChemicalPages().length }}/{{ chemicalPages.length }}
+            </span>
+          </div>
+          <button 
+            @click.stop="selectChemicalPages"
+            class="text-xs px-2 py-1 bg-purple-50 text-purple-700 rounded hover:bg-purple-100 transition-colors"
+          >
+            Seleccionar todas
+          </button>
+        </div>
+
+        <!-- Contenido del grupo chemical -->
+        <div v-show="isChemicalExpanded" class="p-2 bg-gray-50">
+          <div class="space-y-1">
+            <label 
+              v-for="page in chemicalPages" 
+              :key="page.id" 
+              class="flex items-center hover:bg-white p-2 rounded cursor-pointer transition-colors ml-4"
+            >
+              <input 
+                type="checkbox" 
+                :value="page.id"
+                :checked="modelValue.includes(page.id)"
+                @change="onPageSelectionChange(page.id, $event.target.checked)"
+                class="h-4 w-4 text-purple-600 rounded border-gray-300 focus:ring-purple-500"
+              />
+              <span class="ml-3 text-sm text-gray-700">{{ page.label }}</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grupo Exhibit (Páginas 22-25) -->
+      <div class="border border-gray-200 rounded-lg">
+        <!-- Header del grupo -->
+        <div 
+          @click="toggleExhibitGroup" 
+          class="flex items-center justify-between p-3 hover:bg-gray-50 cursor-pointer transition-colors border-b border-gray-200"
+        >
+          <div class="flex items-center">
+            <svg 
+              :class="['w-4 h-4 text-gray-500 transition-transform', { 'rotate-90': isExhibitExpanded }]" 
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+            <span class="ml-2 text-sm font-medium text-gray-900">Exhibit</span>
+            <span class="ml-2 text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full">
+              {{ getSelectedExhibitPages().length }}/{{ exhibitPages.length }}
+            </span>
+          </div>
+          <button 
+            @click.stop="selectExhibitPages"
+            class="text-xs px-2 py-1 bg-amber-50 text-amber-700 rounded hover:bg-amber-100 transition-colors"
+          >
+            Seleccionar todas
+          </button>
+        </div>
+
+        <!-- Contenido del grupo exhibit -->
+        <div v-show="isExhibitExpanded" class="p-2 bg-gray-50">
+          <div class="space-y-1">
+            <label 
+              v-for="page in exhibitPages" 
+              :key="page.id" 
+              class="flex items-center hover:bg-white p-2 rounded cursor-pointer transition-colors ml-4"
+            >
+              <input 
+                type="checkbox" 
+                :value="page.id"
+                :checked="modelValue.includes(page.id)"
+                @change="onPageSelectionChange(page.id, $event.target.checked)"
+                class="h-4 w-4 text-amber-600 rounded border-gray-300 focus:ring-amber-500"
+              />
+              <span class="ml-3 text-sm text-gray-700">{{ page.label }}</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Página 26 - Términos de Confidencia -->
+      <label class="flex items-center hover:bg-gray-50 p-2 rounded-lg cursor-pointer transition-colors">
+        <input 
+          type="checkbox" 
+          value="pagina26"
+          :checked="modelValue.includes('pagina26')"
+          @change="onPageSelectionChange('pagina26', $event.target.checked)"
+          class="h-4 w-4 text-red-600 rounded border-gray-300 focus:ring-red-500"
+        />
+        <span class="ml-3 text-sm text-gray-700">Página 26 - Términos de Confidencia</span>
+      </label>
     </div>
   </div>
 </template>
@@ -108,14 +264,17 @@ import { defineEmits, defineProps, ref, computed } from 'vue'
 const props = defineProps({
   modelValue: {
     type: Array,
-    default: () => ['pagina1']
+    default: () => ['pagina00']
   }
 })
 
 const emit = defineEmits(['update:modelValue', 'pages-changed'])
 
-// Estado para controlar si el grupo estructura está expandido
+// Estado para controlar si los grupos están expandidos
 const isStructureExpanded = ref(true)
+const isInformationExpanded = ref(true)
+const isChemicalExpanded = ref(true)
+const isExhibitExpanded = ref(true)
 
 // Páginas de estructura (1-11)
 const structurePages = [
@@ -132,21 +291,38 @@ const structurePages = [
   { id: 'pagina11', label: 'Página 11 - Optional Provision (4)' }
 ]
 
-// Páginas restantes
-const otherPages = [
+// Páginas information services (12-16)
+const informationPages = [
   { id: 'pagina12', label: 'Página 12 - Services Areas' },
   { id: 'pagina13', label: 'Página 13 - Services Scope' },
   { id: 'pagina14', label: 'Página 14 - Services Scope' },
-  { id: 'pagina16', label: 'Página 16 - Facturación' },
-  { id: 'pagina19', label: 'Página 19 - Anexos' },
-  { id: 'pagina20', label: 'Página 20 - Firmas' }
+  { id: 'pagina16', label: 'Página 16 - Facturación' }
 ]
 
-// Todas las páginas combinadas (incluyendo página 0)
+// Páginas chemical (19-21)
+const chemicalPages = [
+  { id: 'pagina19', label: 'Página 19 - Chemical' },
+  { id: 'pagina20', label: 'Página 20 - Chemical (2)' },
+  { id: 'pagina21', label: 'Página 21 - Chemical (3)' }
+]
+
+// Páginas exhibit (22-25)
+const exhibitPages = [
+  { id: 'pagina22', label: 'Página 22 - Exhibit (A)' },
+  { id: 'pagina23', label: 'Página 23 - Exhibit (B)' },
+  { id: 'pagina24', label: 'Página 24 - Exhibit (C)' },
+  { id: 'pagina25', label: 'Página 25 - Exhibit (D)' }
+]
+
+// Todas las páginas combinadas (incluyendo páginas 00, 0 y 26)
 const allPages = [
+  { id: 'pagina00', label: 'Página 00 - Portada' },
   { id: 'pagina0', label: 'Página 0 - Introducción' },
   ...structurePages,
-  ...otherPages
+  ...informationPages,
+  ...chemicalPages,
+  ...exhibitPages,
+  { id: 'pagina26', label: 'Página 26 - Términos de Confidencia' }
 ]
 
 const onPageSelectionChange = (pageId, isChecked) => {
@@ -191,6 +367,61 @@ const selectStructurePages = () => {
   emit('pages-changed', orderedValue)
 }
 
+// Función para seleccionar solo las páginas information services
+const selectInformationPages = () => {
+  const informationIds = informationPages.map(p => p.id)
+  const otherSelectedPages = props.modelValue.filter(id => !informationIds.includes(id))
+  const newValue = [...informationIds, ...otherSelectedPages]
+  
+  // Ordenar según el orden original
+  const orderedValue = sortPagesByOriginalOrder(newValue)
+  
+  emit('update:modelValue', orderedValue)
+  emit('pages-changed', orderedValue)
+}
+
+// Función para seleccionar/deseleccionar las páginas chemical
+const selectChemicalPages = () => {
+  const chemicalIds = chemicalPages.map(p => p.id)
+  const selectedChemicalPages = getSelectedChemicalPages()
+  
+  // Si todas están seleccionadas, deseleccionar todas
+  if (selectedChemicalPages.length === chemicalPages.length) {
+    const newValue = props.modelValue.filter(id => !chemicalIds.includes(id))
+    const orderedValue = sortPagesByOriginalOrder(newValue)
+    emit('update:modelValue', orderedValue)
+    emit('pages-changed', orderedValue)
+  } else {
+    // Si no todas están seleccionadas, seleccionar todas
+    const otherSelectedPages = props.modelValue.filter(id => !chemicalIds.includes(id))
+    const newValue = [...chemicalIds, ...otherSelectedPages]
+    const orderedValue = sortPagesByOriginalOrder(newValue)
+    emit('update:modelValue', orderedValue)
+    emit('pages-changed', orderedValue)
+  }
+}
+
+// Función para seleccionar/deseleccionar las páginas exhibit
+const selectExhibitPages = () => {
+  const exhibitIds = exhibitPages.map(p => p.id)
+  const selectedExhibitPages = getSelectedExhibitPages()
+  
+  // Si todas están seleccionadas, deseleccionar todas
+  if (selectedExhibitPages.length === exhibitPages.length) {
+    const newValue = props.modelValue.filter(id => !exhibitIds.includes(id))
+    const orderedValue = sortPagesByOriginalOrder(newValue)
+    emit('update:modelValue', orderedValue)
+    emit('pages-changed', orderedValue)
+  } else {
+    // Si no todas están seleccionadas, seleccionar todas
+    const otherSelectedPages = props.modelValue.filter(id => !exhibitIds.includes(id))
+    const newValue = [...exhibitIds, ...otherSelectedPages]
+    const orderedValue = sortPagesByOriginalOrder(newValue)
+    emit('update:modelValue', orderedValue)
+    emit('pages-changed', orderedValue)
+  }
+}
+
 // Función para ordenar las páginas según su orden original
 const sortPagesByOriginalOrder = (selectedIds) => {
   const pageOrder = allPages.map(p => p.id)
@@ -207,9 +438,42 @@ const toggleStructureGroup = () => {
   isStructureExpanded.value = !isStructureExpanded.value
 }
 
+// Función para alternar la expansión del grupo information services
+const toggleInformationGroup = () => {
+  isInformationExpanded.value = !isInformationExpanded.value
+}
+
+// Función para alternar la expansión del grupo chemical
+const toggleChemicalGroup = () => {
+  isChemicalExpanded.value = !isChemicalExpanded.value
+}
+
+// Función para alternar la expansión del grupo exhibit
+const toggleExhibitGroup = () => {
+  isExhibitExpanded.value = !isExhibitExpanded.value
+}
+
 // Función para obtener las páginas de estructura seleccionadas
 const getSelectedStructurePages = () => {
   const structureIds = structurePages.map(p => p.id)
   return props.modelValue.filter(id => structureIds.includes(id))
+}
+
+// Función para obtener las páginas information services seleccionadas
+const getSelectedInformationPages = () => {
+  const informationIds = informationPages.map(p => p.id)
+  return props.modelValue.filter(id => informationIds.includes(id))
+}
+
+// Función para obtener las páginas chemical seleccionadas
+const getSelectedChemicalPages = () => {
+  const chemicalIds = chemicalPages.map(p => p.id)
+  return props.modelValue.filter(id => chemicalIds.includes(id))
+}
+
+// Función para obtener las páginas exhibit seleccionadas
+const getSelectedExhibitPages = () => {
+  const exhibitIds = exhibitPages.map(p => p.id)
+  return props.modelValue.filter(id => exhibitIds.includes(id))
 }
 </script>

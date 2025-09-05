@@ -94,9 +94,21 @@
 
 
     .footer-red {
-        background-color: #b41f24;
+        background-color: #9a1b2a;
         height: 10px;
         width: 100%;
+    }
+
+    .footer-redt {
+        background-color: #b91f32;
+        padding: 15px 35px;
+        text-align: center;
+        color: #fff;
+        font-size: 11pt;
+        font-weight: normal;
+        width: 100%;
+        line-height: 1.3;
+        font-family: Arial, sans-serif;
     }
 
     .footer-blue {
@@ -136,8 +148,11 @@
     /* ==========================================
        CLASES UTILITARIAS (Reutilizables)
     ========================================== */
+
+
+
     .content-padding {
-    padding: 60px 120px 0 120px;
+    padding: 75px 120px 0 120px;
     max-width: 100%;
 }
 

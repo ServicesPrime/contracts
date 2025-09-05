@@ -56,7 +56,7 @@
     </div>
 </div>
 <x-footer-pages />
-@include('contracts.pagina9')
+
 
   {{-- <div class="subtitulo">Emergency Provision</div>
         <div class="texto-normal">

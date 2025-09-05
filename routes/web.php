@@ -80,17 +80,7 @@ Route::match(['GET', 'POST'], '/blade-preview', [ContractPreviewController::clas
 Route::get('/contracts/preview-direct', [ContractPreviewController::class, 'previewDirect'])
     ->name('contracts.preview.direct');
 
-    Route::get('/test-preview', function() {
-    $pages = ['pagina1', 'pagina2', 'pagina3'];
-    
-    Log::info('🧪 TEST: Probando preview directo', ['pages' => $pages]);
-    
-    $controller = new App\Http\Controllers\ContractPreviewController();
-    $request = request();
-    $request->merge(['pages' => $pages]);
-    
-    return $controller->preview($request);
-});
+
 
 // Test con parámetros de query
 Route::get('/test-preview-query', [App\Http\Controllers\ContractPreviewController::class, 'previewDirect']);

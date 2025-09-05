@@ -74,15 +74,19 @@
                   class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
                 >
                   <option value="">Select a service...</option>
-                  <option v-for="availableService in availableServices" :key="availableService.id" :value="availableService.id">
-                    {{ availableService.service }} ({{ availableService.type === 'service' ? 'Service' : 'Terms & Conditions' }})
+                  <option
+                    v-for="availableService in availableServices"
+                    :key="availableService.id"
+                    :value="availableService.id"
+                  >
+                    {{ availableService.service }} ({{ typeLabel(availableService) }})
                   </option>
                 </select>
               </FormField>
             </div>
 
-            <!-- Show Quantity and Unit Price only for 'service' type -->
-            <template v-if="!isTermsService(service.service_id)">
+            <!-- Show Quantity and Unit Price only if the selected type requires amounts -->
+            <template v-if="requiresAmounts(service.service_id)">
               <!-- Quantity -->
               <FormField :label="`Quantity ${index + 1}`" required :error="errors[`services.${index}.quantity`]">
                 <FormControl 
@@ -125,14 +129,16 @@
               </div>
             </template>
 
-            <!-- Terms & Conditions Notice -->
-            <div v-if="isTermsService(service.service_id)" class="md:col-span-2">
+            <!-- Notice for non-billable types -->
+            <div v-else class="md:col-span-2">
               <div class="bg-purple-50 rounded-lg p-3 border border-purple-200">
                 <div class="flex items-center space-x-2">
                   <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                   </svg>
-                  <span class="text-sm font-medium text-purple-700">Terms & Conditions - No pricing required</span>
+                  <span class="text-sm font-medium text-purple-700">
+                    This service type does not require pricing
+                  </span>
                 </div>
               </div>
             </div>
@@ -145,10 +151,10 @@
                   <div><strong>Service:</strong> {{ getServiceById(service.service_id).service }}</div>
                   <div><strong>Type:</strong> 
                     <span 
-                      :class="getServiceById(service.service_id).type === 'service' ? 'bg-green-100 text-green-800' : 'bg-purple-100 text-purple-800'"
+                      :class="requiresAmounts(service.service_id) ? 'bg-green-100 text-green-800' : 'bg-purple-100 text-purple-800'"
                       class="inline-block px-2 py-1 rounded text-xs font-medium ml-1"
                     >
-                      {{ getServiceById(service.service_id).type === 'service' ? 'Service' : 'Terms & Conditions' }}
+                      {{ requiresAmounts(service.service_id) ? 'Billable' : 'No price' }}
                     </span>
                   </div>
                   <div v-if="getServiceById(service.service_id).specifications && getServiceById(service.service_id).specifications.length > 0" class="mt-2">
@@ -162,7 +168,8 @@
                 </div>
               </div>
             </div>
-          </div>
+
+          </div><!-- grid -->
         </div>
       </div>
 
@@ -180,7 +187,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div><!-- p-6 -->
   </section>
 </template>
 
@@ -206,96 +213,101 @@ const props = defineProps({
 
 const emit = defineEmits(['update:services'])
 
-// Validation helpers
+// === Helpers ===
+const getServiceById = (serviceId) => {
+  if (!serviceId) return null
+  return props.availableServices.find(s => s.id == serviceId) || null
+}
+
+// ¿Este tipo requiere cantidad y precio?
+// 1) Usa el booleano que mande el backend (requires_amounts)
+// 2) Fallback: sólo type === 'service' es pagable
+const requiresAmounts = (serviceId) => {
+  const s = getServiceById(serviceId)
+  if (!s) return false
+  if (typeof s.requires_amounts === 'boolean') return s.requires_amounts
+  return s.type === 'service'
+}
+
+// Etiqueta visible en el selector
+const typeLabel = (s) => {
+  if (!s) return ''
+  if (typeof s.requires_amounts === 'boolean') {
+    return s.requires_amounts ? 'Billable' : 'No price'
+  }
+  return s.type === 'service' ? 'Service' : 'No price'
+}
+
+// === Validaciones derivadas ===
 const hasValidServices = computed(() => {
-  return props.services.some(service => {
-    if (isTermsService(service.service_id)) {
-      return service.service_id
-    }
-    return service.service_id && service.quantity && service.unit_price
+  return props.services.some(s => {
+    if (!s.service_id) return false
+    return requiresAmounts(s.service_id)
+      ? (s.quantity && s.unit_price)
+      : true
   })
 })
 
-// Service type checking
-const isTermsService = (serviceId) => {
-  const service = getServiceById(serviceId)
-  return service && service.type === 'terms'
-}
-
-// Service count for payment
 const getPaidServicesCount = () => {
-  return props.services.filter(service => 
-    service.service_id && !isTermsService(service.service_id) && service.quantity && service.unit_price
+  return props.services.filter(s =>
+    s.service_id && requiresAmounts(s.service_id) && s.quantity && s.unit_price
   ).length
 }
 
-// Service management
+// === Gestión de servicios ===
 const addService = () => {
-  const newServices = [...props.services, {
-    service_id: '',
-    quantity: '',
-    unit_price: ''
-  }]
-  emit('update:services', newServices)
+  const next = [...props.services, { service_id: '', quantity: '', unit_price: '' }]
+  emit('update:services', next)
 }
 
 const removeService = (index) => {
   if (props.services.length > 1) {
-    const newServices = [...props.services]
-    newServices.splice(index, 1)
-    emit('update:services', newServices)
+    const next = [...props.services]
+    next.splice(index, 1)
+    emit('update:services', next)
   }
-}
-
-const getServiceById = (serviceId) => {
-  if (!serviceId) return null
-  return props.availableServices.find(service => service.id == serviceId) || null
 }
 
 const handleServiceChange = (index, serviceId) => {
-  const newServices = [...props.services]
-  newServices[index].service_id = serviceId
-  
-  if (isTermsService(serviceId)) {
-    newServices[index].quantity = ''
-    newServices[index].unit_price = ''
+  const next = [...props.services]
+  next[index].service_id = serviceId
+
+  // Si no requiere montos, limpia qty/price
+  if (!requiresAmounts(serviceId)) {
+    next[index].quantity = ''
+    next[index].unit_price = ''
   }
-  
-  emit('update:services', newServices)
+  emit('update:services', next)
 }
 
 const updateServiceField = (index, field, value) => {
-  const newServices = [...props.services]
-  newServices[index][field] = value
-  emit('update:services', newServices)
+  const next = [...props.services]
+  next[index][field] = value
+  emit('update:services', next)
 }
 
-// Currency formatting
+// === Formato de moneda ===
 const formatServiceCurrency = (e, index) => {
   let value = e.target.value.replace(/[^\d.]/g, '')
   const parts = value.split('.')
-  if (parts.length > 2) {
-    value = parts[0] + '.' + parts[1]
-  }
-  if (parts[1] && parts[1].length > 2) {
-    value = parts[0] + '.' + parts[1].substring(0, 2)
-  }
+  if (parts.length > 2) value = parts[0] + '.' + parts[1]
+  if (parts[1] && parts[1].length > 2) value = parts[0] + '.' + parts[1].substring(0, 2)
   updateServiceField(index, 'unit_price', value)
 }
 
-// Calculations
-const calculateServiceSubtotal = (service) => {
-  const quantity = parseInt(service.quantity) || 0
-  const unitPrice = parseFloat(service.unit_price) || 0
-  return (quantity * unitPrice).toFixed(2)
+// === Cálculos ===
+const calculateServiceSubtotal = (s) => {
+  const q = parseInt(s.quantity) || 0
+  const p = parseFloat(s.unit_price) || 0
+  return (q * p).toFixed(2)
 }
 
 const calculateContractTotal = () => {
-  return props.services.reduce((total, service) => {
-    if (!isTermsService(service.service_id)) {
-      const quantity = parseInt(service.quantity) || 0
-      const unitPrice = parseFloat(service.unit_price) || 0
-      return total + (quantity * unitPrice)
+  return props.services.reduce((total, s) => {
+    if (requiresAmounts(s.service_id)) {
+      const q = parseInt(s.quantity) || 0
+      const p = parseFloat(s.unit_price) || 0
+      return total + (q * p)
     }
     return total
   }, 0).toFixed(2)

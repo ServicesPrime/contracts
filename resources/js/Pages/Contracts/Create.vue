@@ -4,20 +4,22 @@
     <OrganizationSelector v-if="!isEditing && !selectedOrganization"
       @organization-selected="handleOrganizationSelected" />
 
-    <!-- Contract Form with Expanded Layout -->
-    <ContractLayout v-else
+    <!-- Fixed Preview Layout -->
+    <FixedPreviewLayout v-else
       :title="isEditing ? 'Edit Contract' : 'Create New Contract'"
       :subtitle="`Fill in the information below to ${isEditing ? 'update' : 'create'} a contract`"
       preview-title="Contract Preview"
       :is-loading="isLoadingPreview"
       :has-error="!!previewError"
       :error-message="previewError"
-      error-title="Error al cargar preview:"
-      loading-text="Cargando preview..."
-      retry-text="Reintentar"
+      :preview-html="previewHtml"
       :empty-state-text="isSchoolOrganization ? 'Selecciona páginas para ver el preview' : 'Preview del contrato'"
-      @toggle-preview="onTogglePreview"
-      @retry="refreshPreview">
+      :show-draft-button="!isEditing"
+      :is-processing="form.processing"
+      :submit-button-text="isEditing ? 'Update Contract' : 'Create Contract'"
+      @refresh="refreshPreview"
+      @cancel="goBack"
+      @submit="submitForm">
       
       <!-- Header Right Content -->
       <template #headerRight>
@@ -47,11 +49,11 @@
         </div>
         
         <ServicesSection
-    :services="form.services"
-  :available-services="services"
-    :errors="form.errors"
-    @update:services="val => (form.services = val)"
-  />
+          :services="form.services"
+          :available-services="services"
+          :errors="form.errors"
+          @update:services="val => (form.services = val)" />
+        
         <!-- PageSchool Component - Only show for School organization -->
         <div v-if="isSchoolOrganization" class="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
           <PageSchool 
@@ -68,12 +70,7 @@
         </div>
       </template>
 
-      <!-- Preview Content -->
-      <template #previewContent>
-        <div v-if="previewHtml" class="contract-preview-content bg-white rounded-xl border p-6" v-html="previewHtml"></div>
-      </template>
-
-    </ContractLayout>
+    </FixedPreviewLayout>
   </LayoutMain>
 </template>
 
@@ -85,10 +82,8 @@ import LayoutMain from "@/Layouts/LayoutMain.vue"
 import OrganizationSelector from "./partials/OrganizationSelector.vue"
 import ContractInformationForm from "./partials/ContractInformationForm.vue"
 import PageSchool from "./partials/PageSchool.vue"
-import ContractLayout from "./partials/ContractLayout.vue"
 import ServicesSection from "@/Pages/Contracts/partials/ServicesSection.vue"
-
-
+import FixedPreviewLayout from "./partials/FixedPreviewLayout.vue"
 
 const props = defineProps({
   contract: { type: Object, default: () => ({}) },
@@ -102,13 +97,27 @@ const selectedOrganization = ref(null)
 const isLoadingPreview = ref(false)
 const previewError = ref(null) 
 const previewHtml = ref('')
-const selectedPages = ref(['pagina1'])
+const selectedPages = ref(['pagina00'])
 
 // Timeouts
 let formDebounceTimeout = null
 
 onMounted(() => {
+  // Initialize organization if editing
+  if (isEditing.value && props.contract?.organization) {
+    selectedOrganization.value = props.contract.organization
+    form.organization = props.contract.organization
+  }
+  
+  // Initialize pages if editing and is school organization
+  if (isEditing.value && props.contract?.pages) {
+    selectedPages.value = props.contract.pages
+  }
+  
   // Initial preview load if needed
+  if (selectedOrganization.value && (!isSchoolOrganization.value || selectedPages.value.length > 0)) {
+    refreshPreview()
+  }
 })
 
 onUnmounted(() => {
@@ -162,9 +171,27 @@ const form = useForm({
   department: props.contract?.department || '',
   date: isEditing.value ? props.contract?.date : new Date().toISOString().split('T')[0],
   services: initializeServices(),
-  organization: null,
-  schoolData: {}
+  organization: props.contract?.organization || null,
+  pages: props.contract?.pages || [],
+  schoolData: props.contract?.schoolData || {}
 })
+
+// Método centralizado para preparar datos
+const prepareFormData = () => {
+  return {
+    contract_number: form.contract_number,
+    client_id: form.client_id,
+    department: form.department,
+    date: form.date,
+    services: form.services,
+    organization: selectedOrganization.value || '',
+    pages: isSchoolOrganization.value ? selectedPages.value : [],
+    schoolData: {
+      pages: isSchoolOrganization.value ? selectedPages.value : [],
+      organization: selectedOrganization.value
+    }
+  }
+}
 
 // Event handlers
 const handleOrganizationSelected = (organization) => {
@@ -174,21 +201,13 @@ const handleOrganizationSelected = (organization) => {
   if (!isSchoolOrganization.value) {
     selectedPages.value = []
   } else {
-    selectedPages.value = ['pagina1']
+    selectedPages.value = ['pagina00']
   }
 }
 
 const onPageSelectionChange = (newPages) => {
   if (newPages.length > 0) {
     refreshPreview()
-  }
-}
-
-const onTogglePreview = (isVisible) => {
-  if (isVisible) {
-    if (!isSchoolOrganization.value || selectedPages.value.length > 0) {
-      refreshPreview()
-    }
   }
 }
 
@@ -201,15 +220,11 @@ const refreshPreview = async () => {
   previewError.value = null
 
   try {
-    const requestData = {
-      pages: isSchoolOrganization.value ? selectedPages.value : [],
-      contract_number: form.contract_number,
-      client_id: form.client_id,
-      department: form.department,
-      date: form.date,
-      services: form.services,
-      organization: selectedOrganization.value || '',
-      contract_id: isEditing.value ? props.contract.id : ''
+    const requestData = prepareFormData()
+    
+    // Agregar contract_id para edición
+    if (isEditing.value) {
+      requestData.contract_id = props.contract.id
     }
 
     const response = await axios.post('/blade-preview', requestData, {
@@ -224,6 +239,7 @@ const refreshPreview = async () => {
     previewHtml.value = response.data
 
   } catch (error) {
+    console.error('Preview error:', error)
     previewError.value = error.response?.data?.message || error.message || 'Error al cargar preview'
   } finally {
     isLoadingPreview.value = false
@@ -237,7 +253,7 @@ const updateForm = (newFormData) => {
 }
 
 // Watchers
-watch(() => [form.data(), selectedOrganization.value], () => {
+watch(() => [form.data(), selectedOrganization.value, selectedPages.value], () => {
   if (formDebounceTimeout) clearTimeout(formDebounceTimeout)
   formDebounceTimeout = setTimeout(() => {
     if (!isSchoolOrganization.value || selectedPages.value.length > 0) {
@@ -246,13 +262,38 @@ watch(() => [form.data(), selectedOrganization.value], () => {
   }, 1000)
 }, { deep: true })
 
-
 // Form actions
 const submitForm = () => {
+  const formData = prepareFormData()
+  
+  // Actualizar el form con todos los datos preparados
+  Object.keys(formData).forEach(key => {
+    if (key in form) {
+      form[key] = formData[key]
+    }
+  })
+  
+  // Debug: mostrar los datos que se van a enviar
+  console.log('Datos a enviar al store:', formData)
+  
   if (isEditing.value) {
-    form.put(route('contracts.update', props.contract.id))
+    form.put(route('contracts.update', props.contract.id), {
+      onSuccess: () => {
+        console.log('Contract updated successfully')
+      },
+      onError: (errors) => {
+        console.error('Update errors:', errors)
+      }
+    })
   } else {
-    form.post(route('contracts.store'))
+    form.post(route('contracts.store'), {
+      onSuccess: () => {
+        console.log('Contract created successfully')
+      },
+      onError: (errors) => {
+        console.error('Creation errors:', errors)
+      }
+    })
   }
 }
 
@@ -260,26 +301,3 @@ const goBack = () => {
   router.visit(route('contracts.index'))
 }
 </script>
-
-<style>
-.contract-preview-content {
-  line-height: 1.6;
-  font-size: 14px;
-}
-
-.contract-preview-content * {
-  box-sizing: border-box;
-}
-
-.contract-preview-content h1,
-.contract-preview-content h2,
-.contract-preview-content h3 {
-  margin-top: 1.5rem;
-  margin-bottom: 1rem;
-  font-weight: 600;
-}
-
-.contract-preview-content p {
-  margin-bottom: 1rem;
-}
-</style>

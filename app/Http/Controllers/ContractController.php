@@ -29,7 +29,7 @@ class ContractController extends Controller
                 $query->with('address');
             },
             'contractServices.service.specifications',
-            'contractSchool' 
+            'contractSchool'
         ])
             ->when($search, function ($query, $search) {
                 $query->where('contract_number', 'like', "%$search%")
@@ -54,7 +54,7 @@ class ContractController extends Controller
             ->orderBy('contract_number', 'desc')
             ->get();
 
-        
+
         $contracts = $contracts->map(function ($contract) {
             $contract->contract_type = $contract->contractSchool ? 'school' : 'jwo';
             if ($contract->contract_type === 'school') {
@@ -87,6 +87,7 @@ class ContractController extends Controller
         $services = Service::with('specifications')->orderBy('service')->get();
         $contractNumber = $this->generateContractNumber();
 
+
         return Inertia::render('Contracts/Create', [
             'clients' => $clients,
             'services' => $services,
@@ -96,6 +97,7 @@ class ContractController extends Controller
 
     public function store(Request $request)
     {
+
         try {
 
             $contract = $this->contractService->createContract($request);
@@ -187,50 +189,52 @@ class ContractController extends Controller
             ->with('success', 'Contract deleted successfully.');
     }
 
-public function downloadPdf(Contract $contract)
-{
+    public function downloadPdf(Contract $contract)
+    {
 
-    
-    try {
-        $contract->load([
-            'client.address',
-            'contractServices.service.specifications',
-            'contractSchool'
-        ]);
+        try {
+            $contract->load([
+                'client.address',
+                'contractServices.service.specifications',
+                'contractSchool',
+                'page'
+            ]);
 
-       
-        $isSchoolContract = $contract->contractSchool !== null;
-        
-        if ($isSchoolContract) {
-            // Vista para contratos School
-            $pdf = PDF::loadView('contracts.pagina11', compact('contract'));
-            $filename = 'school-contract-' . $contract->contract_number . '.pdf';
-        } else {
-            // Vista para contratos JWO
-            $pdf = PDF::loadView('contracts.pagina11', compact('contract'));
-            $filename = 'work-order-' . $contract->contract_number . '.pdf';
+
+            $isSchoolContract = $contract->contractSchool !== null;
+
+            if ($isSchoolContract) {
+
+                // Vista para contratos School
+                $pages = $contract->page ? array_values(array_filter(explode(',', (string) $contract->page->page_count), fn($v) => $v !== '')) : [];
+                
+                $pdf   = PDF::loadView('contracts.pdf', compact('contract', 'pages'));
+                $filename = 'school-contract-' . $contract->contract_number . '.pdf';
+            } else {
+                // Vista para contratos JWO
+                $pdf = PDF::loadView('contracts.pagina25', compact('contract'));
+                $filename = 'work-order-' . $contract->contract_number . '.pdf';
+            }
+
+            $pdf->setPaper('A4', 'portrait');
+            $pdf->setOptions([
+                'dpi' => 150,
+                'defaultFont' => 'sans-serif',
+                'isHtml5ParserEnabled' => true,
+                'isPhpEnabled' => true
+            ]);
+
+            return $pdf->download($filename);
+        } catch (\Exception $e) {
+            Log::error('Error generando PDF del contrato: ' . $e->getMessage(), [
+                'contract_id' => $contract->id,
+                'contract_type' => $contract->contractSchool ? 'school' : 'jwo',
+                'error' => $e->getTraceAsString()
+            ]);
+
+            return back()->with('error', 'Error al generar el PDF. Inténtalo de nuevo.');
         }
-
-        $pdf->setPaper('A4', 'portrait');
-        $pdf->setOptions([
-            'dpi' => 150,
-            'defaultFont' => 'sans-serif',
-            'isHtml5ParserEnabled' => true,
-            'isPhpEnabled' => true
-        ]);
-
-        return $pdf->download($filename);
-        
-    } catch (\Exception $e) {
-        Log::error('Error generando PDF del contrato: ' . $e->getMessage(), [
-            'contract_id' => $contract->id,
-            'contract_type' => $contract->contractSchool ? 'school' : 'jwo',
-            'error' => $e->getTraceAsString()
-        ]);
-
-        return back()->with('error', 'Error al generar el PDF. Inténtalo de nuevo.');
     }
-}
 
     private function generateContractNumber()
     {

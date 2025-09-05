@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             PermissionSeeder::class,
             AdminSeeder::class,
             HoodVentCleaningSeeder::class,
+            ServicesTableSeeder::class,
           
         ]);
     }

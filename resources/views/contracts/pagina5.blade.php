@@ -8,11 +8,11 @@
     <!-- Número de página -->
     <div class="page-number">{{ $pageNumber ?? 5 }}</div>
 
-    <div class="content content-with-padding" style="position: relative; z-index: 2;">
+    <div class="content-padding" style="position: relative; z-index: 2;">
         
         <h2 class="notices-title">NOTICES</h2>
         
-        <p class="notices-intro">
+        <p class="texto-normal">
             All notices required under this Agreement shall be in writing, and if to the 
             <strong>CLIENT</strong> shall be sufficient in all respects if delivered in person or sent by a 
             nationally recognized overnight courier service or by registered or certified 
@@ -47,11 +47,12 @@
             </table>
         </div>
 
-        <div class="texto-normal" style="margin-bottom:15px; text-align: justify;" style="text-align: center; margin: 40px auto 20px; max-width: 75%; color: #1c2969; font-size: 11pt; line-height: 1.5;">
+        <div class="texto-normal" >
             Moreover, if to Contractor shall be sufficient in all respects if delivered in 
             person or sent by a nationally recognized overnight courier service or by 
             registered or certified mail to:
         </div>
+        <br>
 
         <!-- Tabla SERVICE PROVIDER centrada con mismo ancho -->
         <div style="text-align: center; margin: 25px 0;">
